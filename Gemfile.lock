@@ -1,5 +1,6 @@
-PATH
-  remote: /home/ss/code/telegram-bot-ruby
+GIT
+  remote: git@github.com:Scumfunk/telegram-bot-ruby.git
+  revision: 4491cce3d127545bc34f4b7df6d5dd167a836253
   specs:
     telegram-bot-ruby (0.8.6.1)
       faraday
@@ -35,6 +36,7 @@ GEM
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     concurrent-ruby (1.0.5)
+    connection_pool (2.2.1)
     crass (1.0.4)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
@@ -57,6 +59,8 @@ GEM
     mini_portile2 (2.3.0)
     minitest (5.11.3)
     multipart-post (2.0.0)
+    net-http-persistent (3.0.0)
+      connection_pool (~> 2.2)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
     rack (2.0.5)
@@ -90,6 +94,7 @@ PLATFORMS
 DEPENDENCIES
   activesupport
   dotenv-rails (~> 2.2)
+  net-http-persistent
   telegram-bot-ruby!
 
 BUNDLED WITH

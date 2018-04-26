@@ -1,10 +1,11 @@
 # TOKEN = '295133880:AAH3HiqlQJ-81XjXJK5O2ZNBXMaxxSLuu34'
-TOK ||= '390126265:AAGokHwWau7N7sd9Vga0g_qE3-Th9gNcXME'
+TOK ||= ''
 require 'telegram/bot'
 
 include ErlPort::Erlang
 
 def register_handler dest
+  puts "register_handler!!!!!!!!!!!!!!!!"
   set_message_handler {|message|
     p "ruby recieve message"
     p message[1]
@@ -14,19 +15,17 @@ def register_handler dest
 end
 
 def run_bot(supervisor_pid = nil, ex_module=nil)
-  p '============='
   Telegram::Bot::Client.run(TOK) do |bot|
-    p '============='
-    p bot.api
     bot.listen do |message|
-      p "telegram receive message"
+      puts "telegram receive message"
+      puts message.inspect
       send_message_to_supervisor(supervisor_pid, message)
     end
   end
 end
 
 def send_message_to_supervisor(supervisor_pid, message)
-  parsed_message = {
+  p parsed_message = {
       user: {
           id: message.from.id,
           is_bot: message.from.is_bot,
@@ -41,7 +40,7 @@ def send_message_to_supervisor(supervisor_pid, message)
       text: message.text,
       date: message.date
   }
-  ErlPort::Erlang::cast(supervisor_pid, Tuple.new([:message, JSON.dump(parsed_message)]))
+  p ErlPort::Erlang::cast(supervisor_pid, Tuple.new([:message, JSON.dump(parsed_message)]))
 end
 
 def send_message_to_user(message)

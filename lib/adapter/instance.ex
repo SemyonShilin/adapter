@@ -6,6 +6,14 @@ defmodule Adapter.Instance do
       listening: ruby_listening()}
   end
 
+  def new(:adapter) do
+    ruby_adapt()
+  end
+
+  def new(:listening) do
+    ruby_listening()
+  end
+
   def ruby_adapt do
     {:ok, pid} = Ruby.start(ruby_lib: Path.expand("lib/ruby"))
     pid

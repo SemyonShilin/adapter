@@ -4,7 +4,7 @@ defmodule Adapter.BotPid do
 
   def start_link(arg) do
     DynamicSupervisor.start_link(__MODULE__, arg, name: arg)
-#    Adapter.BotPid.start_child(arg)
+    Adapter.BotPid.start_child(arg)
   end
 
   def start_child(arg) do

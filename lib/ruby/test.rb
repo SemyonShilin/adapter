@@ -1,5 +1,3 @@
-# TOKEN = '295133880:AAH3HiqlQJ-81XjXJK5O2ZNBXMaxxSLuu34'
-TOK ||= '390126265:AAGokHwWau7N7sd9Vga0g_qE3-Th9gNcXME'
 require 'telegram/bot'
 
 include ErlPort::Erlang

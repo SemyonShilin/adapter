@@ -14,7 +14,7 @@ defmodule Adapter.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-#      mod: {Adapter, []},
+      mod: {Adapter, []},
       extra_applications: [:logger]
     ]
   end

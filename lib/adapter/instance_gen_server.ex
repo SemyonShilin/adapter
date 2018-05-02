@@ -3,30 +3,31 @@ defmodule Adapter.InstanceGenServer do
   use GenServer
 
   def start_link(args) do
-    name = String.to_atom("runy_#{elem(args, 1)}")
-    GenServer.start_link(__MODULE__, elem(args, 0), [{:name, name}])
+    name = String.to_atom("runy_#{hd(args)}")
+    GenServer.start_link(__MODULE__, tl(args), [{:name, name}])
   end
 
   def init(args) do
-    instance = Adapter.Instance.new(args)
-    run(args, instance)
+    [instance_name, token] = args
+    instance = Adapter.Instance.new(instance_name)
+    instance_name |> run([instance, token])
     {:ok, instance}
   end
 
-  def run(arg, instance) do
-    case arg do
-      :adapter -> spawn_link Adapter.InstanceGenServer, :adapter, [instance]
-      :listening -> spawn_link Adapter.InstanceGenServer, :listening, [instance]
+  def run(instance_name, args) do
+    case instance_name do
+      :adapter -> spawn_link Adapter.InstanceGenServer, :adapter, [args]
+      :listening -> spawn_link Adapter.InstanceGenServer, :listening, [args]
     end
   end
 
-  def adapter(pid) do
-    pid = pid |> Ruby.call("test.rb", "run_bot", [pid , name: "run_bot"])
-    {:ok, pid}
+  def adapter([pid, token]) do
+    child_pid = pid |> Ruby.call("bot.rb", "run_bot", [pid, token, name: "run_bot"])
+    {:ok, child_pid}
   end
 
-  def listening(pid) do
-    pid2 = pid |> Ruby.call("test.rb", "register_handler", [name: "register_handler"])
-    {:ok, pid2}
+  def listening([pid, token]) do
+    child_pid = pid |> Ruby.call("bot.rb", "register_handler", [token, name: "register_handler"])
+    {:ok, child_pid}
   end
 end

@@ -13,8 +13,8 @@ defmodule Adapter.MessengerSupervisor do
 
   def init(:ok) do
     children = [
-      Supervisor.child_spec({Adapter.BotSupervisor, ["", name: :bot_1]}, id: :bot_1),
-      Supervisor.child_spec({Adapter.BotSupervisor, ["", name: :bot_2]}, id: :bot_2)
+      Supervisor.child_spec({Adapter.BotSupervisor, [System.get_env("TOKEN1"), name: :bot_1]}, id: :bot_1),
+      Supervisor.child_spec({Adapter.BotSupervisor, [System.get_env("TOKEN2"), name: :bot_2]}, id: :bot_2)
     ]
 
     Supervisor.init(children, strategy: :one_for_all)# |> IO.inspect

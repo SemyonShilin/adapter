@@ -4,19 +4,19 @@ defmodule Adapter.MessengerSupervisor do
   @name Adapter.MessengerSupervisor
 
   def start_link(_opts) do
-    Supervisor.start_link(__MODULE__, :ok, _opts)
+    Supervisor.start_link(@name, :ok, _opts)
   end
 
-  def start_bot do
-    Supervisor.start_child(@name, [])
+  def start_new_bot(opts, token) do
+    Supervisor.start_child(@name, Supervisor.child_spec({Adapter.BotSupervisor, [System.get_env(token), opts]}, id: opts[:name]))
   end
 
   def init(:ok) do
-    children = [
-      Supervisor.child_spec({Adapter.BotSupervisor, [System.get_env("TOKEN1"), name: :bot_1]}, id: :bot_1),
-      Supervisor.child_spec({Adapter.BotSupervisor, [System.get_env("TOKEN2"), name: :bot_2]}, id: :bot_2)
-    ]
+#    children = [
+#      Supervisor.child_spec({Adapter.BotSupervisor, [System.get_env("TOKEN1"), name: :bot_1]}, id: :bot_1),
+#      Supervisor.child_spec({Adapter.BotSupervisor, [System.get_env("TOKEN2"), name: :bot_2]}, id: :bot_2)
+#    ]
 
-    Supervisor.init(children, strategy: :one_for_all)# |> IO.inspect
+    Supervisor.init([], strategy: :one_for_all)# |> IO.inspect
   end
 end

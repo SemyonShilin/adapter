@@ -1,22 +1,21 @@
 defmodule Adapter.MessengerSupervisor do
-  use Supervisor
+  use DynamicSupervisor
 
   @name Adapter.MessengerSupervisor
 
-  def start_link(_opts) do
-    Supervisor.start_link(@name, :ok, _opts)
+  def start_link(name) do
+    DynamicSupervisor.start_link(@name, :ok, name: name)
   end
 
-  def start_new_bot(opts, token) do
-    Supervisor.start_child(@name, Supervisor.child_spec({Adapter.BotSupervisor, [System.get_env(token), opts]}, id: opts[:name]))
+  def start_new_bot(name, token) do
+    spec = %{id: name, start: { Adapter.BotSupervisor, :start_link, [System.get_env(token), name] }}
+    DynamicSupervisor.start_child(@name, spec)
   end
 
-  def init(:ok) do
-#    children = [
-#      Supervisor.child_spec({Adapter.BotSupervisor, [System.get_env("TOKEN1"), name: :bot_1]}, id: :bot_1),
-#      Supervisor.child_spec({Adapter.BotSupervisor, [System.get_env("TOKEN2"), name: :bot_2]}, id: :bot_2)
-#    ]
-
-    Supervisor.init([], strategy: :one_for_all)# |> IO.inspect
+  def init(initial_arg) do
+    DynamicSupervisor.init(
+      strategy: :one_for_one,
+      extra_arguments: [initial_arg]
+    )
   end
 end

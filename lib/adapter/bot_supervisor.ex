@@ -1,8 +1,8 @@
 defmodule Adapter.BotSupervisor do
   use Supervisor
 
-  def start_link([token, opts]) do
-    Supervisor.start_link(__MODULE__, token, opts)
+  def start_link(:ok, token, name) do
+    Supervisor.start_link(__MODULE__, token, name: name)
   end
 
   def init(token) do
@@ -12,7 +12,7 @@ defmodule Adapter.BotSupervisor do
       Supervisor.child_spec({Adapter.InstanceGenServer, [listener_id, :listening, token]}, id: listener_id)
     ]
 
-    Supervisor.init(children, strategy: :one_for_all) #|> IO.inspect
+    Supervisor.init(children, strategy: :one_for_all)
   end
 
   defp id_generator do

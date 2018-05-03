@@ -22,12 +22,12 @@ defmodule Adapter.InstanceGenServer do
   end
 
   def adapter([pid, token]) do
-    child_pid = pid |> Ruby.call("bot.rb", "run_bot", [pid, token, name: "run_bot"])
+    child_pid = pid |> Ruby.call("bot.rb", "run_bot", [pid, token])
     {:ok, child_pid}
   end
 
   def listening([pid, token]) do
-    child_pid = pid |> Ruby.call("bot.rb", "register_handler", [token, name: "register_handler"])
+    child_pid = pid |> Ruby.call("bot.rb", "register_handler", [pid, token])
     {:ok, child_pid}
   end
 end

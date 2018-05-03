@@ -2,7 +2,7 @@ require 'telegram/bot'
 
 include ErlPort::Erlang
 
-def register_handler(token, dest)
+def register_handler(dest, token)
   puts "register_handler!!!!!!!!!!!!!!!!"
   set_message_handler {|message|
     p "ruby recieve message"

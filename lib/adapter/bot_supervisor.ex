@@ -1,8 +1,8 @@
 defmodule Adapter.BotSupervisor do
   use Supervisor
 
-  def start_link(args) do
-    Supervisor.start_link(__MODULE__, hd(args), tl(args))
+  def start_link([token, opts]) do
+    Supervisor.start_link(__MODULE__, token, opts)
   end
 
   def init(token) do

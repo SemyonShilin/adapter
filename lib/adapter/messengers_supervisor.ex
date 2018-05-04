@@ -6,7 +6,7 @@ defmodule Adapter.MessengersSupervisor do
   end
 
   def start_new_messenger(name) do
-    spec = %{id: name, start: { Adapter.MessengerSupervisor, :start_link, [name] }}
+    spec = %{id: name, start: { Adapter.MessengerSupervisor, :start_link, [name] }, type: :supervisor}
     DynamicSupervisor.start_child(__MODULE__, spec)
   end
 

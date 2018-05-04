@@ -3,8 +3,7 @@ defmodule Adapter.InstanceGenServer do
   use GenServer
 
   def start_link(args) do
-    name = String.to_atom("runy_#{hd(args)}")
-    GenServer.start_link(__MODULE__, tl(args), [{:name, name}])
+    GenServer.start_link(__MODULE__, tl(args), [{:name, hd(args)}])
   end
 
   def init(args) do

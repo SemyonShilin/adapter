@@ -2,6 +2,13 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
+config :adapter, ecto_repos: [Adapter.Repo]
+
+config :adapter, Adapter.Repo,
+       adapter: EctoMnesia.Adapter,
+       host: {:system, :atom, "localhost", Kernel.node()},
+       storage_type: {:system, :atom, "MNESIA_STORAGE_TYPE", :disc_copies}
+
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
 # file won't be loaded nor affect the parent project. For this reason,

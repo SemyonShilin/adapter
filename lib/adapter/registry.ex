@@ -78,7 +78,24 @@ defmodule Adapter.Registry do
     end
   end
 
-  def handle_info({:DOWN, ref, :process, _pid, _reason}, {messengers, messengers_refs}) do
+  def handle_info({:DOWN, ref, :process, _pid, :shutdown}, {messengers, messengers_refs} = state) do
+    IO.puts '================'
+    IO.inspect state
+    IO.inspect _pid
+    IO.inspect ref
+    IO.puts '================'
+    {name, refs} = Map.pop(messengers_refs, ref)
+    names = Map.delete(messengers, name)
+
+    {:noreply, {names, refs}}
+  end
+
+  def handle_info({:DOWN, ref, :process, _pid, _reason}, {messengers, messengers_refs} = state) do
+    IO.puts '!!!!!!!!!!!!!!!!!'
+    IO.inspect state
+    IO.inspect _pid
+    IO.inspect _reason
+    IO.puts '!!!!!!!!!!!!!!!!!'
     {name, refs} = Map.pop(messengers_refs, ref)
     names = Map.delete(messengers, name)
     {:noreply, {names, refs}}

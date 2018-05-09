@@ -7,9 +7,9 @@ defmodule Adapter.MessengerSupervisor do
     DynamicSupervisor.start_link(@name, :ok, name: name)
   end
 
-  def start_new_bot(messenger, token) do
+  def start_new_bot(messenger, token, pid \\ nil) do
     spec = { Adapter.BotSupervisor, System.get_env(token) }
-    DynamicSupervisor.start_child(messenger, spec)
+    DynamicSupervisor.start_child(pid || messenger, spec)
   end
 
   def init(initial_arg) do

@@ -1,5 +1,5 @@
 defmodule Adapter.MessengerSupervisor do
-  use DynamicSupervisor
+  use DynamicSupervisor, restart: :temporary
 
   @name Adapter.MessengerSupervisor
 

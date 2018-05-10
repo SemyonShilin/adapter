@@ -1,5 +1,5 @@
 defmodule Adapter.MessengersSupervisor do
-  use DynamicSupervisor
+  use DynamicSupervisor, restart: :temporary
 
   def start_link do
     Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)

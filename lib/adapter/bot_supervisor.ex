@@ -1,5 +1,5 @@
 defmodule Adapter.BotSupervisor do
-  use Supervisor
+  use Supervisor, restart: :temporary
 
   def start_link(:ok, token) do
     Supervisor.start_link(__MODULE__, token)

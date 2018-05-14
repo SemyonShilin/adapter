@@ -5,7 +5,9 @@ defmodule Adapter.Schema.Messenger do
 
   schema "messengers" do
     field :name, :string
-    has_many :bots, Adapter.Schema.Bot, foreign_key: :messenger_id
+    has_many :bots, Adapter.Schema.Bot,
+             foreign_key: :messenger_id,
+             on_delete: :delete_all
 
     timestamps()
   end
@@ -33,5 +35,16 @@ defmodule Adapter.Schema.Messenger do
 
   def find_by_name(name \\ nil) do
     Adapter.Repo.get_by(Messenger, name: name)
+  end
+
+  def delete(name) do
+    messenger = Adapter.Repo.get_by(Messenger, name: name)
+    Adapter.Repo.delete(messenger)
+  end
+
+  def pluck_bots_name_for(messenger) do
+    Adapter.Schema.Messenger.find_by_name(messenger).id
+    |> Adapter.Schema.Bot.where_messenger()
+    |> Enum.map(fn(bot) -> Map.get(bot, :name) end)
   end
 end

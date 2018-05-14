@@ -35,6 +35,11 @@ defmodule Adapter.Schema.Bot do
     end
   end
 
+  def delete(name) do
+    bot = Adapter.Repo.get_by(Bot, name: name)
+    Adapter.Repo.delete(bot)
+  end
+
   def where_messenger(id) do
     q = from b in Bot, where: b.messenger_id == ^id
     Adapter.Repo.all(q) |> Adapter.Repo.preload(:messenger)

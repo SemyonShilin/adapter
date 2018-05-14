@@ -3,13 +3,13 @@ defmodule Adapter.MessengerSupervisor do
 
   @name Adapter.MessengerSupervisor
 
-  def start_link(name) do
-    DynamicSupervisor.start_link(@name, :ok, name: name)
+  def start_link(_opts) do
+    DynamicSupervisor.start_link(@name, :ok)
   end
 
-  def start_new_bot(messenger, token, pid \\ nil) do
+  def start_new_bot(pid, token) do
     spec = { Adapter.BotSupervisor, System.get_env(token) }
-    DynamicSupervisor.start_child(pid || messenger, spec)
+    DynamicSupervisor.start_child(pid, spec)
   end
 
   def init(initial_arg) do
@@ -17,5 +17,9 @@ defmodule Adapter.MessengerSupervisor do
       strategy: :one_for_one,
       extra_arguments: [initial_arg]
     )
+  end
+
+  def stop(pid) do
+    Supervisor.stop(pid, :normal)
   end
 end

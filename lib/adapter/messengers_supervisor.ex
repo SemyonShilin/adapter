@@ -7,7 +7,7 @@ defmodule Adapter.MessengersSupervisor do
 
   def start_new_messenger(name) do
     name = String.to_atom(name)
-    spec = %{id: name, start: { Adapter.MessengerSupervisor, :start_link, [name] }, type: :supervisor}
+    spec = { Adapter.MessengerSupervisor, [] }
     DynamicSupervisor.start_child(__MODULE__, spec)
   end
 
@@ -16,5 +16,9 @@ defmodule Adapter.MessengersSupervisor do
       strategy: :one_for_one,
       extra_arguments: [initial_arg]
     )
+  end
+
+  def stop(pid) do
+    Supervisor.stop(pid, :normal)
   end
 end

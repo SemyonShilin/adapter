@@ -1,15 +1,19 @@
 defmodule Adapter.Registry do
-  @moduledoc "Модуль для реестра процессов"
+  @moduledoc """
+    Модуль для реестра процессов
+    Команды:
+      1) Работа с реестром
+         Adapter.Registry.create("telegram", {"bot_3", "TOKEN3"})
+         Adapter.Registry.lookup("telegram")
+         Adapter.Registry.down({:messenger, "telegram"})
+         Adapter.Registry.down({:bot, "bot"})
+      2) Работа с бд
+         m = Adapter.Schema.Messenger.create("first m")
+         m = Adapter.Schema.Messenger |> Adapter.Repo.get_by(name: "telegram")
+         b = Adapter.Schema.Messenger.add_bot(m, %{name: "bot", token: "TOKEN1"})
+         Adapter.Repo.all(Adapter.Schema.Bot)
 
-  #  Adapter.Registry.create(Adapter.Registry, :telegram, {:bot_2, "TOKEN2"})
-  #  Adapter.Registry.lookup(Adapter.Registry, "telegram")
-  #  GenServer.call(Adapter.Registry, {:create, :telegram})
-  #  Adapter.Registry.create(Adapter.Registry, {:telegram, :bot_2})
-  #  m = Adapter.Schema.Messenger.create("first m")
-  #  m = Adapter.Schema.Messenger |> Adapter.Repo.get_by(name: "telegram")
-  #  b = Adapter.Schema.Messenger.add_bot(m, %{name: "bot", token: "TOKEN1"})
-  #  Adapter.Repo.all(Adapter.Schema.Bot)
-  #  Adapter.Registry.delete({:messenger, "telegram"})
+  """
 
   use GenServer
 
@@ -33,6 +37,10 @@ defmodule Adapter.Registry do
 
   def create(messenger) do
     GenServer.call(@name, {:create, messenger})
+  end
+
+  def up({kind, name}) when kind in [:messenger, :bot] do
+    GenServer.cast(@name, {:up, kind, name})
   end
 
   def delete({kind, name}) when kind in [:messenger, :bot] do
@@ -88,60 +96,83 @@ defmodule Adapter.Registry do
     end
   end
 
-  def handle_cast({:delete, :messenger, name}, state) do
-    new_state =
-      Adapter.Schema.Messenger.pluck_bots_name_for(name)
-      |> down_tree(:bot, state)
+  def handle_cast({:up, :messenger, name}, state) do
+    {:noreply, up_messenger(name, state)}
+  end
 
-    new_state = down_tree(name, :messenger, new_state)
-    Adapter.Schema.Messenger.delete(name)
-
+  def handle_cast({:up, :bot, name}, state) do
+    bot = Adapter.Schema.Bot.get_by_with_messenger(name: name)
+    new_state = up_bot({bot.messenger.name, name, bot.token}, state)
     {:noreply, new_state}
   end
 
-  def handle_cast({:delete, :bot, name}, state) do
-    new_state = down_tree(name, :bot, state)
-    Adapter.Schema.Bot.delete(name)
+  def handle_cast({:delete, :messenger, name}, {names, _} = state) do
+    if !Map.has_key?(names, name) do
+      {:noreply, state}
+    else
+      new_state =
+        Adapter.Schema.Messenger.pluck_bots_name_for(name)
+        |> down_tree(:bot, state)
 
-    {:noreply, new_state}
+      new_state = down_tree(name, :messenger, new_state)
+      Adapter.Schema.Messenger.delete(name)
+
+      {:noreply, new_state}
+    end
   end
 
-  def handle_cast({:down, :messenger, name}, state) do
-    new_state =
-      Adapter.Schema.Messenger.pluck_bots_name_for(name)
-      |> down_tree(:bot, state)
+  def handle_cast({:delete, :bot, name}, {names, _} = state) do
+    if !Map.has_key?(names, name) do
+      {:noreply, state}
+    else
+      new_state = down_tree(name, :bot, state)
+      Adapter.Schema.Bot.delete(name)
 
-    new_state = down_tree(name, :messenger, new_state)
-
-    {:noreply, new_state}
+      {:noreply, new_state}
+    end
   end
 
-  def handle_cast({:down, :bot, name}, state) do
-    new_state = down_tree(name, :bot, state)
+  def handle_cast({:down, :messenger, name}, {names, _} = state) do
+    if !Map.has_key?(names, name) do
+      {:noreply, state}
+    else
+      new_state =
+        Adapter.Schema.Messenger.pluck_bots_name_for(name)
+        |> down_tree(:bot, state)
+      new_state = down_tree(name, :messenger, new_state)
 
-    {:noreply, new_state}
+      {:noreply, new_state}
+    end
   end
 
-#  def handle_info({:DOWN, ref, :process, _pid, _reason}, {names, refs} = state) do
-#    {name, refs} = Map.pop(refs, ref)
-#    names = Map.delete(names, name)
-#
-#    messenger = Adapter.Schema.Messenger |> Adapter.Repo.get_by(name: name)
-#    {names, refs} =
-#      case messenger do
-#        %Adapter.Schema.Messenger{} -> up_messenger(messenger.name, {names, refs})
-#        nil -> {names, refs}
-#      end
-#
-#    bot = Adapter.Schema.Bot.get_by_with_messenger(name: name)
-#    {names, refs} =
-#      case bot do
-#        %Adapter.Schema.Bot{} -> up_bot({bot.messenger.name, name, bot.token}, {names, refs})
-#        nil -> {names, refs}
-#      end
-#
-#    {:noreply, {names, refs}}
-#  end
+  def handle_cast({:down, :bot, name}, {names, _} = state) do
+    if !Map.has_key?(names, name) do
+      {:noreply, state}
+    else
+      {:noreply, down_tree(name, :bot, state)}
+    end
+  end
+
+  def handle_info({:DOWN, ref, :process, _pid, _reason}, {names, refs} = state) do
+    {name, refs} = Map.pop(refs, ref)
+    names = Map.delete(names, name)
+
+    messenger = Adapter.Schema.Messenger |> Adapter.Repo.get_by(name: name)
+    {names, refs} =
+      case messenger do
+        %Adapter.Schema.Messenger{} -> up_messenger(messenger.name, {names, refs})
+        nil -> {names, refs}
+      end
+
+    bot = Adapter.Schema.Bot.get_by_with_messenger(name: name)
+    {names, refs} =
+      case bot do
+        %Adapter.Schema.Bot{} -> up_bot({bot.messenger.name, name, bot.token}, {names, refs})
+        nil -> {names, refs}
+      end
+
+    {:noreply, {names, refs}}
+  end
 
   def handle_info({:DOWN, ref, :process, _pid, :kill}, state) do
     IO.inspect "KILL!!!!!!!!"
@@ -175,9 +206,9 @@ defmodule Adapter.Registry do
     up_bot({messengers, messenger}, {bot.name, bot.token})
   end
 
-  defp up_messenger(messenger, {names, refs}) do
+  defp up_messenger(messenger, {names, refs} = state) do
     if Map.has_key?(names, messenger) do
-      {names, refs}
+      state
     else
       {:ok, pid} = Adapter.MessengersSupervisor.start_new_messenger(messenger)
       ref = Process.monitor(pid)
@@ -187,10 +218,10 @@ defmodule Adapter.Registry do
     end
   end
 
-  defp up_bot({messenger, name, token}, {names, refs}) do
+  defp up_bot({messenger, name, token}, {names, refs} = state) do
     if Map.has_key?(names, messenger) do
       if Map.has_key?(names, name) do
-        {names, refs}
+        state
       else
         messenger_pid = Map.get(names, messenger)
         {:ok, pid} = Adapter.MessengerSupervisor.start_new_bot(messenger_pid, token)
@@ -200,7 +231,7 @@ defmodule Adapter.Registry do
         {names, refs}
       end
     else
-      {names, refs} = up_messenger(messenger, {names, refs})
+      {names, refs} = up_messenger(messenger, state)
       messenger_pid = Map.get(names, messenger)
       {:ok, pid} = Adapter.MessengerSupervisor.start_new_bot(messenger_pid, token)
       ref = Process.monitor(pid)

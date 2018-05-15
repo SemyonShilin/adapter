@@ -16,6 +16,6 @@ defmodule Adapter.BotSupervisor do
   end
 
   defp id_generator do
-    {String.to_atom(SecureRandom.base64(8)), String.to_atom(SecureRandom.base64(8))}
+    {String.to_atom("adapter_#{SecureRandom.base64(8)}"), String.to_atom("listener_#{SecureRandom.base64(8)}")}
   end
 end

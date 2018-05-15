@@ -12,6 +12,8 @@ defmodule Adapter.Registry do
          m = Adapter.Schema.Messenger |> Adapter.Repo.get_by(name: "telegram")
          b = Adapter.Schema.Messenger.add_bot(m, %{name: "bot", token: "TOKEN1"})
          Adapter.Repo.all(Adapter.Schema.Bot)
+      3) Отправка сообщений пользователю
+         Adapter.Registry.post_message("bot", "json")
 
   """
 
@@ -49,6 +51,10 @@ defmodule Adapter.Registry do
 
   def down({kind, name}) when kind in [:messenger, :bot] do
     GenServer.cast(@name, {:down, kind, name})
+  end
+
+  def post_message(bot, message) do
+    GenServer.cast(@name, {:message, bot, message})
   end
 
   def stop(server) do
@@ -153,6 +159,19 @@ defmodule Adapter.Registry do
     end
   end
 
+  def handle_cast({:message, bot, message}, {names, _} = state) do
+    if Map.has_key?(names, bot) do
+      find_pid = &(if String.starts_with?("#{elem(&1, 0)}", "listener"), do: elem(&1, 0))
+      Map.get(names, bot)
+      |> Supervisor.which_children()
+      |> Enum.find_value(find_pid)
+      |> GenServer.cast({:post_message, message})
+      {:noreply, state}
+    else
+      {:noreply, state}
+    end
+  end
+
   def handle_info({:DOWN, ref, :process, _pid, _reason}, {names, refs}) do
     {name, refs} = Map.pop(refs, ref)
     names = Map.delete(names, name)
@@ -210,7 +229,7 @@ defmodule Adapter.Registry do
     if Map.has_key?(names, messenger) do
       state
     else
-      {:ok, pid} = Adapter.MessengersSupervisor.start_new_messenger(messenger)
+      {:ok, pid} = Adapter.MessengersSupervisor.start_new_messenger()
       ref = Process.monitor(pid)
       refs = Map.put(refs, ref, messenger)
       names = Map.put(names, messenger, pid)

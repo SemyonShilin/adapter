@@ -8,7 +8,7 @@ defmodule Adapter.MessengerSupervisor do
   end
 
   def start_new_bot(pid, token) do
-    spec = { Adapter.BotSupervisor, System.get_env(token) }
+    spec = { Adapter.BotSupervisor, token }
     DynamicSupervisor.start_child(pid, spec)
   end
 

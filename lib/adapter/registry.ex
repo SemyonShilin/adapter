@@ -153,7 +153,7 @@ defmodule Adapter.Registry do
     end
   end
 
-  def handle_info({:DOWN, ref, :process, _pid, _reason}, {names, refs} = state) do
+  def handle_info({:DOWN, ref, :process, _pid, _reason}, {names, refs}) do
     {name, refs} = Map.pop(refs, ref)
     names = Map.delete(names, name)
 
@@ -241,8 +241,7 @@ defmodule Adapter.Registry do
     end
   end
 
-  defp up_init_tree({names, refs} = state) do
-    new_state = {}
+  defp up_init_tree(state) do
     Adapter.Repo.all(Adapter.Schema.Messenger)
     |> Enum.map(fn(messenger) ->
       Adapter.Schema.Bot.where_messenger(messenger.id) |> up_bots(state)
@@ -253,14 +252,14 @@ defmodule Adapter.Registry do
     end)
   end
 
-  defp up_bots([bot | other_bots], {names, refs} = state) do
+  defp up_bots([bot | other_bots], state) do
     state = up_bot({bot.messenger.name, bot.name, bot.token}, state)
     up_bots(other_bots, state)
   end
 
   defp up_bots([], state), do: state
 
-  defp down_tree(name, kind, {names, refs} = state) when is_bitstring(name) do
+  defp down_tree(name, kind, state) when is_bitstring(name) do
     {pid, new_state} = delete_from_state(name, state)
     stop_process(kind, pid)
     new_state

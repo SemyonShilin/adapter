@@ -21,7 +21,6 @@ class MessageSender
   end
 
   def send_to_user
-    puts 'send_to_user'
     @bot.api.send_message(chat_id: message.dig('chat', 'id'), text: message['text'])
     @logger.debug "sending to user #{message}"
   end

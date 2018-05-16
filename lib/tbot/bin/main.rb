@@ -23,7 +23,7 @@ def register_handler(dest, token, listener)
   $logger.debug 'register handler start '
   set_message_handler {|message|
     Telegram::Bot::Client.run(token) do |bot|
-      options = { bot: bot, message: JSON.parse(message), token: token, kind: :user }
+      options = { bot: bot, message: message = JSON.parse(message), token: token, kind: :user }
       $logger.debug "#{message.dig('chat', 'id')} : #{message['text']} "
       MessageResponder.new(options).respond
     end

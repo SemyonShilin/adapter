@@ -1,4 +1,5 @@
 require_relative '../config/config'
+require_relative 'parser'
 
 class MessageSender
   include ErlPort::Erlang
@@ -15,37 +16,16 @@ class MessageSender
   end
 
   def send_to_supervisor
-    ErlPort::Erlang::cast(@listener,
-                          Tuple.new([:receive_message, JSON.dump(parse_message(@message))]))
+    message = Parser.new(response: @message, kind: :supervisor).supervisor_formatted
+    ErlPort::Erlang::cast(@listener, Tuple.new([:receive_message, message]))
     @logger.debug "sending to supervisor #{@message}"
   end
 
   def send_to_user
-    @bot.api.send_message(chat_id: message.dig('chat', 'id'), text: message['text'])
-    @logger.debug "sending to user #{message}"
-  end
-
-  private
-
-  def parse_message(message)
-    {
-      bot_id: 1,
-      platform: :telegram,
-      client_id: message.from.id,
-      data: {message: message.text},
-      user: {
-        id: message.from.id,
-        is_bot: message.from.is_bot,
-        first_name:  message.from.first_name,
-        last_name: message.from.last_name,
-        username:  message.from.username
-      },
-      chat: {
-        id: message.chat.id,
-        type: message.chat.type
-      },
-      text: message.text,
-      date: message.date
-    }
+    message = Parser.new(response: @message, kind: :user).user_formatted
+    message.each do |m|
+      @bot.api.send_message(chat_id: @message.dig('data', 'chat', 'id'), text: m[:text],  reply_markup: m[:object])
+      @logger.debug "sending to user #{message}"
+    end
   end
 end

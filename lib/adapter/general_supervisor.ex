@@ -7,7 +7,7 @@ defmodule Adapter.GeneralSupervisor do
 
   def init(:ok) do
     children = [
-      {Adapter.Repo, []},
+#      {Adapter.Repo, []},
       {DynamicSupervisor, name: Adapter.MessengersSupervisor, strategy: :one_for_one},
       {Adapter.Registry, name: Adapter.Registry}
     ]

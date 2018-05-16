@@ -41,11 +41,25 @@ defmodule Adapter.InstanceGenServer do
     {:noreply, state}
   end
 
+  def handle_cast({:message, message}, state) do
+    IO.inspect "++++++++++++++++++++++++++++++++++"
+    IO.inspect message
+    IO.inspect state
+    :ruby.cast(state, message) |> IO.inspect
+    IO.inspect "++++++++++++++++++++++++++++++++++"
+    {:noreply, state}
+  end
+
   def handle_info({:receive_message, msg}, state) do
     IO.inspect "=================================="
     IO.inspect msg
     IO.inspect state
-    call_dch(msg) |> IO.inspect
+    {:ok, %HTTPoison.Response{body: body}} = call_hub(msg) |> IO.inspect
+    find_pid = &(if String.starts_with?("#{elem(&1, 0)}", "listener"), do: elem(&1, 0))
+    nearest_parent_for(state, 1)
+    |> Supervisor.which_children()
+    |> Enum.find_value(find_pid)
+    |> :ruby.cast(body)
     IO.inspect "=================================="
     {:noreply, state}
   end
@@ -57,13 +71,16 @@ defmodule Adapter.InstanceGenServer do
     {:noreply, state}
   end
 
-  def nearest_parent_for(pid) do
+  def nearest_parent_for(pid, index \\ 0) do
     {:ok, dictionary} = Keyword.fetch(Process.info(pid), :dictionary)
     {:ok, ancestors} = Keyword.fetch(dictionary, :"$ancestors")
-    List.first(ancestors) |> Process.whereis()
+    case index do
+      0 -> List.first(ancestors) |> Process.whereis()
+      _ -> Enum.at(ancestors, index)
+    end
   end
 
-  def call_dch(message) do
+  def call_hub(message) do
     HTTPoison.start
     HTTPoison.post System.get_env("DCH_POST"), message, [{"Content-Type", "application/json"}]
   end

@@ -1,9 +1,9 @@
 defmodule Adapter do
-  use Application
+  @moduledoc """
+  Adapter keeps the contexts that define your domain
+  and business logic.
 
-  def start(_type, _args) do
-    Envy.auto_load
-    :observer.start
-    Adapter.GeneralSupervisor.start_link()
-  end
+  Contexts are also responsible for managing your data, regardless
+  if it comes from the database, an external API or others.
+  """
 end

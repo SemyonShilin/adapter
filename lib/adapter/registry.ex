@@ -92,12 +92,12 @@ defmodule Adapter.Registry do
       if Map.has_key?(names, name) do
         {:noreply, Map.fetch(names, name)}
       else
-        messengers = create_bot({names, messenger}, {name, token})
+        messengers = create_bot({messenger, name, token}, state)
         {:noreply, {messengers, refs}}
       end
     else
       {names, refs} = create_messenger(messenger, state)
-      names = create_bot({names, messenger}, {name, token})
+      names = create_bot({messenger, name, token}, {names, refs})
       {:noreply, {names, refs}}
     end
   end
@@ -219,10 +219,10 @@ defmodule Adapter.Registry do
     up_messenger(messenger.name, {names, refs})
   end
 
-  defp create_bot({messengers, messenger}, {name, token}) do
-    messenger = Adapter.Schema.Messenger.find_by_name(messenger)
+  defp create_bot({messenger_name, name, token}, state) do
+    messenger = Adapter.Schema.Messenger.find_by_name(messenger_name)
     bot = Adapter.Schema.Messenger.add_bot(messenger, %{name: name, token: token})
-    up_bot({messengers, messenger}, {bot.name, bot.token})
+    up_bot({messenger_name, bot.name, bot.token}, state)
   end
 
   defp up_messenger(messenger, {names, refs} = state) do

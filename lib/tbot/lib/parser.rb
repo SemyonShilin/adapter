@@ -7,6 +7,10 @@ class Parser
     @fields = common_fields_hash if @kind == :supervisor
   end
 
+  def formatted
+
+  end
+
   def user_formatted
     @response.dig('data', 'messages').map { |m| parse_each(m) }
   end
@@ -54,7 +58,7 @@ class Parser
   def parse_message
     @fields.merge!(data: { is_menu_clicked: false, message: @response.text })
     @fields.merge!(chat: { id: @response.chat.id,
-                           type: @response.chat.type})
+                           type: @response.chat.type })
     @fields.merge!(text: @response.text)
     @fields.merge!(date: @response.date)
   end
@@ -62,7 +66,7 @@ class Parser
   def parse_callback_query
     @fields.merge!(data: { is_menu_clicked: true, message: @response.data })
     @fields.merge!(chat: { id: @response.message.from.id,
-                           type: @response.message.from.is_bot})
+                           type: @response.message.from.is_bot })
     @fields.merge!(text: @response.message.text)
     @fields.merge!(date: @response.message.date)
   end

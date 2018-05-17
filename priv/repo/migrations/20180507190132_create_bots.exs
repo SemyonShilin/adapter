@@ -3,7 +3,7 @@ defmodule Adapter.Repo.Migrations.CreateBots do
 
   def change do
     create table(:bots, engine: :ordered_set) do
-      add :name, :string
+      add :uid, :string
       add :token, :string
 
       timestamps()

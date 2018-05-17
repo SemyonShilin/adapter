@@ -54,24 +54,17 @@ defmodule Adapter.InstanceGenServer do
     IO.inspect "=================================="
     IO.inspect msg
     IO.inspect state
-    {:ok, %HTTPoison.Response{body: body}} = call_hub(msg) |> IO.inspect
-    find_pid = &(if String.starts_with?("#{elem(&1, 0)}", "listener"), do: elem(&1, 0))
-    nearest_parent_for(state, 1)
-    |> Supervisor.which_children()
-    |> Enum.find_value(find_pid)
-    |> :ruby.cast(body)
+    body = call_hub(msg)
+    body |> find_current_listener_pid(state) |> :ruby.cast(body)
     IO.inspect "=================================="
     {:noreply, state}
   end
 
   def terminate(_msg, state) do
-    IO.inspect "terminate11111111"
-    IO.inspect state
-    IO.inspect  _msg
     {:noreply, state}
   end
 
-  def nearest_parent_for(pid, index \\ 0) do
+  defp nearest_parent_for(pid, index \\ 0) do
     {:ok, dictionary} = Keyword.fetch(Process.info(pid), :dictionary)
     {:ok, ancestors} = Keyword.fetch(dictionary, :"$ancestors")
     case index do
@@ -80,8 +73,16 @@ defmodule Adapter.InstanceGenServer do
     end
   end
 
-  def call_hub(message) do
+  defp call_hub(message) do
     HTTPoison.start
-    HTTPoison.post System.get_env("DCH_POST"), message, [{"Content-Type", "application/json"}]
+    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.post System.get_env("DCH_POST"), message, [{"Content-Type", "application/json"}] |> IO.inspect
+    body
+  end
+
+  defp find_current_listener_pid(body, state) do
+    find_pid = &(if String.starts_with?("#{elem(&1, 0)}", "listener"), do: elem(&1, 0))
+    nearest_parent_for(state, 1)
+    |> Supervisor.which_children()
+    |> Enum.find_value(find_pid)
   end
 end

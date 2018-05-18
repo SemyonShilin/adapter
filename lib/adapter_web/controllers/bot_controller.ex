@@ -29,7 +29,6 @@ defmodule AdapterWeb.BotController do
   end
 
   def delete(conn, %{"uid" => uid}) do
-    Bots.get_by_bot(uid: uid) |> IO.inspect
     case Bots.get_by_bot(uid: uid) do
       %Bot{} = bot ->
         Registry.delete({:bot, bot.uid})

@@ -152,8 +152,8 @@ defmodule Adapter.Registry do
     if !Map.has_key?(names, name) do
       {:reply, name, state}
     else
-      nes_state = down_tree(name, :bot, state)
-      {:reply, name. new_state}
+      nesw_state = down_tree(name, :bot, state)
+      {:reply, name, nesw_state}
     end
   end
 
@@ -276,14 +276,14 @@ defmodule Adapter.Registry do
     {name, refs} = Map.pop(refs, ref)
     names = Map.delete(names, name)
 
-    messenger = Adapter.Messengers.get_by_messenger(name)
+    messenger = Adapter.Messengers.find_by_atts(%{name: name, state: "up"})
     {names, refs} =
       case messenger do
         %Adapter.Messengers.Messenger{} -> up_messenger(messenger.name, {names, refs})
         nil -> {names, refs}
       end
 
-    bot = Adapter.Bots.get_by_with_messenger(uid: name)
+    bot = Adapter.Bots.get_by_with_messenger(%{uid: name, state: "up"})
     {names, refs} =
       case bot do
         %Adapter.Bots.Bot{} -> up_bot({bot.messenger.name, name, bot.token}, {names, refs})
@@ -336,6 +336,8 @@ defmodule Adapter.Registry do
       ref = Process.monitor(pid)
       refs = Map.put(refs, ref, messenger)
       names = Map.put(names, messenger, pid)
+      Adapter.Messengers.set_up_messenger(messenger)
+
       {names, refs}
     end
   end
@@ -350,6 +352,8 @@ defmodule Adapter.Registry do
         ref = Process.monitor(pid)
         refs = Map.put(refs, ref, name)
         names = Map.put(names, name, pid)
+        Adapter.Bots.set_up_bot(name)
+
         {names, refs}
       end
     else
@@ -359,12 +363,14 @@ defmodule Adapter.Registry do
       ref = Process.monitor(pid)
       refs = Map.put(refs, ref, name)
       names = Map.put(names, name, pid)
+      Adapter.Bots.set_up_bot(name)
+
       {names, refs}
     end
   end
 
   defp up_init_tree(state) do
-    Adapter.Messengers.list_messengers()
+    Adapter.Messengers.list_up_messengers()
     |> Enum.map(fn(messenger) ->
       Adapter.Bots.where_messenger(messenger.id) |> up_bots(state)
     end)
@@ -403,6 +409,9 @@ defmodule Adapter.Registry do
     {name, refs} = Map.pop(refs, ref)
     pid = Map.get(names, name)
     names = Map.delete(names, name)
+    Adapter.Messengers.set_down_messenger_tree(name)
+    Adapter.Bots.set_down_bot(name)
+
 
     {pid, {names, refs}}
   end

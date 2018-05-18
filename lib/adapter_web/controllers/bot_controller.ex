@@ -41,13 +41,13 @@ defmodule AdapterWeb.BotController do
 
   def up(conn, %{"uid" => uid}) do
     Registry.up({:bot, uid})
-    bot = Bots.get_by_with_messenger(uid: uid)
+    bot = Bots.get_by_bot(uid: uid)
     render(conn, "up.json", bot: bot)
   end
 
   def down(conn, %{"uid" => uid}) do
     Registry.down({:bot, uid})
-    bot = Bots.find_by_name(uid: uid)
+    bot = Bots.get_by_bot(uid: uid)
     render(conn, "down.json", bot: bot)
   end
 end

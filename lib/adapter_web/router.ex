@@ -20,7 +20,7 @@ defmodule AdapterWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-   scope "/api", AdapterWeb do
+   scope "/api/v0", AdapterWeb do
      pipe_through :api
      # messengers routes
      scope "/messengers" do

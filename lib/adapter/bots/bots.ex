@@ -34,6 +34,11 @@ defmodule Adapter.Bots do
     |> Repo.update()
   end
 
+  def update_all(bots, attrs) do
+    bots
+    |> Repo.update_all(update: [set: attrs])
+  end
+
   def delete_bot(%Bot{} = bot) do
     Repo.delete(bot)
   end
@@ -43,7 +48,7 @@ defmodule Adapter.Bots do
   end
 
   def create(uid \\ nil, token \\ nil) do
-    changeset = Bot.changeset(%Bot{}, %{uid: uid, token: token})
+    changeset = Bot.changeset(%Bot{}, %{uid: uid, token: token, state: "up"})
     new_bot = Repo.insert(changeset)
     case new_bot do
       {:ok, bot} -> bot
@@ -57,7 +62,7 @@ defmodule Adapter.Bots do
   end
 
   def where_messenger(id) do
-    q = from b in Bot, where: b.messenger_id == ^id
+    q = from b in Bot, where: b.messenger_id == ^id and b.state == ~s"up"
     Repo.all(q) |> Repo.preload(:messenger)
   end
 
@@ -67,5 +72,26 @@ defmodule Adapter.Bots do
 
   def get_by_bot(params) do
     Bot |> Repo.get_by(params)
+  end
+
+  def find_by_atts(%{} = attrs), do: Repo.get_by(Bot, attrs)
+
+  def set_down_bot(uid) do
+    case Adapter.Bots.get_by_with_messenger(uid: uid) do
+      %Adapter.Bots.Bot{} = bot -> Adapter.Bots.update_bot(bot, %{state: "down"})
+      nil -> nil
+    end
+  end
+
+  def set_up_bot(uid) do
+    case Adapter.Bots.get_by_with_messenger(uid: uid) do
+      %Adapter.Bots.Bot{} = bot -> Adapter.Bots.update_bot(bot, %{state: "up"})
+      nil -> nil
+    end
+  end
+
+  def update_messenger_bots(messenger, attr) do
+    Adapter.Bots.where_messenger(messenger.id)
+    |> Adapter.Bots.update_all(attr)
   end
 end

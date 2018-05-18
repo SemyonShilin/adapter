@@ -14,6 +14,11 @@ defmodule Adapter.Messengers do
     Repo.all(Messenger)
   end
 
+  def list_up_messengers do
+    q = from m in Messenger, where: m.state == ~s"up"
+    Repo.all(q)
+  end
+
   def list_messengers_with_bots do
     Repo.all(Messenger) |> Repo.preload(:bots)
   end
@@ -30,7 +35,7 @@ defmodule Adapter.Messengers do
 
   def create(name \\ nil) do
     %Messenger{}
-    |> Messenger.changeset(%{name: name})
+    |> Messenger.changeset(%{name: name, state: "up"})
     |> Repo.insert()
     |> case do
       {:ok, messenger} -> messenger
@@ -59,6 +64,8 @@ defmodule Adapter.Messengers do
 
   def find_by_name(name \\ nil), do: Repo.get_by(Messenger, name: name)
 
+  def find_by_atts(%{} = attrs), do: Repo.get_by(Messenger, attrs)
+
   def delete(name) do
     messenger = Repo.get_by(Messenger, name: name)
     Repo.delete(messenger)
@@ -68,5 +75,22 @@ defmodule Adapter.Messengers do
     find_by_name(messenger).id
     |> Bots.where_messenger()
     |> Enum.map(fn(bot) -> Map.get(bot, :uid) end)
+  end
+
+  def set_down_messenger_tree(name) do
+    case Adapter.Messengers.get_by_messenger(name) do
+      %Adapter.Messengers.Messenger{} = messenger ->
+        Adapter.Messengers.update_messenger(messenger, %{state: "down"})
+        Adapter.Bots.update_messenger_bots(messenger, [state: "down"])
+      nil -> nil
+    end
+  end
+
+  def set_up_messenger(name) do
+    case Adapter.Messengers.get_by_messenger(name) do
+      %Adapter.Messengers.Messenger{} = mssg ->
+        Adapter.Messengers.update_messenger(mssg, %{state: "up"})
+      nil -> nil
+    end
   end
 end

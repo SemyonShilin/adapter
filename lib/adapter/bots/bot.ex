@@ -5,6 +5,7 @@ defmodule Adapter.Bots.Bot do
   schema "bots" do
     field :uid, :string
     field :token, :string
+    field :state, :string
 
     belongs_to :messenger, Adapter.Messengers.Messenger
 
@@ -14,7 +15,7 @@ defmodule Adapter.Bots.Bot do
   @doc false
   def changeset(bot, attrs) do
     bot
-    |> cast(attrs, [:uid, :token])
+    |> cast(attrs, [:uid, :token, :state])
     |> validate_required([:uid, :token])
   end
 end

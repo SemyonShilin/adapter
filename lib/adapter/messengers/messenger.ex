@@ -4,6 +4,7 @@ defmodule Adapter.Messengers.Messenger do
 
   schema "messengers" do
     field :name, :string
+    field :state, :string
 
     has_many :bots, Adapter.Bots.Bot,
              foreign_key: :messenger_id,
@@ -15,7 +16,7 @@ defmodule Adapter.Messengers.Messenger do
   @doc false
   def changeset(messenger, params \\ %{}) do
     messenger
-    |> cast(params, [:name])
+    |> cast(params, [:name, :state])
     |> validate_required([:name])
     |> unique_constraint(:name)
   end

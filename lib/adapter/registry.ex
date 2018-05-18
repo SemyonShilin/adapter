@@ -306,7 +306,6 @@ defmodule Adapter.Registry do
     {:noreply, state}
   end
 
-
   def terminate(_msg, state) do
     IO.inspect "terminate222222"
     IO.inspect state
@@ -403,7 +402,7 @@ defmodule Adapter.Registry do
     Process.demonitor(ref)
     {name, refs} = Map.pop(refs, ref)
     pid = Map.get(names, name)
-    names= Map.delete(names, name)
+    names = Map.delete(names, name)
 
     {pid, {names, refs}}
   end

@@ -1,4 +1,6 @@
 defmodule Adapter.InstanceGenServer do
+  @moduledoc false
+
   use Export.Ruby
   use GenServer
 

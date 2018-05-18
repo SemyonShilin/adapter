@@ -1,4 +1,6 @@
 defmodule Adapter.InstanceGenServer do
+  @moduledoc false
+
   use Export.Ruby
   use GenServer
 
@@ -41,30 +43,48 @@ defmodule Adapter.InstanceGenServer do
     {:noreply, state}
   end
 
+  def handle_cast({:message, message}, state) do
+    IO.inspect "++++++++++++++++++++++++++++++++++"
+    IO.inspect message
+    IO.inspect state
+    :ruby.cast(state, message) |> IO.inspect
+    IO.inspect "++++++++++++++++++++++++++++++++++"
+    {:noreply, state}
+  end
+
   def handle_info({:receive_message, msg}, state) do
     IO.inspect "=================================="
     IO.inspect msg
     IO.inspect state
-    call_dch(msg) |> IO.inspect
+    body = call_hub(msg)
+    body |> find_current_listener_pid(state) |> :ruby.cast(body)
     IO.inspect "=================================="
     {:noreply, state}
   end
 
   def terminate(_msg, state) do
-    IO.inspect "terminate11111111"
-    IO.inspect state
-    IO.inspect  _msg
     {:noreply, state}
   end
 
-  def nearest_parent_for(pid) do
+  defp nearest_parent_for(pid, index \\ 0) do
     {:ok, dictionary} = Keyword.fetch(Process.info(pid), :dictionary)
     {:ok, ancestors} = Keyword.fetch(dictionary, :"$ancestors")
-    List.first(ancestors) |> Process.whereis()
+    case index do
+      0 -> List.first(ancestors) |> Process.whereis()
+      _ -> Enum.at(ancestors, index)
+    end
   end
 
-  def call_dch(message) do
+  defp call_hub(message) do
     HTTPoison.start
-    HTTPoison.post System.get_env("DCH_POST"), message, [{"Content-Type", "application/json"}]
+    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.post System.get_env("DCH_POST"), message, [{"Content-Type", "application/json"}] |> IO.inspect
+    body
+  end
+
+  defp find_current_listener_pid(body, state) do
+    find_pid = &(if String.starts_with?("#{elem(&1, 0)}", "listener"), do: elem(&1, 0))
+    nearest_parent_for(state, 1)
+    |> Supervisor.which_children()
+    |> Enum.find_value(find_pid)
   end
 end

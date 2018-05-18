@@ -1,4 +1,6 @@
 defmodule Adapter.MessengerSupervisor do
+  @moduledoc false
+
   use DynamicSupervisor, restart: :temporary
 
   @name Adapter.MessengerSupervisor
@@ -8,7 +10,7 @@ defmodule Adapter.MessengerSupervisor do
   end
 
   def start_new_bot(pid, token) do
-    spec = { Adapter.BotSupervisor, token }
+    spec = {Adapter.BotSupervisor, token}
     DynamicSupervisor.start_child(pid, spec)
   end
 

@@ -1,4 +1,6 @@
 defmodule Adapter.Instance do
+  @moduledoc false
+
   use Export.Ruby
 
   def new do

@@ -1,4 +1,6 @@
 defmodule Adapter.MessengersSupervisor do
+  @moduledoc false
+
   use DynamicSupervisor, restart: :temporary
 
   def start_link do
@@ -6,7 +8,7 @@ defmodule Adapter.MessengersSupervisor do
   end
 
   def start_new_messenger() do
-    spec = { Adapter.MessengerSupervisor, [] }
+    spec = {Adapter.MessengerSupervisor, []}
     DynamicSupervisor.start_child(__MODULE__, spec)
   end
 

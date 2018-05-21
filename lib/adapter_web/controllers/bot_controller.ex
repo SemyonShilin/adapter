@@ -51,5 +51,6 @@ defmodule AdapterWeb.BotController do
 
   def send(conn, %{"bot" => bot_params}) do
     Registry.post_message(bot_params["uid"], bot_params)
+    render(conn, "send.json", [])
   end
 end

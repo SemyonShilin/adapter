@@ -38,7 +38,8 @@ defmodule Adapter.InstanceGenServer do
     IO.inspect "++++++++++++++++++++++++++++++++++"
     IO.inspect message
     IO.inspect state
-    :ruby.cast(state, message) |> IO.inspect
+
+    :ruby.cast(state, Poison.encode!(message)) |> IO.inspect
     IO.inspect "++++++++++++++++++++++++++++++++++"
     {:noreply, state}
   end
@@ -57,7 +58,7 @@ defmodule Adapter.InstanceGenServer do
     IO.inspect msg
     IO.inspect state
     body = call_hub(msg)
-    body |> find_current_listener_pid(state) |> :ruby.cast(body)
+    find_current_listener_pid(state) |> :ruby.cast(body)
     IO.inspect "=================================="
     {:noreply, state}
   end
@@ -81,7 +82,7 @@ defmodule Adapter.InstanceGenServer do
     body
   end
 
-  defp find_current_listener_pid(body, state) do
+  defp find_current_listener_pid(state) do
     find_pid = &(if String.starts_with?("#{elem(&1, 0)}", "listener"), do: elem(&1, 0))
     nearest_parent_for(state, 1)
     |> Supervisor.which_children()

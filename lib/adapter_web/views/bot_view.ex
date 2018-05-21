@@ -18,6 +18,10 @@ defmodule AdapterWeb.BotView do
     render_one(bot, BotView, "bot.json")
   end
 
+  def render("send.json", _args) do
+    %{success: true}
+  end
+
   def render("bot.json", %{bot: bot}) do
     %{id: bot.id,
       uid: bot.uid,

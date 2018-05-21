@@ -13,10 +13,9 @@ defmodule AdapterWeb.BotController do
   end
 
   def create(conn, %{"bot" => bot_params}) do
-    bot_params["platform"]
-    |> Registry.create({bot_params["uid"], bot_params["creds"]["token"]})
-
-    with bot <- Bots.get_by_bot(uid: bot_params["uid"]) do
+    with {bot_name, _} <- bot_params["platform"]
+                     |> Registry.create({bot_params["uid"], bot_params["creds"]["token"]}),
+         bot <- Bots.get_by_bot(uid: bot_name) do
       conn
       |> put_status(:created)
       |> render("show.json", bot: bot)
@@ -48,5 +47,9 @@ defmodule AdapterWeb.BotController do
     Registry.down({:bot, uid})
     bot = Bots.get_by_bot(uid: uid)
     render(conn, "down.json", bot: bot)
+  end
+
+  def send(conn, %{"bot" => bot_params}) do
+    Registry.post_message(bot_params["uid"], bot_params)
   end
 end

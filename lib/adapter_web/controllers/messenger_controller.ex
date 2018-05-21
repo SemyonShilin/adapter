@@ -13,8 +13,8 @@ defmodule AdapterWeb.MessengerController do
   end
 
   def create(conn, %{"messenger" => messenger_params}) do
-    Registry.create(Map.get(messenger_params, "name"))
-    with messenger <- Messengers.find_by_name(Map.get(messenger_params, "name"))
+    with {mssg_name, _} <- Registry.create(Map.get(messenger_params, "name")),
+         messenger <- Messengers.find_by_name(mssg_name)
       do
       conn
       |> put_status(:created)

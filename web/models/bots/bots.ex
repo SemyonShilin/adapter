@@ -19,13 +19,13 @@ defmodule Adapter.Bots do
     |> Repo.insert()
   end
 
-  def create(bot) do
-    new_messenger = Repo.insert(bot)
-    case new_messenger do
-      {:ok, messenger} -> messenger
-      {:error, errors} -> errors.errors
-    end
-  end
+#  def create(bot) do
+#    new_messenger = Repo.insert(bot)
+#    case new_messenger do
+#      {:ok, messenger} -> messenger
+#      {:error, errors} -> errors.errors
+#    end
+#  end
 
   def update_bot(%Bot{} = bot, attrs) do
     bot

@@ -21,7 +21,9 @@
 // import socket from "./socket"
 import "phoenix_html";
 import { Socket } from "./socket";
-
-console.log(22222);
-
 import filePicker from './components/filePicker'
+import css from '../css/app.scss';
+console.log(css)
+console.log('test webpack and react');
+console.log("hello, world12");
+

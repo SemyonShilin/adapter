@@ -30,3 +30,4 @@ npm-debug.log
 Mnesia.nonode@nohost
 priv/db
 tbot.log
+assets/yarn-error.log

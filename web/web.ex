@@ -5,8 +5,8 @@ defmodule Adapter.Web do
 
   This can be used in your application as:
 
-      use AdapterWeb, :controller
-      use AdapterWeb, :view
+      use Adapter.Web, :controller
+      use Adapter.Web, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -30,7 +30,7 @@ defmodule Adapter.Web do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: AdapterWeb
+      use Phoenix.Controller, namespace: Adapter
       import Plug.Conn
       import Adapter.Router.Helpers
       import Adapter.Gettext

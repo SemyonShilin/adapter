@@ -1,3 +1,3 @@
-defmodule AdapterWeb.LayoutViewTest do
-  use AdapterWeb.ConnCase, async: true
+defmodule Adapter.LayoutViewTest do
+  use Adapter.ConnCase, async: true
 end

@@ -1,5 +1,5 @@
-defmodule AdapterWeb.PageControllerTest do
-  use AdapterWeb.ConnCase
+defmodule Adapter.PageControllerTest do
+  use Adapter.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"

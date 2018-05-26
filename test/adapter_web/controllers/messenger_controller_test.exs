@@ -1,5 +1,5 @@
-defmodule AdapterWeb.MessengerControllerTest do
-  use AdapterWeb.ConnCase
+defmodule Adapter.MessengerControllerTest do
+  use Adapter.ConnCase
 
   alias Adapter.Messengers
   alias Adapter.Messengers.Messenger

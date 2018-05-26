@@ -45,7 +45,7 @@ defmodule Adapter.Mixfile do
       {:secure_random, "~> 0.5"},
       {:envy, "~> 1.1.1"},
       {:ecto_mnesia, "~> 0.9.0"},
-      {:ecto, "~> 2.1"},
+#      {:ecto, "~> 2.1"},
       {:httpoison, "~> 1.0"},
       {:credo, "~> 0.3", only: [:dev, :test]}
     ]

@@ -9,46 +9,51 @@ html lang="en"
     title Hello Adapter!
     link rel="stylesheet" href=static_path(@conn, "/css/app.css")
     /link[href=static_path(@conn, "/css/app.css") type="t/ext/css" rel="stylesheet"]
-  body
-    = render_shared "sidebar.html", assigns
-    .right_col role="main"
-      div
-        .page-title
-          .title_left
-            h3
-              | Plain Page
-              small Page subtile
-          .title_right
-            .col-md-5.col-sm-5.col-xs-12.form-group.pull-right.top_search
-              .input-group
-                input.form-control placeholder=("Search for...") type="text" /
-                span.input-group-btn
-                  button.btn.btn-default type="button"  Go!
-        .clearfix
-        .row
-          .col-md-12
-            .x_panel
-              .x_title
-                h2
-                  | Page title
+  body.nav-md
+    .container.body
+      .main_container
+        = render_shared "_sidebar.html", assigns
+        = render_shared "_navbar.html", assigns
+        .right_col role="main"
+          div
+            .page-title
+              .title_left
+                h3
+                  | Plain Page
                   small Page subtile
-                ul.nav.navbar-right.panel_toolbox
-                  li
-                    a.collapse-link
-                      i.fa.fa-chevron-up
-                  li.dropdown
-                    a.dropdown-toggle aria-expanded="false" data-toggle="dropdown" href="#" role="button"
-                      i.fa.fa-wrench
-                    ul.dropdown-menu role="menu"
+              .title_right
+                .col-md-5.col-sm-5.col-xs-12.form-group.pull-right.top_search
+                  .input-group
+                    input.form-control placeholder=("Search for...") type="text" /
+                    span.input-group-btn
+                      button.btn.btn-default type="button"  Go!
+            .clearfix
+            .row
+              .col-md-12.col-sm-12.col-xs-12
+                .x_panel
+                  .x_title
+                    h2
+                      | Page title
+                      small Page subtile
+                    ul.nav.navbar-right.panel_toolbox
                       li
-                        a href="#"  Settings 1
+                        a.collapse-link
+                          i.fa.fa-chevron-up
+                      li.dropdown
+                        a.dropdown-toggle aria-expanded="false" data-toggle="dropdown" href="#" role="button"
+                          i.fa.fa-wrench
+                        ul.dropdown-menu role="menu"
+                          li
+                            a href="#"  Settings 1
+                          li
+                            a href="#"  Settings 2
                       li
-                        a href="#"  Settings 2
-                  li
-                    a.close-link
-                      i.fa.fa-close
-                .clearfix
-              .x_content
+                        a.close-link
+                          i.fa.fa-close
+                    .clearfix
+                  .x_content
+                    | Add content to the page ...
+        = render_shared "_footer.html", assigns
     /.container
       /main role="main"
       /  = render @view_module, @view_template, assigns

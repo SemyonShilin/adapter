@@ -19,6 +19,7 @@
     "clean-css-brunch": "2.10.0",
     "copycat": "^0.0.0",
     "copycat-brunch": "^1.1.0",
+    "fastclick": "^1.0.6",
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "nprogress": "^0.2.0",

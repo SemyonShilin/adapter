@@ -47,7 +47,9 @@ defmodule Adapter.Mixfile do
       {:ecto_mnesia, "~> 0.9.0"},
 #      {:ecto, "~> 2.1"},
       {:httpoison, "~> 1.0"},
-      {:credo, "~> 0.3", only: [:dev, :test]}
+      {:credo, "~> 0.3", only: [:dev, :test]},
+      {:slime, "~> 1.0.0"},
+      {:phoenix_slime, "~> 0.10.0", override: true}
     ]
   end
 

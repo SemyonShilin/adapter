@@ -17,5 +17,36 @@ import "phoenix_html"
 //
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
+import $ from "jquery"
+import socket from "./socket"
+import 'gentelella/src/js/custom.js'
+import 'gentelella/src/js/helpers/smartresize'
 
-// import socket from "./socket"
+socket.connect()
+let channel = socket.channel("messengers:lobby", {})
+let list    = $('#message-list');
+let message = $('#message');
+let name    = $('#name');
+
+console.log(channel)
+
+message.on('keypress', event => {
+  if (event.keyCode == 13) {
+    channel.push('shout', {name: name.val(), message: message.val()})
+    message.val('')
+  }
+});
+
+channel.on('shout', payload => {
+  let mssgrs = '';
+  payload.messengers.forEach(messenger => {
+    mssgrs += `${messenger.name} (${messenger.state}) <br>`
+  });
+
+  list.append(`<b>${payload.payload.name || 'Anonymous'}:</b> <div>${mssgrs}</div>`);
+  list.prop({scrollTop: list.prop("scrollHeight")});
+});
+
+channel.join()
+  .receive("ok", resp => { console.log("Joined successfully", resp) })
+  .receive("error", resp => { console.log("Unable to join", resp) });

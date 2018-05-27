@@ -1,5 +1,6 @@
 defmodule Adapter.MessengersChannel do
   use Adapter.Web, :channel
+  alias Adapter.Messengers
 
   def join("messengers:lobby", payload, socket) do
     if authorized?(payload) do
@@ -18,7 +19,12 @@ defmodule Adapter.MessengersChannel do
   # It is also common to receive messages from the client and
   # broadcast to everyone in the current topic (messengers:lobby).
   def handle_in("shout", payload, socket) do
-    broadcast socket, "shout", payload
+    IO.inspect payload
+
+    messengers_list = Adapter.Api.V0.MessengerView.render("index.json",
+      %{messengers: Messengers.list_messengers()})
+    IO.inspect messengers_list
+    broadcast socket, "shout", %{payload: payload, messengers: messengers_list}
     {:noreply, socket}
   end
 

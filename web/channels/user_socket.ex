@@ -3,6 +3,7 @@ defmodule Adapter.UserSocket do
 
   ## Channels
   # channel "room:*", Web.RoomChannel
+  channel "messengers:lobby", Adapter.MessengersChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

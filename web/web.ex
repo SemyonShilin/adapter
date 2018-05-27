@@ -48,6 +48,10 @@ defmodule Adapter.Web do
       import Adapter.Router.Helpers
       import Adapter.ErrorHelpers
       import Adapter.Gettext
+
+      def render_shared(template, assigns \\ []) do
+        render(Adapter.SharedView, template, assigns)
+      end
     end
   end
 

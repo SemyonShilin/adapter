@@ -25,6 +25,13 @@ config :adapter, Adapter.Endpoint,
   pubsub: [name: Adapter.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
+config :phoenix, :template_engines,
+       slim: PhoenixSlime.Engine,
+       slime: PhoenixSlime.Engine
+
+config :phoenix_slime, :use_slim_extension, true
+
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

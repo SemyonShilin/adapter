@@ -39,11 +39,12 @@ exports.config = {
     sass: {
       mode: 'native',
       options: {
-        includePaths: ["node_modules/gentelella/documentation/css", "node_modules/gentelella/src/scss", "node_modules/bootstrap-sass/assets/stylesheets", "node_modules/font-awesome/scss"], // Tell sass-brunch where to look for files to @import
+        includePaths: ["node_modules/adminator/src/assets/styles", "node_modules/bootstrap-sass/assets/stylesheets", "node_modules/font-awesome/scss"], // Tell sass-brunch where to look for files to @import
         precision: 8 // Minimum precision required by bootstrap-sass
       }
     },
     copycat: {
+      "static": ["node_modules/adminator/src/assets/static"],
       "fonts/bootstrap": ["node_modules/bootstrap-sass/assets/fonts/bootstrap"],
       "fonts" : ["web/static/fonts", "node_modules/font-awesome/fonts"],
       verbose : false, //shows each file that is copied to the destination directory
@@ -65,3 +66,4 @@ exports.config = {
     }
   }
 };
+// "node_modules/gentelella/documentation/css", "node_modules/gentelella/src/scss",

@@ -12,6 +12,7 @@
     "sass-brunch": "^2.10.4"
   },
   "devDependencies": {
+    "adminator": "https://github.com/puikinsh/Adminator-admin-dashboard.git",
     "babel-brunch": "6.1.1",
     "bootstrap": "^4.1.1",
     "bootstrap-sass": "^3.3.7",

@@ -3,10 +3,11 @@ import socket from "./socket"
 import $ from "jquery"
 // import 'bootstrap/js/src/index'
 import 'bootstrap-sass/assets/javascripts/bootstrap'
-import 'fastclick/lib/fastclick'
-import 'nprogress/nprogress'
-import 'gentelella/src/js/custom.js'
-import 'gentelella/src/js/helpers/smartresize'
+// import 'adminator/src/assets/scripts/index'
+// import 'fastclick/lib/fastclick'
+// import 'nprogress/nprogress'
+// import 'gentelella/src/js/custom.js'
+// import 'gentelella/src/js/helpers/smartresize'
 
 socket.connect()
 let channel = socket.channel("messengers:lobby", {})

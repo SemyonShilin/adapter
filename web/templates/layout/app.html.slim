@@ -1,0 +1,45 @@
+doctype html
+html lang="en"
+  head
+    meta charset="utf-8"
+    meta content="IE=edge" http-equiv="X-UA-Compatible"
+    meta content="width=device-width, initial-scale=1" name="viewport"
+    meta content="" name="description"
+    meta content="" name="author"
+    title Hello Adapter!
+    link rel="stylesheet" href=static_path(@conn, "/css/app.css")
+  body.app
+    #loader
+      .spinner
+    javascript:
+      window.addEventListener('load', () => {
+        const loader = document.getElementById('loader');
+        setTimeout(() => {
+          loader.classList.add('fadeOut');
+        }, 300);
+      });
+    div
+      = render_shared "_sidebar.html", assigns
+
+      .page-container
+        = render_shared "_navbar.html", assigns
+        /! ### $App Screen Content ###
+        main.main-content.bgc-grey-100
+          #mainContent
+            .row.gap-20.masonry.pos-r
+              .masonry-sizer.col-md-6
+              .masonry-item.w-100
+                .row.gap-20
+                  /! #Toatl Visits ====================
+                  .col-md-3
+                    .layers.bd.bgc-white.p-20
+                      .layer.w-100.mB-10
+                        h6.lh-1 Total Visits
+                      .layer.w-100
+                        .peers.ai-sb.fxw-nw
+                          .peer.peer-greed
+                            span#sparklinedash
+                          .peer
+                            span.d-ib.lh-0.va-m.fw-600.bdrs-10em.pX-15.pY-15.bgc-green-50.c-green-500 +10%
+        = render_shared "_footer.html", assigns
+    script src="#{static_path(@conn, "/js/app.js")}"

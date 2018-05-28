@@ -1,3 +1,3 @@
-defmodule AdapterWeb.PageViewTest do
-  use AdapterWeb.ConnCase, async: true
+defmodule Adapter.PageViewTest do
+  use Adapter.ConnCase, async: true
 end

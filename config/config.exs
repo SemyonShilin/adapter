@@ -18,12 +18,19 @@ config :mnesia,
        dir: 'priv/db/mnesia'
 
 # Configures the endpoint
-config :adapter, AdapterWeb.Endpoint,
+config :adapter, Adapter.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "K/vNxoiNreQwwGeV5mgHmr3JQtWlkuYkWG8+S7Osgv2kBQPbdk8x8kFQY9mPvpyT",
-  render_errors: [view: AdapterWeb.ErrorView, accepts: ~w(html json)],
+  render_errors: [view: Adapter.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Adapter.PubSub,
            adapter: Phoenix.PubSub.PG2]
+
+config :phoenix, :template_engines,
+       slim: PhoenixSlime.Engine,
+       slime: PhoenixSlime.Engine
+
+config :phoenix_slime, :use_slim_extension, true
+
 
 # Configures Elixir's Logger
 config :logger, :console,

@@ -1,5 +1,5 @@
-defmodule AdapterWeb.BotControllerTest do
-  use AdapterWeb.ConnCase
+defmodule Adapter.BotControllerTest do
+  use Adapter.ConnCase
 
   alias Adapter.Bots
   alias Adapter.Bots.Bot

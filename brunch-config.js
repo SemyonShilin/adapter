@@ -44,7 +44,8 @@ exports.config = {
       }
     },
     copycat: {
-      "fonts" : ["web/static/fonts", "node_modules/bootstrap-sass/assets/fonts/bootstrap", "node_modules/font-awesome/fonts"],
+      "fonts/bootstrap": ["node_modules/bootstrap-sass/assets/fonts/bootstrap"],
+      "fonts" : ["web/static/fonts", "node_modules/font-awesome/fonts"],
       verbose : false, //shows each file that is copied to the destination directory
       onlyChanged: true //only copy a file if it's modified time has changed (only effective when using brunch watch)
     }

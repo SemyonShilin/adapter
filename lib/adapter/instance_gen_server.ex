@@ -11,15 +11,18 @@ defmodule Adapter.InstanceGenServer do
   def init(args) do
     [instance_name, token] = args
     instance = Adapter.Instance.new(instance_name)
-    instance_name |> run([instance, token])
-    {:ok, instance}
+    state = instance_name |> run([instance, token])
+    {:ok, %{instance => state}}
   end
 
   def run(instance_name, args) do
-    case instance_name do
-      :adapter   -> spawn_link Adapter.InstanceGenServer, :adapter, [args]
-      :listening -> spawn_link Adapter.InstanceGenServer, :listening, [args]
-    end
+    pid = spawn_link Adapter.InstanceGenServer, instance_name, [args]
+    refs = Process.monitor(pid)
+#    case instance_name do
+#      :adapter   -> spawn_link Adapter.InstanceGenServer, :adapter, [args]
+#      :listening -> spawn_link Adapter.InstanceGenServer, :listening, [args]
+#    end
+    {refs, pid}
   end
 
   def adapter([pid, token]) do
@@ -33,6 +36,12 @@ defmodule Adapter.InstanceGenServer do
 
     {:ok, pid}
   end
+
+#  def stop_bot([pid, token]) do
+#    pid |> Ruby.call("main.rb", "stop_bot", [pid, token, nearest_parent_for(pid)])
+#
+#    {:ok, pid}
+#  end
 
   def handle_cast({:post_message, message}, state) do
     IO.inspect "++++++++++++++++++++++++++++++++++"
@@ -63,7 +72,19 @@ defmodule Adapter.InstanceGenServer do
     {:noreply, state}
   end
 
+  def handle_info({t, ref, :process, _pid, reason}, state) do
+    IO.inspect "FUCK ALL!!!"
+    IO.inspect ref
+    IO.inspect _pid
+    IO.inspect reason
+    IO.inspect state
+    IO.inspect Process.exit(_pid, :kill)
+    {:noreply, state}
+  end
+
   def terminate(_msg, state) do
+    IO.inspect "FUCK!!!!!"
+    IO.inspect state
     {:noreply, state}
   end
 

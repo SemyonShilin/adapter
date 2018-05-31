@@ -107,9 +107,15 @@ defmodule Adapter.Registry.Helpers do
         {pid, {names, refs}}
       end
 
-      def stop_process(:bot, pid), do: Adapter.MessengerSupervisor.stop(pid)
+      def stop_process(:bot, pid) do
+        Adapter.MessengerSupervisor.stop(pid)
+        Process.exit(pid, :kill)
+      end
 
-      def stop_process(:messenger, pid), do: Adapter.MessengersSupervisor.stop(pid)
+      def stop_process(:messenger, pid) do
+        Adapter.MessengersSupervisor.stop(pid)
+        Process.exit(pid, :kill)
+      end
     end
   end
 end

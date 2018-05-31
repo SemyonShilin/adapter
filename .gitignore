@@ -29,4 +29,5 @@ npm-debug.log
 .idea
 Mnesia.nonode@nohost
 priv/db
+priv/bots
 tbot.log

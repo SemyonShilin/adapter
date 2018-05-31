@@ -17,12 +17,12 @@ defmodule Adapter.Instance do
   end
 
   def ruby_adapt do
-    {:ok, pid} = Ruby.start(ruby_lib: Path.expand("lib/tbot/bin"))
+    {:ok, pid} = Ruby.start(ruby_lib: Path.expand("priv/bots/telegram_bot_template/lib"))
     pid
   end
 
   def ruby_listening do
-    {:ok, pid} = Ruby.start(ruby_lib: Path.expand("lib/tbot/bin"))
+    {:ok, pid} = Ruby.start(ruby_lib: Path.expand("priv/bots/telegram_bot_template/lib"))
     pid
   end
 end

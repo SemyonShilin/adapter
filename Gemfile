@@ -25,7 +25,7 @@ end
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'telegram-bot-ruby', git: 'git@github.com:Scumfunk/telegram-bot-ruby.git', branch: 'socks5'
+  gem 'telegram-bot-ruby', git: 'git@github.com:Scumfunk/telegram-bot-ruby.git'
   gem 'net-http-persistent'
   gem 'activesupport'
 end
@@ -49,5 +49,5 @@ end
 # gem 'telegram-bot', path: '../../../../../telegram-bot'
 gem 'debbie', '~> 2.0.0'
 
-gem 'rubocop', require: false
+# gem 'rubocop', require: false
 gem 'dotenv-rails', '~> 2.2'

@@ -1,7 +1,6 @@
 GIT
   remote: git@github.com:Scumfunk/telegram-bot-ruby.git
-  revision: 2fed4fd576f7fb9c5f76867e5eb122e8ff5e75b9
-  branch: socks5
+  revision: e60b2d51ce7435a4361d759c4c08853fa7ccea4b
   specs:
     telegram-bot-ruby (0.8.6.2)
       faraday

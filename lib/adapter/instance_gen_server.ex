@@ -44,7 +44,7 @@ defmodule Adapter.InstanceGenServer do
 
   def handle_call(token, _from, state) do
     state |> Ruby.call("main.rb", "stop_bot", [state, token, state])
-    :ruby.stop(state)
+#    :ruby.stop(state)
     {:reply, :ok, state}
   end
 

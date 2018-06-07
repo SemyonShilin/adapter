@@ -28,8 +28,8 @@ defmodule Adapter.Instance do
 
   defp lib do
     case Mix.env do
-      :dev  -> "priv/bots/telegram_bot/bin"
-      :prod -> "priv/bots/telegram_bot_template/lib"
+      :dev  -> "../../telegram_bot_template/bin"
+      :prod -> "priv/bots/telegram/telegram_bot_template/bin"
     end
   end
 end

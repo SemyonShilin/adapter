@@ -99,7 +99,7 @@ defmodule Adapter.InstanceGenServer do
     end
   end
 
-  defp call_hub(message) do
+  def call_hub(message) do
     HTTPoison.start
     {:ok, %HTTPoison.Response{body: body}} = HTTPoison.post System.get_env("DCH_POST"), message, [{"Content-Type", "application/json"}] |> IO.inspect
     body

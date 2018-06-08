@@ -18,12 +18,6 @@ defmodule Adapter.InstanceGenServer do
 
   def run(instance_name, args) do
     pid = spawn_link Adapter.InstanceGenServer, instance_name, [args]
-#    refs = Process.monitor(pid)
-#    case instance_name do
-#      :adapter   -> spawn_link Adapter.InstanceGenServer, :adapter, [args]
-#      :listening -> Adapter.InstanceGenServer.listening(args)
-#    end
-#    {refs, pid}
   end
 
   def adapter([pid, token]) do

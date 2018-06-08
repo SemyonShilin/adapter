@@ -5,9 +5,17 @@ defmodule Adapter.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/webhooks" do
+    pipe_through :api
+
+    #receive webhook
+    post "/:platform/:uid", Adapter.WebhookController, :receive
+  end
+
   # Other scopes may use custom stacks.
    scope "/api/v0", Adapter.Api.V0 do
      pipe_through :api
+
      # messengers routes
      scope "/messengers" do
        get "/", MessengerController, :index

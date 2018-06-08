@@ -204,7 +204,7 @@ defmodule Adapter.Registry.Server do
         if Map.has_key?(names, bot) do
           find_pid = &(if String.starts_with?("#{elem(&1, 0)}", "listener"), do: elem(&1, 0))
           bot = Adapter.Bots.get_by_bot(uid: bot)
-          tuple = if Systep.get_env("BOT_ENV") == "development", do: {:post_message, message}, else: {:post_message_forward, bot.token, message}
+          tuple = if System.get_env("BOT_ENV") == "development", do: {:post_message, message}, else: {:post_message_forward, bot.token, message}
 
           Map.get(names, bot)
           |> Supervisor.which_children()

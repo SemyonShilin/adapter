@@ -103,7 +103,7 @@ defmodule Adapter.InstanceGenServer do
     HTTPoison.start
     message = if System.get_env("BOT_ENV") == "development", do: message, else: Poison.encode!(message)
 
-    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.post System.get_env("DCH_POST"), message, [{"Content-Type", "application/json"}] |> IO.inspect
+    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.post System.get_env("DCH_POST"), message, [{"Content-Type", "application/json"}]
     body
   end
 

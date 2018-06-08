@@ -9,7 +9,7 @@ defmodule Adapter.WebhookController do
   def receive(conn, params) do
     bot = Bots.get_by_bot(uid: params["uid"]) || Bots.get_by_bot(token: params["uid"])
     if bot do
-      body = call_hub(params)
+      body = call_hub(params) |> IO.inspect
       Adapter.Registry.post_message(bot.uid, body)
       conn |> put_status(200) |> send_resp(200, "")
     else
@@ -19,7 +19,7 @@ defmodule Adapter.WebhookController do
 
   defp call_hub(message) do
     HTTPoison.start
-    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.post System.get_env("DCH_POST"), Poison.encode!(message), [{"Content-Type", "application/json"}] |> IO.inspect
+    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.post System.get_env("DCH_POST"), Poison.encode!(message), [{"Content-Type", "application/json"}]
     body
   end
 end

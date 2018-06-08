@@ -101,6 +101,8 @@ defmodule Adapter.InstanceGenServer do
 
   def call_hub(message) do
     HTTPoison.start
+    message = if Systep.get_env("BOT_ENV") == "development", do: message, else: Poison.encode!(message)
+
     {:ok, %HTTPoison.Response{body: body}} = HTTPoison.post System.get_env("DCH_POST"), message, [{"Content-Type", "application/json"}] |> IO.inspect
     body
   end

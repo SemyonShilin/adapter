@@ -32,3 +32,5 @@ Mnesia.nonode@nohost
 priv/db
 priv/bots
 development.telegram.log
+production.telegram.log
+tbot.log

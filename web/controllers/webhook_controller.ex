@@ -9,7 +9,7 @@ defmodule Adapter.WebhookController do
   def receive(conn, params) do
     bot = Bots.get_by_bot(uid: params["uid"]) || Bots.get_by_bot(token: params["uid"])
     if bot do
-      body = call_hub(params) |> IO.inspect
+      body = call_hub(%{"data" => params["message"], "platform" => params["platform"], "uid" => params["uid"] }) |> IO.inspect
       Adapter.Registry.post_message(bot.uid, body)
       conn |> put_status(200) |> send_resp(200, "")
     else

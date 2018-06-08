@@ -9,6 +9,8 @@ defmodule Adapter.WebhookController do
   def receive(conn, params) do
     bot = Bots.get_by_bot(uid: params["uid"]) || Bots.get_by_bot(token: params["uid"])
     if bot do
+      body = Adapter.InstanceGenServer.call_hub(params)
+      Adapter.Registry.post_message(bot.uid, body)
       conn |> put_status(200) |> send_resp(200, "")
     else
       conn |> put_status(404) |> send_resp(404, "")

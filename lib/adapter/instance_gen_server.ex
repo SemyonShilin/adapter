@@ -36,6 +36,10 @@ defmodule Adapter.InstanceGenServer do
     GenServer.call(pid, token)
   end
 
+  def forward(pid, message) do
+    GenServer.cast(pid, {:post_message_forward, message})
+  end
+
   def handle_call(token, _from, state) do
     state |> Ruby.call("main.rb", "stop_bot", [state, token, state])
 #    :ruby.stop(state)
@@ -49,6 +53,16 @@ defmodule Adapter.InstanceGenServer do
 
     :ruby.cast(state, Poison.encode!(message)) |> IO.inspect
     IO.inspect "++++++++++++++++++++++++++++++++++"
+    {:noreply, state}
+  end
+
+  def handle_cast({:post_message_forward, token, message}, state) do
+    IO.inspect "11111111111111"
+    IO.inspect message
+    IO.inspect state
+    state |> Ruby.call("main.rb", "message", [state, token, Poison.encode!(message), state])  |> IO.inspect
+#    :ruby.cast(state, Poison.encode!(message)) |> IO.inspect
+    IO.inspect "11111111111111"
     {:noreply, state}
   end
 

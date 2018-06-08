@@ -209,7 +209,9 @@ defmodule Adapter.Registry.Server do
           Map.get(names, bot)
           |> Supervisor.which_children()
           |> Enum.find_value(find_pid)
+          |> IO.inspect
           |> GenServer.cast(tuple)
+          |> IO.inspect
           {:noreply, state}
         else
           {:noreply, state}

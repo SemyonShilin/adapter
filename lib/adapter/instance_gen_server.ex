@@ -60,7 +60,7 @@ defmodule Adapter.InstanceGenServer do
     IO.inspect "11111111111111"
     IO.inspect message
     IO.inspect state
-    state |> Ruby.call("main.rb", "message", [state, token, Poison.encode!(message), state])  |> IO.inspect
+    state |> Ruby.call("main.rb", "message", [state, token, message, state])  |> IO.inspect
 #    :ruby.cast(state, Poison.encode!(message)) |> IO.inspect
     IO.inspect "11111111111111"
     {:noreply, state}

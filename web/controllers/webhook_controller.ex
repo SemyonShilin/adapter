@@ -8,8 +8,11 @@ defmodule Adapter.WebhookController do
 
   def receive(conn, params) do
     bot = Bots.get_by_bot(uid: params["uid"]) || Bots.get_by_bot(token: params["uid"])
+    {uid, params} = Map.pop(params, "uid")
+    {platform, params} = Map.pop(params, "platform")
+
     if bot do
-      body = call_hub(%{"data" => params["message"] || params["callback_query"]["message"], "platform" => params["platform"], "uid" => params["uid"] })
+      body = call_hub(%{"data" => params, "platform" => platform, "uid" => uid })
       Adapter.Registry.post_message(bot.uid, body)
       conn |> put_status(200) |> send_resp(200, "")
     else

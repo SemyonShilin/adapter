@@ -19,7 +19,8 @@ defmodule Adapter.MessengersSupervisor do
     )
   end
 
-  def stop(pid) do
+  def stop(pid, name \\ nil) do
+    Adapter.MessengerSupervisor.stop(pid, name)
     Supervisor.stop(pid, :normal)
   end
 end

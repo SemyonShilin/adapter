@@ -3,6 +3,7 @@
 /db
 /deps
 /*.ez
+.bundle
 
 # Generated on crash by the VM
 erl_crash.dump
@@ -29,4 +30,7 @@ npm-debug.log
 .idea
 Mnesia.nonode@nohost
 priv/db
+priv/bots
+development.telegram.log
+production.telegram.log
 tbot.log

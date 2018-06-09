@@ -54,8 +54,8 @@ defmodule Adapter.Registry.Client do
       end
 
       def stop(server) do
-    GenServer.stop(server)
-  end
+        GenServer.stop(server)
+      end
     end
   end
 end

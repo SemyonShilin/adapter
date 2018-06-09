@@ -11,27 +11,39 @@ defmodule Adapter.InstanceGenServer do
   def init(args) do
     [instance_name, token] = args
     instance = Adapter.Instance.new(instance_name)
-    instance_name |> run([instance, token])
+    Process.link(instance)
+    state = instance_name |> run([instance, token])
     {:ok, instance}
   end
 
   def run(instance_name, args) do
-    case instance_name do
-      :adapter   -> spawn_link Adapter.InstanceGenServer, :adapter, [args]
-      :listening -> spawn_link Adapter.InstanceGenServer, :listening, [args]
-    end
+    pid = spawn_link Adapter.InstanceGenServer, instance_name, [args]
   end
 
   def adapter([pid, token]) do
     pid |> Ruby.call("main.rb", "run_bot", [pid, token, nearest_parent_for(pid)])
-
+    if Mix.env == :prod, do: :ruby.stop(pid)
     {:ok, pid}
   end
 
   def listening([pid, token]) do
     pid |> Ruby.call("main.rb", "register_handler", [pid, token, nearest_parent_for(pid)])
-
+    if Mix.env == :prod, do: :ruby.stop(pid)
     {:ok, pid}
+  end
+
+  def stop(pid, token) do
+    GenServer.call(pid, token)
+  end
+
+  def forward(pid, message) do
+    GenServer.cast(pid, {:post_message_forward, message})
+  end
+
+  def handle_call(token, _from, state) do
+    state |> Ruby.call("main.rb", "stop_bot", [state, token, state])
+#    :ruby.stop(state)
+    {:reply, :ok, state}
   end
 
   def handle_cast({:post_message, message}, state) do
@@ -41,6 +53,16 @@ defmodule Adapter.InstanceGenServer do
 
     :ruby.cast(state, Poison.encode!(message)) |> IO.inspect
     IO.inspect "++++++++++++++++++++++++++++++++++"
+    {:noreply, state}
+  end
+
+  def handle_cast({:post_message_forward, token, message}, state) do
+    IO.inspect "11111111111111"
+    IO.inspect message
+    IO.inspect state
+    state |> Ruby.call("main.rb", "message", [state, token, message, state])  |> IO.inspect
+#    :ruby.cast(state, Poison.encode!(message)) |> IO.inspect
+    IO.inspect "11111111111111"
     {:noreply, state}
   end
 
@@ -64,6 +86,7 @@ defmodule Adapter.InstanceGenServer do
   end
 
   def terminate(_msg, state) do
+    IO.inspect state
     {:noreply, state}
   end
 
@@ -76,9 +99,11 @@ defmodule Adapter.InstanceGenServer do
     end
   end
 
-  defp call_hub(message) do
+  def call_hub(message) do
     HTTPoison.start
-    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.post System.get_env("DCH_POST"), message, [{"Content-Type", "application/json"}] |> IO.inspect
+    message = if System.get_env("BOT_ENV") == "development", do: message, else: Poison.encode!(message)
+
+    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.post System.get_env("DCH_POST"), message, [{"Content-Type", "application/json"}]
     body
   end
 

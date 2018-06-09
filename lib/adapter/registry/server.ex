@@ -203,10 +203,13 @@ defmodule Adapter.Registry.Server do
       def handle_cast({:message, bot, message}, {names, _} = state) do
         if Map.has_key?(names, bot) do
           find_pid = &(if String.starts_with?("#{elem(&1, 0)}", "listener"), do: elem(&1, 0))
-          Map.get(names, bot)
+          bot = Adapter.Bots.get_by_bot(uid: bot)
+          tuple = if System.get_env("BOT_ENV") == "development", do: {:post_message, message}, else: {:post_message_forward, bot.token, message}
+
+          Map.get(names, bot.uid)
           |> Supervisor.which_children()
           |> Enum.find_value(find_pid)
-          |> GenServer.cast({:post_message, message})
+          |> GenServer.cast(tuple)
           {:noreply, state}
         else
           {:noreply, state}

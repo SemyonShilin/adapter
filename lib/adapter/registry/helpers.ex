@@ -80,13 +80,13 @@ defmodule Adapter.Registry.Helpers do
 
       def down_tree(name, kind, state) when is_bitstring(name) do
         {pid, new_state} = delete_from_state(name, state)
-        stop_process(kind, pid)
+        stop_process(kind, pid, name)
         new_state
       end
 
       def down_tree([name | tail] = names, kind, state) when is_list(names) do
         {pid, new_state} = delete_from_state(name, state)
-        stop_process(kind, pid)
+        stop_process(kind, pid, name)
         down_tree(tail, kind, new_state)
       end
 
@@ -103,13 +103,12 @@ defmodule Adapter.Registry.Helpers do
         Adapter.Messengers.set_down_messenger_tree(name)
         Adapter.Bots.set_down_bot(name)
 
-
         {pid, {names, refs}}
       end
 
-      def stop_process(:bot, pid), do: Adapter.MessengerSupervisor.stop(pid)
+      def stop_process(:bot, pid, name), do: Adapter.MessengerSupervisor.stop(pid, name)
 
-      def stop_process(:messenger, pid), do: Adapter.MessengersSupervisor.stop(pid)
+      def stop_process(:messenger, pid, _name), do: Adapter.MessengersSupervisor.stop(pid)
     end
   end
 end

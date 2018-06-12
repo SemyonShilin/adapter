@@ -20,7 +20,7 @@ defmodule Adapter.Mixfile do
   def application do
     [
       mod: {Adapter, []},
-      extra_applications: [:logger, :runtime_tools, :ecto_mnesia, :ecto]
+      extra_applications: [:logger, :runtime_tools, :wobserver, :ecto_mnesia, :ecto]
     ]
   end
 
@@ -41,12 +41,13 @@ defmodule Adapter.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
+      {:wobserver, "~> 0.1"},
       {:export, "~> 0.1.1"},
       {:secure_random, "~> 0.5"},
       {:envy, "~> 1.1.1"},
       {:ecto_mnesia, "~> 0.9.0"},
       {:ecto, "~> 2.1"},
-      {:httpoison, "~> 1.0"},
+#      {:httpoison, "~> 1.0"},
       {:credo, "~> 0.3", only: [:dev, :test]}
     ]
   end

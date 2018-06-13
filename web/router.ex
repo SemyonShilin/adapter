@@ -5,8 +5,6 @@ defmodule Adapter.Router do
     plug :accepts, ["json"]
   end
 
-  forward "/wobserver", Wobserver.Web.Router
-
   scope "/webhooks" do
     pipe_through :api
 

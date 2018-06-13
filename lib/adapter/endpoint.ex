@@ -2,7 +2,6 @@ defmodule Adapter.Endpoint do
   use Phoenix.Endpoint, otp_app: :adapter
 
   socket "/socket", Adapter.UserSocket
-  socket "/wobserver", Wobserver.Web.PhoenixSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #

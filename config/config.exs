@@ -25,6 +25,10 @@ config :adapter, AdapterWeb.Endpoint,
   pubsub: [name: Adapter.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
+config :wobserver,
+       mode: :plug,
+       remote_url_prefix: "/wobserver"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

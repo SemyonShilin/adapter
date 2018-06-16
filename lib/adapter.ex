@@ -8,8 +8,9 @@ defmodule Adapter do
 
     children = [
       supervisor(Adapter.Repo, []),
-      {DynamicSupervisor, name: Adapter.MessengersSupervisor, strategy: :one_for_one},
-      {Adapter.Registry, name: Adapter.Registry},
+#      {DynamicSupervisor, name: Adapter.MessengersSupervisor, strategy: :one_for_one},
+#      {Adapter.Registry, name: Adapter.Registry},
+      {Agala.Bot, Adapter.Telegram.BotConfig.get()},
       supervisor(Adapter.Endpoint, [])
     ]
 

@@ -61,7 +61,6 @@ defmodule Adapter.Telegram do
       [{"Content-Type", "application/json"}]
     )
     |> parse_body
-    |> IO.inspect
   end
 
   def base_url(conn) do

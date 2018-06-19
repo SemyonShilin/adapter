@@ -279,8 +279,7 @@ defmodule Adapter.Registry do
       IO.inspect names
       Map.get(names, bot.uid)
       |> Supervisor.which_children()
-      |> IO.inspect
-      |> List.first
+      |> List.first |> elem(1)
       |> GenServer.cast({:post_message, message})
       {:noreply, state}
     else

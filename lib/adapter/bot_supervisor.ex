@@ -57,18 +57,18 @@ defmodule Adapter.BotSupervisor do
 
   def init({messenger, bot, token}) do
     children = [
-      spec(Mix.env, messenger, bot, token)
+      spec(Application.get_env(:agala_telegram, :method), messenger, bot, token)
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
   end
 
-  defp spec(:dev, messenger, bot, token) when messenger == "telegram",
+  defp spec(:polling, messenger, bot, token) when messenger == "telegram",
        do: {Agala.Bot, Adapter.Telegram.BotConfig.get(bot, token)}
 
-  defp spec(:prod, messenger, bot, token) when messenger == "telegram",
+  defp spec(:webhook, messenger, bot, token) when messenger == "telegram",
        do: {Adapter.Telegram, Adapter.Telegram.BotConfig.get(bot, token)}
 
-  defp spec(:prod, messenger, bot, token) when messenger == "viber",
-       do: {}
+#  defp spec(:prod, messenger, bot, token) when messenger == "viber",
+#       do: {}
 end

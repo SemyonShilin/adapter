@@ -15,10 +15,10 @@ defmodule Adapter.Telegram.BotConfig do
   end
 
   def get(name, token) do
-    config(Mix.env, name, token)
+    config(Application.get_env(:agala_telegram, :method), name, token)
   end
 
-  defp config(:dev, name, token) do
+  defp config(:polling, name, token) do
     %Agala.BotParams{
       name: name, # You can use any string. It's using for sending message from specific bot in paragraph #6
       provider: Agala.Provider.Telegram,
@@ -30,7 +30,7 @@ defmodule Adapter.Telegram.BotConfig do
     }
   end
 
-  defp config(:prod, name, token) do
+  defp config(:webhook, name, token) do
     %Agala.BotParams{
       name: name, # You can use any string. It's using for sending message from specific bot in paragraph #6
       provider: Adapter.Telegram,

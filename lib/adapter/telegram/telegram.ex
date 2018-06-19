@@ -45,7 +45,7 @@ defmodule Adapter.Telegram do
 
   def init(opts) do
     set_webhook(opts)
-    {}
+    {:ok, opts}
   end
 
   def send_message do
@@ -58,7 +58,7 @@ defmodule Adapter.Telegram do
     HTTPoison.post(
       set_webhook_url(conn),
       webhook_upload_body(conn) ,
-      headers: [{"Content-Type", "application/json"}]
+      [{"Content-Type", "application/json"}]
     )
     |> parse_body
     |> IO.inspect
@@ -91,12 +91,11 @@ defmodule Adapter.Telegram do
   end
 
   defp webhook_upload_body(conn, opts \\ []),
-     do: create_body_multipart(%{certificate: Application.get_env(:agala_telegram, :certificate),
+     do: create_body_multipart(%{certificate: {:file, Application.get_env(:agala_telegram, :certificate)},
                                  url: Application.get_env(:agala_telegram, :url) <> conn.request_bot_params.provider_params.token}, opts)
 
-  defp parse_body({:ok, resp = %HTTPoison.Response{body: body}}) do
-    {:ok, %HTTPoison.Response{resp | body: Poison.decode!(body)}}
-  end
+  defp parse_body({:ok, resp = %HTTPoison.Response{body: body}}),
+     do: {:ok, %HTTPoison.Response{resp | body: Poison.decode!(body)}}
 
   defp parse_body(default), do: default
 end

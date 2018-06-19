@@ -50,4 +50,8 @@ config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
 
+
+config :agala_telegram,
+       method: :webhook
+
 import_config "dev.secret.exs"

@@ -29,10 +29,6 @@ config :wobserver,
        mode: :plug,
        remote_url_prefix: "/wobserver"
 
-
-config :adapter, :agala_telegram,
-      name: "fisrt",
-      token: "390126265:AAGokHwWau7N7sd9Vga0g_qE3-Th9gNcXME"
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

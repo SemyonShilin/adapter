@@ -1,35 +1,74 @@
+#defmodule Adapter.BotSupervisor do
+#  @moduledoc """
+#  {Agala.Bot,
+#   %Agala.BotParams{
+#     common: %{},
+#     handler: Adapter.Telegram.RequestHandler,
+#     name: nil,
+#     private: %{},
+#     provider: Agala.Provider.Telegram,
+#     provider_params: %Agala.Provider.Telegram.Conn.ProviderParams{
+#       hackney_opts: [],
+#       poll_timeout: :infinity,
+#       response_timeout: nil,
+#       token: "390126265:AAGokHwWau7N7sd9Vga0g_qE3-Th9gNcXME"
+#     },
+#     storage: Agala.Bot.Storage.Local
+#   }}
+#  """
+#
+#  use DynamicSupervisor, restart: :temporary
+#
+#  def start_link(:ok, _opts) do
+#    DynamicSupervisor.start_link(__MODULE__, :ok)
+#  end
+#
+#  def start_new_instance(pid, {messenger, bot, token}) do
+#    spec = spec(Mix.env, messenger, bot, token)
+#    IO.inspect spec
+#    IO.inspect DynamicSupervisor.start_child(pid, spec)
+#  end
+
+#
+#
+#  def init(initial_arg) do
+#    DynamicSupervisor.init(
+#      strategy: :one_for_one,
+#      extra_arguments: [initial_arg]
+#    )
+#  end
+#
+#  defp spec(:dev, messenger, bot, token) when messenger == "telegram",
+#       do: {Agala.Bot, Adapter.Telegram.BotConfig.get(bot, token)}
+#
+#  defp spec(:prod, messenger, {bot, token}) when messenger == "telegram",
+#       do: {Adapter.Telegram, Adapter.Telegram.BotConfig.get(bot, token)}
+#
+#  defp spec(:prod, messenger, {bot, token}) when messenger == "viber",
+#       do: {}
+#end
+
 defmodule Adapter.BotSupervisor do
   use Supervisor, restart: :temporary
 
-  def start_link(:ok, token) do
-    Supervisor.start_link(__MODULE__, token)
+  def start_link(:ok, args) do
+    Supervisor.start_link(__MODULE__, args)
   end
 
-  def init(token) do
-    {adapter_id, listener_id} = id_generator()
+  def init({messenger, bot, token}) do
     children = [
-      Supervisor.child_spec({Adapter.InstanceGenServer, [adapter_id, :adapter, token]}, id: adapter_id),
-      Supervisor.child_spec({Adapter.InstanceGenServer, [listener_id, :listening, token]}, id: listener_id)
+      spec(Mix.env, messenger, bot, token)
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
   end
 
-  defp id_generator do
-    {String.to_atom("adapter_#{SecureRandom.base64(8)}"), String.to_atom("listener_#{SecureRandom.base64(8)}")}
-  end
+  defp spec(:dev, messenger, bot, token) when messenger == "telegram",
+       do: {Agala.Bot, Adapter.Telegram.BotConfig.get(bot, token)}
 
-  def stop(pid, name) do
-    bot = Adapter.Bots.get_by_bot(uid: name)
-    Supervisor.which_children(pid)
-    |> Enum.each(fn(tuple) ->
-      gen_server_pid = elem(tuple, 1)
-      if Mix.env == :prod, do: Adapter.InstanceGenServer.stop(gen_server_pid, bot.token)
-      gen_server_pid
-      |> Process.info |> Keyword.get(:links)
-      |>Enum.drop(-1) |> Enum.each(fn(e) ->
-        :ruby.stop(e)
-      end) # process with port
-    end)
-  end
+  defp spec(:prod, messenger, bot, token) when messenger == "telegram",
+       do: {Adapter.Telegram, Adapter.Telegram.BotConfig.get(bot, token)}
+
+  defp spec(:prod, messenger, bot, token) when messenger == "viber",
+       do: {}
 end

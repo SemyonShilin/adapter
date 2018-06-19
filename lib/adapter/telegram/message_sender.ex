@@ -7,6 +7,14 @@ defmodule Adapter.Telegram.MessageSender do
   alias Agala.Conn
   alias Agala.BotParams
 
+  def send(state, %{data: data} = message) do
+    IO.inspect state
+    IO.inspect message
+
+    IO.inspect "11111111111111"
+    IO.inspect data
+  end
+
   def answer(%BotParams{name: bot_name, provider_params: %{token: token}} = params, telegram_user_id, message) do
     # Function for sending response to bot
     Agala.response_with(

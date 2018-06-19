@@ -1,5 +1,6 @@
 defmodule Adapter.Telegram do
   alias Agala.BotParams
+  alias Adapter.Telegram.MessageSender
   use Agala.Provider.Telegram, :handler
   #  alias Agala.Conn
 #
@@ -48,10 +49,6 @@ defmodule Adapter.Telegram do
     {:ok, opts}
   end
 
-  def send_message do
-
-  end
-
   def set_webhook(%BotParams{name: bot_name, provider_params: %{token: token}} = params) do
     conn = %Agala.Conn{request_bot_params: params} |> Agala.Conn.send_to(bot_name)
 
@@ -71,13 +68,8 @@ defmodule Adapter.Telegram do
     base_url(conn) <> "/setWebhook"
   end
 
-  def set_webhook do
-
-  end
-
-  def handle_cast({:post_message, message}, %BotParams{name: bot_name, provider_params: %{token: token}} = state) do
-    IO.inspect message
-    IO.inspect "11111111111111"
+  def handle_cast({:post_message, message}, state) do
+    MessageSender.send(state, Poison.decode!(message))
 
     {:noreply, state}
   end

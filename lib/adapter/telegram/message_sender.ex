@@ -15,6 +15,12 @@ defmodule Adapter.Telegram.MessageSender do
     IO.inspect data
   end
 
+
+  def delivery(all) do
+    IO.inspect all
+    IO.inspect "222222222222"
+  end
+
   def answer(%BotParams{name: bot_name, provider_params: %{token: token}} = params, telegram_user_id, message) do
     # Function for sending response to bot
     Agala.response_with(

@@ -5,6 +5,7 @@ defmodule Adapter.Telegram.MessageSender do
 
   alias Agala.Provider.Telegram.Helpers
   alias Agala.Conn
+  alias Agala.BotParams
 
   def answer(%BotParams{name: bot_name, provider_params: %{token: token}} = params, telegram_user_id, message) do
     # Function for sending response to bot

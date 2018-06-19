@@ -76,6 +76,13 @@ defmodule Adapter.Telegram do
 
   end
 
+  def handle_cast({:post_message, message}, %BotParams{name: bot_name, provider_params: %{token: token}} = state) do
+    IO.inspect message
+    IO.inspect "11111111111111"
+
+    {:noreply, state}
+  end
+
   defp create_body(map, opts) when is_map(map) do
     Map.merge(map, Enum.into(opts, %{}), fn _, v1, _ -> v1 end)
   end

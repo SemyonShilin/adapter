@@ -276,7 +276,7 @@ defmodule Adapter.Registry do
   def handle_cast({:message, bot, message}, {names, _} = state) do
     if Map.has_key?(names, bot) do
       bot = Adapter.Bots.get_by_bot(uid: bot)
-      IO.inspect names
+
       Map.get(names, bot.uid)
       |> Supervisor.which_children()
       |> List.first |> elem(1)

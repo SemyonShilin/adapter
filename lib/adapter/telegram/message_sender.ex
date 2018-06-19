@@ -7,7 +7,7 @@ defmodule Adapter.Telegram.MessageSender do
   alias Agala.Conn
   alias Agala.BotParams
 
-  def send(state, %{data: data} = message) do
+  def delivery(state, %{data: data} = message) do
     IO.inspect state
     IO.inspect message
 

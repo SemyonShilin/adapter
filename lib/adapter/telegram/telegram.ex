@@ -69,7 +69,7 @@ defmodule Adapter.Telegram do
   end
 
   def handle_cast({:post_message, message}, state) do
-    MessageSender.send(state, Poison.decode!(message))
+    MessageSender.delivery(state, Poison.decode!(message))
 
     {:noreply, state}
   end

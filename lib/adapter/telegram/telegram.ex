@@ -40,6 +40,9 @@ defmodule Adapter.Telegram do
 
   use GenServer
 
+  @certificate Application.get_env(:agala_telegram, :certificate)
+  @url         Application.get_env(:agala_telegram, :url)
+
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts)
   end
@@ -89,11 +92,14 @@ defmodule Adapter.Telegram do
   end
 
   defp webhook_upload_body(conn, opts \\ []),
-     do: create_body_multipart(%{certificate: {:file, Application.get_env(:agala_telegram, :certificate)},
-                                 url: Application.get_env(:agala_telegram, :url) <> conn.request_bot_params.provider_params.token}, opts)
+     do: create_body_multipart(%{certificate: {:file, @certificate},
+                                 url: server_webhook_url(conn)}, opts)
 
   defp parse_body({:ok, resp = %HTTPoison.Response{body: body}}),
      do: {:ok, %HTTPoison.Response{resp | body: Poison.decode!(body)}}
 
   defp parse_body(default), do: default
+
+  defp server_webhook_url(conn),
+    do: fn conn -> @url <> conn.request_bot_params.provider_params.token end
 end

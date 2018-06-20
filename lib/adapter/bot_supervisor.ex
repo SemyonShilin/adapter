@@ -51,13 +51,15 @@
 defmodule Adapter.BotSupervisor do
   use Supervisor, restart: :temporary
 
+  @bot_method Application.get_env(:adapter, Adapter.Telegram) |> Keyword.get(:method)
+
   def start_link(:ok, args) do
     Supervisor.start_link(__MODULE__, args)
   end
 
   def init({messenger, bot, token}) do
     children = [
-      spec(Application.get_env(:agala_telegram, :method), messenger, bot, token)
+      spec(@bot_method, messenger, bot, token)
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

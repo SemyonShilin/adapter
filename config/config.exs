@@ -8,12 +8,13 @@ use Mix.Config
 
 # General application configuration
 config :adapter,
-  ecto_repos: [Adapter.Repo]
+       ecto_repos: [Adapter.Repo]
 
 config :adapter, Adapter.Repo,
        adapter: EctoMnesia.Adapter,
        host: {:system, :atom, "localhost", Kernel.node()},
        storage_type: {:system, :atom, "ordered_set", :disc_copies}
+
 config :mnesia,
        dir: 'priv/db/mnesia'
 

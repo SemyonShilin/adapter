@@ -1,6 +1,8 @@
 defmodule Adapter.Telegram.BotConfig do
   alias Agala.Provider.Telegram.Conn.ProviderParams
 
+  @bot_method Application.get_env(:adapter, Adapter.Telegram) |> Keyword.get(:method)
+  @proxy      Application.get_env(:adapter, Adapter.Telegram) |> Keyword.get(:proxy)
 
   def get do
     %Agala.BotParams{
@@ -15,7 +17,7 @@ defmodule Adapter.Telegram.BotConfig do
   end
 
   def get(name, token) do
-    config(Application.get_env(:agala_telegram, :method), name, token)
+    config(@bot_method, name, token)
   end
 
   defp config(:polling, name, token) do
@@ -25,7 +27,11 @@ defmodule Adapter.Telegram.BotConfig do
       handler: Adapter.Telegram.RequestHandler, # RequestHandler from paragraph #2
       provider_params: %ProviderParams{
         token: token, # Token from paragraph #3
-        poll_timeout: :infinity
+        poll_timeout: :infinity,
+        hackney_opts: parse_proxy(@proxy)
+      },
+      private: %{
+        http_opts: parse_proxy(@proxy)
       }
     }
   end
@@ -40,5 +46,17 @@ defmodule Adapter.Telegram.BotConfig do
         poll_timeout: :infinity
       }
     }
+  end
+
+  defp parse_proxy({:http, config}) do
+    [proxy: config]
+  end
+
+  defp parse_proxy({:https, config}) do
+    [proxy: config]
+  end
+
+  defp parse_proxy({:socks5, config}) do
+
   end
 end

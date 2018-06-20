@@ -3,14 +3,14 @@ defmodule Adapter.Registry do
     Модуль для реестра процессов
     Команды:
       1) Работа с реестром
-         Adapter.Registry.create("telegram", {"bot_1", "390126265:AAGokHwWau7N7sd9Vga0g_qE3-Th9gNcXME"})
+         Adapter.Registry.create("telegram", {"bot_1", "TOKEN"})
          Adapter.Registry.lookup("telegram")
          Adapter.Registry.down({:messenger, "telegram"})
          Adapter.Registry.down({:bot,A "bot"})
       2) Работа с бд
          m = Adapter.Messengers.create("telegram")
          m = Adapter.Messengers.get_by_messenger("telegram")
-         b = Adapter.Messengers.add_bot(m, %{uid: "bot", token: "TOKEN1"})
+         b = Adapter.Messengers.add_bot(m, %{uid: "bot", token: "TOKEN", state})
          Adapter.Repo.all(Adapter.Schema.Bot)
          Adapter.Messengers.Messenger |> Adapter.Repo.delete_all
          Adapter.Bots.Bot |> Adapter.Repo.delete_all

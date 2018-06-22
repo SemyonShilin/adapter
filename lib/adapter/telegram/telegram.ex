@@ -101,5 +101,5 @@ defmodule Adapter.Telegram do
   defp parse_body(default), do: default
 
   defp server_webhook_url(conn),
-    do: fn conn -> @url <> conn.request_bot_params.provider_params.token end
+    do: @url <> conn.request_bot_params.provider_params.token
 end

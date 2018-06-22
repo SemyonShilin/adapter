@@ -72,7 +72,7 @@ defmodule Adapter.Telegram.RequestHandler do
     parse_hub_response(messages, chat, [])
   end
 
-  defp parse_hub_response([message | tail], chat, formatted_messages) do
+  defp parse_hub_response([message | tail] = all, chat, formatted_messages) do
     messages =
       Enum.reduce message, %{}, fn {k, v}, acc ->
         case k do
@@ -80,9 +80,7 @@ defmodule Adapter.Telegram.RequestHandler do
           "menu" ->
             with %{"type" => type} <- v do
               case type do
-                "inline"   ->
-                  %{"items" => items} = v
-                  if length(items) == 0, do: nil, else: Map.put(acc, :reply_markup, InlineKeyboardMarkup.make!(%{inline_keyboard: format_menu_item(v)}))
+                "inline"   -> Map.put(acc, :reply_markup, InlineKeyboardMarkup.make!(%{inline_keyboard: format_menu_item(v)}))
                 "keyboard" -> ""
                 "auth"     -> ""
                 _          -> ""
@@ -95,9 +93,9 @@ defmodule Adapter.Telegram.RequestHandler do
     parse_hub_response(tail, chat, [messages | formatted_messages])
   end
 
-  defp parse_hub_response([], chat, updated_messages), do: updated_messages
+  defp parse_hub_response([], chat, updated_messages), do: updated_messages |> Enum.reverse
 
-  defp format_menu_item(%{"items" => items}), do: format_menu_item(items, []) |> Enum.reverse
+  defp format_menu_item(%{"items" => items}), do: format_menu_item(items, [])
 
   defp format_menu_item([%{"url" => url} = menu_item | tail], state) do
     new_state = [[InlineKeyboardButton.make!(%{text: menu_item["name"], url: url})]| state]
@@ -109,5 +107,5 @@ defmodule Adapter.Telegram.RequestHandler do
     format_menu_item(tail, new_state)
   end
 
-  defp format_menu_item([], state), do: state
+  defp format_menu_item([], state), do: state |> Enum.reverse
 end

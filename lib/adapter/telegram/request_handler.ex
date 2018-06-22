@@ -25,10 +25,9 @@ defmodule Adapter.Telegram.RequestHandler do
   end
 
   def send_messege_to_hub_handler(%Conn{
-    request: %{message: %{text: text, from: %{first_name: first_name, id: user_telegrma_id}}} = request,
-    request_bot_params: %Agala.BotParams{name: name, storage: storage, provider_params: %{token: token}} = bot_params} = conn,
-  _opts) do
-    IO.puts "#{first_name} #{user_telegrma_id} : #{text}"
+    request_bot_params: %Agala.BotParams{name: name, storage: storage, provider_params: %{token: token}} = bot_params,
+    request: request} = conn, _opts) do
+    log(request)
 
     bot = storage.get(bot_params, :bot)
     %{"data" => response} =
@@ -41,11 +40,11 @@ defmodule Adapter.Telegram.RequestHandler do
     conn
   end
 
-  def parse_hub_response_handler(%Conn{request_bot_params: %{storage: storage} = bot_params, request: %{message: %{chat: chat}}} = conn, _opts) do
+  def parse_hub_response_handler(%Conn{request_bot_params: %{storage: storage} = bot_params, request: request} = conn, _opts) do
     message =
       storage.get(bot_params, :response)
         |> Map.get("messages", [])
-        |> parse_hub_response(chat)
+        |> parse_hub_response(get_chat(request))
         |> Enum.filter(& &1)
     storage.set(bot_params, :messages, message)
 
@@ -108,4 +107,16 @@ defmodule Adapter.Telegram.RequestHandler do
   end
 
   defp format_menu_item([], state), do: state |> Enum.reverse
+
+  defp log(%{message: %{text: text, from: %{first_name: first_name, id: user_telegrma_id}}} = request) do
+    IO.puts "#{first_name} #{user_telegrma_id} : #{text}"
+  end
+
+  defp log(%{callback_query: %{data: data, from: %{first_name: first_name, id: user_telegrma_id}}} = request) do
+    IO.puts "#{first_name} #{user_telegrma_id} : button - #{data}"
+  end
+
+  defp get_chat(%{message: %{chat: chat}}), do: chat
+
+  defp get_chat(%{callback_query: %{message: %{chat: chat}}}), do: chat
 end

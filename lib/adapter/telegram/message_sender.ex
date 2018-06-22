@@ -15,9 +15,7 @@ defmodule Adapter.Telegram.MessageSender do
 #    IO.inspect data
 #  end
 
-  def delivery(%Conn{request_bot_params: bot_params} = conn, messages) when is_list(messages) do
-    %{request: %{message: %{chat: %{id: id}}}} = conn
-
+  def delivery(%Conn{request_bot_params: bot_params, request: %{message: %{chat: %{id: id}}}} = conn, messages) when is_list(messages) do
     messages
     |> Enum.each fn message ->
       answer(bot_params, id, message)
@@ -30,7 +28,6 @@ defmodule Adapter.Telegram.MessageSender do
 
   def answer(%BotParams{name: bot_name, provider_params: %{token: token}} = params, telegram_user_id, %{text: text, reply_markup: reply_markup} = message) do
     # Function for sending response to bot
-    IO.inspect reply_markup
     Agala.response_with(
       %Agala.Conn{request_bot_params: params} |> Agala.Conn.send_to(bot_name) # You must explicitly specify bot name.
       |> Helpers.send_message(telegram_user_id, text, [reply_markup: reply_markup]) # Helper function for telegram prpovider.
@@ -42,7 +39,6 @@ defmodule Adapter.Telegram.MessageSender do
 
   def answer(%Conn{request_bot_params: %{name: bot_name}, request: %{message: %{from: %{ id: user_telegrma_id}}}} = _conn, message) do
     # Function for sending response to bot
-    IO.inspect message
     Agala.response_with(
       %Agala.Conn{} |> Agala.Conn.send_to(bot_name) # You must explicitly specify bot name.
       |> Helpers.send_message(user_telegrma_id, message, []) # Helper function for telegram prpovider.

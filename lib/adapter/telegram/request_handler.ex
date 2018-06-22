@@ -5,6 +5,8 @@ defmodule Adapter.Telegram.RequestHandler do
   use Agala.Provider.Telegram, :handler
   alias Agala.Conn
   alias Adapter.Telegram.MessageSender
+  alias Adapter.Telegram.Model.{InlineKeyboardMarkup, InlineKeyboardButton}
+  alias Agala.Provider.Telegram.Model.{Message}
 
   chain(Agala.Provider.Telegram.Chain.Parser)
 
@@ -39,16 +41,19 @@ defmodule Adapter.Telegram.RequestHandler do
     conn
   end
 
-  def parse_hub_response_handler(%Conn{request_bot_params: %Agala.BotParams{name: name, storage: storage} = bot_params} = conn, _opts) do
-    storage.get(bot_params, :response)
-      |> Map.get("messages", %{})
-      |> parse_hub_response()
+  def parse_hub_response_handler(%Conn{request_bot_params: %{storage: storage} = bot_params, request: %{message: %{chat: chat}}} = conn, _opts) do
+    message =
+      storage.get(bot_params, :response)
+        |> Map.get("messages", [])
+        |> parse_hub_response(chat)
+        |> Enum.filter(& &1)
+    storage.set(bot_params, :messages, message)
 
     conn
   end
 
-  def delivery_hub_response_handler(conn, _opts) do
-    conn |> MessageSender.delivery()
+  def delivery_hub_response_handler(%Conn{request_bot_params: %{storage: storage} = bot_params} = conn, _opts) do
+    conn |> MessageSender.delivery(storage.get(bot_params, :messages))
     conn
   end
 
@@ -63,22 +68,46 @@ defmodule Adapter.Telegram.RequestHandler do
     Poison.decode!(body)
   end
 
-  defp parse_hub_response([message | tail]) do
-    with %{"menu" => menu} <- message,
-         %{"type" => type} <- menu
-      do
-        case type do
-          "inline" -> Agala.Provider.Telegram.Model.InlineQuery.make!(message)
-          "keyboard" -> ""
-          "auth" -> ""
-          _ -> nil
-        end
-    end
-
-    %{text: message["body"], object: nil}
-
-    parse_hub_response(tail)
+  defp parse_hub_response(messages, chat) do
+    parse_hub_response(messages, chat, [])
   end
 
-  defp parse_hub_response([]), do: []
+  defp parse_hub_response([message | tail], chat, formatted_messages) do
+    messages =
+      Enum.reduce message, %{}, fn {k, v}, acc ->
+        case k do
+          "body" -> Map.put(acc, :text, v)
+          "menu" ->
+            with %{"type" => type} <- v do
+              case type do
+                "inline"   ->
+                  %{"items" => items} = v
+                  if length(items) == 0, do: nil, else: Map.put(acc, :reply_markup, InlineKeyboardMarkup.make!(%{inline_keyboard: format_menu_item(v)}))
+                "keyboard" -> ""
+                "auth"     -> ""
+                _          -> ""
+              end
+            end
+          _ -> ""
+        end
+      end
+
+    parse_hub_response(tail, chat, [messages | formatted_messages])
+  end
+
+  defp parse_hub_response([], chat, updated_messages), do: updated_messages
+
+  defp format_menu_item(%{"items" => items}), do: format_menu_item(items, []) |> Enum.reverse
+
+  defp format_menu_item([%{"url" => url} = menu_item | tail], state) do
+    new_state = [[InlineKeyboardButton.make!(%{text: menu_item["name"], url: url})]| state]
+    format_menu_item(tail, new_state)
+  end
+
+  defp format_menu_item([%{"code" => code} = menu_item | tail], state) do
+    new_state = [[InlineKeyboardButton.make!(%{text: menu_item["name"], callback_data: code})] | state]
+    format_menu_item(tail, new_state)
+  end
+
+  defp format_menu_item([], state), do: state
 end

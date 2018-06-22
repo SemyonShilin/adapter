@@ -10,7 +10,7 @@ defmodule Adapter.Registry do
       2) Работа с бд
          m = Adapter.Messengers.create("telegram")
          m = Adapter.Messengers.get_by_messenger("telegram")
-         b = Adapter.Messengers.add_bot(m, %{uid: "bot", token: "TOKEN", state})
+         b = Adapter.Messengers.add_bot(m, %{uid: "bot", token: "TOKEN", state: "up"})
          Adapter.Repo.all(Adapter.Schema.Bot)
          Adapter.Messengers.Messenger |> Adapter.Repo.delete_all
          Adapter.Bots.Bot |> Adapter.Repo.delete_all

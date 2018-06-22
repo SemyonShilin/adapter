@@ -3,6 +3,8 @@ defmodule Adapter.Telegram.BotConfig do
 
   @bot_method Application.get_env(:adapter, Adapter.Telegram) |> Keyword.get(:method)
   @proxy      Application.get_env(:adapter, Adapter.Telegram) |> Keyword.get(:proxy)
+  @user      Application.get_env(:adapter, Adapter.Telegram) |> Keyword.get(:user)
+  @password      Application.get_env(:adapter, Adapter.Telegram) |> Keyword.get(:password)
 
   def get do
     %Agala.BotParams{
@@ -57,6 +59,6 @@ defmodule Adapter.Telegram.BotConfig do
   end
 
   defp parse_proxy({:socks5, config}) do
-
+    [proxy: config]
   end
 end

@@ -79,7 +79,7 @@ config :logger, level: :info
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
 
-config :agala_telegram,
+config :adapter, Adapter.Telegram,
        method: :webhook
 
 import_config "prod.secret.exs"

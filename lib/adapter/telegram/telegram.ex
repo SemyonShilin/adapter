@@ -2,41 +2,6 @@ defmodule Adapter.Telegram do
   alias Agala.BotParams
   alias Adapter.Telegram.MessageSender
   use Agala.Provider.Telegram, :handler
-  #  alias Agala.Conn
-#
-#  def set_webhook(%BotParams{name: bot_name, provider_params: %{token: token}}) do
-#    map =
-#      %Agala.Conn{} |> Agala.Conn.send_to(bot_name)
-#      |> Helpers.set_webhook(token, [])
-#    IO.inspect map
-#    HTTPoison.post(
-#      map.payload.url,
-#      map.payload.body,
-#      map.payload.headers
-#    )
-#    |> IO.inspect
-#  end
-#
-#  def delete_webhook(%BotParams{name: bot_name, provider_params: %{token: token}}) do
-#    map =
-#      %Agala.Conn{} |> Agala.Conn.send_to(bot_name)
-#      |> Helpers.delete_webhook()
-#    HTTPoison.post(
-#      map.payload.url,
-#      map.payload.body,
-#      map.payload.headers
-#    )
-#  end
-#
-#  def child_spec(opts) do
-#    %{
-#      id: opts[:id],
-#      start: {__MODULE__, :set_webhook, [opts]},
-#      type: :worker,
-#      restart: :permanent,
-#      shutdown: 500
-#    }
-#  end
 
   use GenServer
 
@@ -48,7 +13,7 @@ defmodule Adapter.Telegram do
   end
 
   def init(opts) do
-    set_webhook(opts)
+#    set_webhook(opts)
     {:ok, opts}
   end
 
@@ -71,8 +36,15 @@ defmodule Adapter.Telegram do
     base_url(conn) <> "/setWebhook"
   end
 
+  def handle_cast(:post_message, state)  do
+    Agala.Bot.Handler.handle(state)
+
+    {:noreply, state}
+  end
+
   def handle_cast({:post_message, message}, state) do
-    MessageSender.delivery(state, Poison.decode!(message))
+    IO.inspect message
+    Agala.Bot.Handler.handle(message, state)
 
     {:noreply, state}
   end

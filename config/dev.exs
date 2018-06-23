@@ -52,6 +52,6 @@ config :phoenix, :stacktrace_depth, 20
 
 
 config :adapter, Adapter.Telegram,
-       method: :polling
+       method: :webhook
 
 import_config "dev.secret.exs"

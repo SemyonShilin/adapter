@@ -42,7 +42,7 @@ defmodule Adapter.Telegram.BotConfig do
     %Agala.BotParams{
       name: name, # You can use any string. It's using for sending message from specific bot in paragraph #6
       provider: Adapter.Telegram,
-      handler: Adapter.WebhookController, # RequestHandler from paragraph #2
+      handler: Adapter.Telegram.RequestHandler, # RequestHandler from paragraph #2
       provider_params: %ProviderParams{
         token: token, # Token from paragraph #3
         poll_timeout: :infinity

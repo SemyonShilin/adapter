@@ -7,7 +7,7 @@ defmodule Adapter.Telegram.Receiver do
   @url         Application.get_env(:agala_telegram, :url)
 
   defp set_webhook_url(%BotParams{provider_params: %{token: token}}) do
-    "https://api.telegram.org/bot" <> token <> "/getUpdates"
+    "https://api.telegram.org/bot" <> token <> "/setWebhook"
   end
 
   defp server_webhook_url(%BotParams{provider_params: %{token: token}}) do

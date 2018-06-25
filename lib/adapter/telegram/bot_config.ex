@@ -41,7 +41,7 @@ defmodule Adapter.Telegram.BotConfig do
   defp config(:webhook, name, token) do
     %Agala.BotParams{
       name: name, # You can use any string. It's using for sending message from specific bot in paragraph #6
-      provider: Adapter.Telegram,
+      provider: Adapter.Telegram.Provider,
       handler: Adapter.Telegram.RequestHandler, # RequestHandler from paragraph #2
       provider_params: %ProviderParams{
         token: token, # Token from paragraph #3

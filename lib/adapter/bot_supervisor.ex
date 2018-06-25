@@ -17,12 +17,13 @@ defmodule Adapter.BotSupervisor do
        do: [{Agala.Bot, Adapter.Telegram.BotConfig.get(bot, token)}]
 
   defp spec(:webhook, messenger, bot, token) when messenger == "telegram",
-       do: [
-         {Adapter.Telegram, Adapter.Telegram.BotConfig.get(bot, token)},
-         {Agala.Bot.Handler, Adapter.Telegram.BotConfig.get(bot, token)},
-#         {Agala.Provider.Telegram.Responser, Adapter.Telegram.BotConfig.get(bot, token)},
-         {Agala.Bot.Storage.Local, Adapter.Telegram.BotConfig.get(bot, token)}
-       ]
+       do: [{Agala.Bot, Adapter.Telegram.BotConfig.get(bot, token)}]
+#         [
+#         {Adapter.Telegram, Adapter.Telegram.BotConfig.get(bot, token)},
+#         {Agala.Bot.Handler, Adapter.Telegram.BotConfig.get(bot, token)},
+##         {Agala.Provider.Telegram.Responser, Adapter.Telegram.BotConfig.get(bot, token)},
+#         {Agala.Bot.Storage.Local, Adapter.Telegram.BotConfig.get(bot, token)}
+#       ]
 
 #  defp spec(:prod, messenger, bot, token) when messenger == "viber",
 #       do: {}

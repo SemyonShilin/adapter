@@ -52,7 +52,6 @@ defmodule Adapter.Telegram do
   defp create_body(map, opts) when is_map(map) do
     Map.merge(map, Enum.into(opts, %{}), fn _, v1, _ -> v1 end)
   end
-
   defp create_body_multipart(map, opts) when is_map(map) do
     multipart =
       create_body(map, opts)

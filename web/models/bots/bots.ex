@@ -16,7 +16,8 @@ defmodule Adapter.Bots do
   def create_bot(attrs \\ %{}) do
     %Bot{}
     |> Bot.changeset(attrs)
-    |> Repo.insert()
+    |> IO.inspect
+#    |> Repo.insert()
   end
 
   def create(bot) do
@@ -48,10 +49,9 @@ defmodule Adapter.Bots do
 
   def create(uid \\ nil, token \\ nil) do
     changeset = Bot.changeset(%Bot{}, %{uid: uid, token: token, state: "up"})
-    new_bot = Repo.insert(changeset)
-    case new_bot do
-      {:ok, bot} -> bot
-      {:error, errors} -> errors.errors
+    case changeset.valid? do
+      true  -> Repo.insert(changeset)
+      false -> changeset.errors
     end
   end
 

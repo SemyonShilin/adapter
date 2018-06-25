@@ -24,9 +24,9 @@ defmodule Adapter.Telegram.MessageSender do
 
   def delivery(%Conn{request_bot_params: bot_params, request: %{callback_query: %{from: %{id: id}}}} = conn, messages) do
     messages
-    |> Enum.each fn message ->
-      answer(bot_params, id, message)
-    end
+      |> Enum.each fn message ->
+        answer(bot_params, id, message)
+      end
   end
 
   def delivery(messages, id, %BotParams{} = bot_params) do

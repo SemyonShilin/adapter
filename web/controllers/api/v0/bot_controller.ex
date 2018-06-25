@@ -50,7 +50,7 @@ defmodule Adapter.Api.V0.BotController do
   end
 
   def send(conn, %{"bot" => bot_params}) do
-    Registry.post_message(bot_params["uid"], bot_params)
+    Registry.post_message(bot_params["uid"], true, bot_params)
     render(conn, "send.json", [])
   end
 end

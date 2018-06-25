@@ -7,14 +7,42 @@ defmodule Adapter.Telegram do
 
   @certificate Application.get_env(:agala_telegram, :certificate)
   @url         Application.get_env(:agala_telegram, :url)
+  @bot_method Application.get_env(:adapter, Adapter.Telegram) |> Keyword.get(:method)
 
   def start_link(opts) do
-    GenServer.start_link(__MODULE__, opts)
+    GenServer.start_link(__MODULE__, opts, [name: :"#Adapter.Telegram::#{opts[:name]}"])
   end
 
   def init(opts) do
-#    set_webhook(opts)
+    case @bot_method do
+      :webhook -> set_webhook(opts)
+      :polling -> nil
+    end
+
     {:ok, opts}
+  end
+
+  def message_pass(bot_name, hub, message) do
+    GenServer.cast(:"#Adapter.Telegram::#{bot_name}", {:message, hub, message})
+  end
+
+  def message_pass(bot_name, message) do
+    GenServer.cast(:"#Adapter.Telegram::#{bot_name}", {:message, message})
+  end
+
+  def handle_cast({:message, message}, state) do
+    Agala.Bot.Handler.handle(message, state)
+    {:noreply, state}
+  end
+
+  def handle_cast({:message, _hub, %{"data" => %{"messages" => messages, "chat" => %{"id" => id}}} =  message}, state) do
+    messages
+      |> Adapter.Telegram.RequestHandler.parse_hub_response()
+      |> IO.inspect
+      |> Enum.filter(& &1)
+      |> Adapter.Telegram.MessageSender.delivery(id, state)
+
+    {:noreply, state}
   end
 
   def set_webhook(%BotParams{name: bot_name, provider_params: %{token: token}} = params) do
@@ -36,22 +64,10 @@ defmodule Adapter.Telegram do
     base_url(conn) <> "/setWebhook"
   end
 
-  def handle_cast(:post_message, state)  do
-    Agala.Bot.Handler.handle(state)
-
-    {:noreply, state}
-  end
-
-  def handle_cast({:post_message, message}, state) do
-    IO.inspect message
-    Agala.Bot.Handler.handle(message, state)
-
-    {:noreply, state}
-  end
-
   defp create_body(map, opts) when is_map(map) do
     Map.merge(map, Enum.into(opts, %{}), fn _, v1, _ -> v1 end)
   end
+
   defp create_body_multipart(map, opts) when is_map(map) do
     multipart =
       create_body(map, opts)

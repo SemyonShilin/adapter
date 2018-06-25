@@ -13,12 +13,19 @@ defmodule Adapter.BotSupervisor do
     Supervisor.init(children, strategy: :one_for_one)
   end
 
-  defp spec(:polling, messenger, bot, token) when messenger == "telegram",
-       do: [{Agala.Bot, Adapter.Telegram.BotConfig.get(bot, token)}]
+  defp spec(method, messenger, bot, token) when messenger == "telegram",
+       do: [
+         {Adapter.Telegram, Adapter.Telegram.BotConfig.get(bot, token)},
+         {Agala.Bot, Adapter.Telegram.BotConfig.get(bot, token)}
+       ]
 
-  defp spec(:webhook, messenger, bot, token) when messenger == "telegram",
-       do: [{Agala.Bot, Adapter.Telegram.BotConfig.get(bot, token)}]
-#         [
+#  defp spec(:webhook, messenger, bot, token) when messenger == "telegram",
+#       do: [
+#         {Adapter.Telegram, Adapter.Telegram.BotConfig.get(bot, token)},
+#         {Agala.Bot, Adapter.Telegram.BotConfig.get(bot, token)}
+#       ]
+
+  #         [
 #         {Adapter.Telegram, Adapter.Telegram.BotConfig.get(bot, token)},
 #         {Agala.Bot.Handler, Adapter.Telegram.BotConfig.get(bot, token)},
 ##         {Agala.Provider.Telegram.Responser, Adapter.Telegram.BotConfig.get(bot, token)},

@@ -21,6 +21,7 @@ defmodule Adapter.Registry do
 
   use GenServer
   @name Adapter.Registry
+  @bot_method Application.get_env(:adapter, Adapter.Telegram) |> Keyword.get(:method)
 
   def start_link(opts) do
     GenServer.start_link(@name, :ok, opts)
@@ -78,6 +79,10 @@ defmodule Adapter.Registry do
 
   def post_message(bot_uid, message) do
     GenServer.cast(@name, {:message, bot_uid, message})
+  end
+
+  def post_message(bot_uid, hub, message) do
+    GenServer.cast(@name, {:message, bot_uid, hub, message})
   end
 
   def stop(server) do
@@ -273,14 +278,27 @@ defmodule Adapter.Registry do
   end
 
   @impl true
+  def handle_cast({:message, bot, hub, message}, {names, _} = state) do
+    if Map.has_key?(names, bot) do
+      bot = Adapter.Bots.get_by_with_messenger(uid: bot)
+
+      case bot.messenger.name do
+        "telegram" -> Adapter.Telegram.message_pass(bot.uid, hub, message)
+      end
+      {:noreply, state}
+    else
+      {:noreply, state}
+    end
+  end
+
+  @impl true
   def handle_cast({:message, bot, message}, {names, _} = state) do
     if Map.has_key?(names, bot) do
-      bot = Adapter.Bots.get_by_bot(uid: bot)
+      bot = Adapter.Bots.get_by_with_messenger(uid: bot)
 
-      Map.get(names, bot.uid)
-      |> Supervisor.which_children()
-      |> List.first |> elem(1)
-      |> GenServer.cast({:post_message, message})
+      case bot.messenger.name do
+        "telegram" -> Adapter.Telegram.message_pass(bot.uid, message)
+      end
       {:noreply, state}
     else
       {:noreply, state}

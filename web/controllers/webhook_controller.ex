@@ -12,17 +12,17 @@ defmodule Adapter.WebhookController do
     {platform, params} = Map.pop(params, "platform")
 
     if bot do
-      body = call_hub(%{"data" => params, "platform" => platform, "uid" => uid })
-      Adapter.Registry.post_message(bot.uid, body)
+#      body = call_hub(%{"data" => params, "platform" => platform, "uid" => uid })
+      Adapter.Registry.post_message(bot.uid, params)
       conn |> put_status(200) |> send_resp(200, "")
     else
       conn |> put_status(404) |> send_resp(404, "")
     end
   end
 
-  defp call_hub(message) do
-    HTTPoison.start
-    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.post System.get_env("DCH_POST"), Poison.encode!(message), [{"Content-Type", "application/json"}]
-    body
-  end
+#  defp call_hub(message) do
+#    HTTPoison.start
+#    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.post System.get_env("DCH_POST"), Poison.encode!(message), [{"Content-Type", "application/json"}]
+#    body
+#  end
 end

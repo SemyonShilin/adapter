@@ -30,7 +30,7 @@ defmodule Adapter.Telegram.BotConfig do
       provider_params: %ProviderParams{
         token: token, # Token from paragraph #3
         poll_timeout: :infinity,
-        hackney_opts: parse_proxy(@proxy)
+        hackney_opts: parse_proxy(@proxy) |> IO.inspect
       },
       private: %{
         http_opts: parse_proxy(@proxy)
@@ -55,10 +55,6 @@ defmodule Adapter.Telegram.BotConfig do
   end
 
   defp parse_proxy({:https, config}) do
-    [proxy: config]
-  end
-
-  defp parse_proxy({:socks5, config}) do
     [proxy: config]
   end
 end

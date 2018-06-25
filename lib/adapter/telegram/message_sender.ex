@@ -15,15 +15,19 @@ defmodule Adapter.Telegram.MessageSender do
 #    IO.inspect data
 #  end
 
-  def delivery(%Conn{request_bot_params: bot_params, request: %{message: %{chat: %{id: id}}}} = conn, messages) when is_list(messages) do
+  def delivery(%Conn{request_bot_params: bot_params, request: %{message: %{chat: %{id: id}}}} = conn, messages) do
     messages
-    |> Enum.each fn message ->
-      answer(bot_params, id, message)
-    end
+      |> Enum.each fn message ->
+        answer(bot_params, id, message)
+      end
   end
 
-  def delivery(_conn, _messages) do
-    nil
+
+  def delivery(messages, id, %BotParams{} = bot_params) do
+    messages |> IO.inspect
+      |> Enum.each fn message ->
+        answer(bot_params, id, message)
+      end
   end
 
   def answer(%BotParams{name: bot_name, provider_params: %{token: token}} = params, telegram_user_id, %{text: text, reply_markup: reply_markup} = message) do
@@ -41,16 +45,6 @@ defmodule Adapter.Telegram.MessageSender do
       |> Conn.with_fallback(&message_fallback(&1))
     )
   end
-
-#  def answer(bot_name, telegram_user_id, message) when is_bitstring(bot_name) do
-#    Agala.response_with(
-#      %Conn{}
-#      |> Conn.send_to(bot_name)
-#      |> IO.inspect
-#      |> Helpers.send_message(telegram_user_id, message, [])
-#      |> Conn.with_fallback(&message_fallback(&1))
-#    )
-#  end
 
   defp message_fallback(%Conn{fallback: %{"result" => %{"from" => %{"first_name" => first_name, "id" => id, "is_bot" => is_bot}, "text" => text}}} = _conn) do
     bot_postfix = if is_bot, do: "Bot", else: ""

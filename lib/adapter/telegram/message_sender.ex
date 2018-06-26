@@ -30,7 +30,7 @@ defmodule Adapter.Telegram.MessageSender do
 
   def answer(%BotParams{name: bot_name} = params, telegram_user_id, %{text: text, reply_markup: reply_markup} = _message) do
     Agala.response_with(
-      %Agala.Conn{request_bot_params: params} |> Agala.Conn.send_to(bot_name)
+      %Conn{request_bot_params: params} |> Conn.send_to(bot_name)
       |> Helpers.send_message(telegram_user_id, text, [reply_markup: reply_markup])
       |> Conn.with_fallback(&message_fallback(&1))
     )
@@ -38,7 +38,7 @@ defmodule Adapter.Telegram.MessageSender do
 
   def answer(%Conn{request_bot_params: %{name: bot_name}, request: %{message: %{from: %{id: user_telegrma_id}}}} = _conn, message) do
     Agala.response_with(
-      %Agala.Conn{} |> Agala.Conn.send_to(bot_name)
+      %Conn{} |> Conn.send_to(bot_name)
       |> Helpers.send_message(user_telegrma_id, message, [])
       |> Conn.with_fallback(&message_fallback(&1))
     )

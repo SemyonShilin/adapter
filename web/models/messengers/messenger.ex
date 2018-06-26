@@ -24,7 +24,7 @@ defmodule Adapter.Messengers.Messenger do
     |> validate_unique_record(:name)
   end
 
-  def validate_unique_record(changeset, field, opts \\ []) do
+  def validate_unique_record(changeset, field, _opts \\ []) do
     validate_change(changeset, field, fn f, value ->
       case Adapter.Messengers.get_by_messenger("#{value}") do
         %Adapter.Messengers.Messenger{} -> ["#{f}": {"#{f} not unique", []}]

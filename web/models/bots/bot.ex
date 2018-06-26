@@ -24,7 +24,7 @@ defmodule Adapter.Bots.Bot do
     |> validate_unique_record(:token)
   end
 
-  def validate_unique_record(changeset, field, opts \\ []) do
+  def validate_unique_record(changeset, field, _opts \\ []) do
     validate_change(changeset, field, fn f, value ->
       case Adapter.Bots.get_by_bot(%{f => "#{value}"}) do
         %Adapter.Bots.Bot{} -> ["#{f}": {"#{f} not unique", []}]

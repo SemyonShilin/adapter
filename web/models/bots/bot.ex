@@ -1,4 +1,8 @@
 defmodule Adapter.Bots.Bot do
+  @moduledoc """
+    The Bots schema and validation
+  """
+
   use Adapter.Web, :model
 
   schema "bots" do
@@ -22,7 +26,6 @@ defmodule Adapter.Bots.Bot do
 
   def validate_unique_record(changeset, field, opts \\ []) do
     validate_change(changeset, field, fn f, value ->
-      IO.inspect value
       case Adapter.Bots.get_by_bot(%{f => "#{value}"}) do
         %Adapter.Bots.Bot{} -> ["#{f}": {"#{f} not unique", []}]
         _ -> []

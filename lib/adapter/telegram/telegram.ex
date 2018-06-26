@@ -1,6 +1,10 @@
 defmodule Adapter.Telegram do
+  @moduledoc """
+    The module set webhook for the bots and sends custom messages
+  """
+
   alias Agala.BotParams
-  alias Adapter.Telegram.MessageSender
+  alias Adapter.Telegram.{MessageSender, RequestHandler}
   use Agala.Provider.Telegram, :handler
 
   use GenServer
@@ -35,17 +39,16 @@ defmodule Adapter.Telegram do
     {:noreply, state}
   end
 
-  def handle_cast({:message, _hub, %{"data" => %{"messages" => messages, "chat" => %{"id" => id}}} =  message}, state) do
+  def handle_cast({:message, _hub, %{"data" => %{"messages" => messages, "chat" => %{"id" => id}}} =  _message}, state) do
     messages
-      |> Adapter.Telegram.RequestHandler.parse_hub_response()
-      |> IO.inspect
-      |> Enum.filter(& &1)
-      |> Adapter.Telegram.MessageSender.delivery(id, state)
+    |> RequestHandler.parse_hub_response()
+    |> Enum.filter(& &1)
+    |> MessageSender.delivery(id, state)
 
     {:noreply, state}
   end
 
-  def set_webhook(%BotParams{name: bot_name, provider_params: %{token: token}} = params) do
+  def set_webhook(%BotParams{name: bot_name} = params) do
     conn = %Agala.Conn{request_bot_params: params} |> Agala.Conn.send_to(bot_name)
 
     HTTPoison.post(
@@ -70,7 +73,8 @@ defmodule Adapter.Telegram do
 
   defp create_body_multipart(map, opts) when is_map(map) do
     multipart =
-      create_body(map, opts)
+      map
+      |> create_body(opts)
       |> Enum.map(fn
         {key, {:file, file}} -> {:file, file, {"form-data", [{:name, key}, {:filename, Path.basename(file)}]}, []}
         {key, value} -> {to_string(key), to_string(value)}

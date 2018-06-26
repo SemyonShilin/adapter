@@ -6,7 +6,6 @@ defmodule Adapter.Telegram.RequestHandler do
   alias Agala.Conn
   alias Adapter.Telegram.MessageSender
   alias Adapter.Telegram.Model.{InlineKeyboardMarkup, InlineKeyboardButton}
-  alias Agala.Provider.Telegram.Model.{Message}
 
   chain(Agala.Provider.Telegram.Chain.Parser)
 
@@ -17,15 +16,16 @@ defmodule Adapter.Telegram.RequestHandler do
   chain(:handle)
 
   def find_bot_handler(%Conn{
-    request_bot_params: %Agala.BotParams{name: name, storage: storage, provider_params: %{token: token}} = bot_params} = conn,
+    request_bot_params: %Agala.BotParams{storage: storage, provider_params: %{token: token}} = bot_params} = conn,
   _opts) do
     bot = Adapter.Bots.get_by_bot(%{token: token})
     storage.set(bot_params, :bot, bot)
+
     conn
   end
 
   def send_messege_to_hub_handler(%Conn{
-    request_bot_params: %Agala.BotParams{name: name, storage: storage, provider_params: %{token: token}} = bot_params,
+    request_bot_params: %Agala.BotParams{storage: storage} = bot_params,
     request: request} = conn, _opts) do
     log(request)
 
@@ -42,10 +42,12 @@ defmodule Adapter.Telegram.RequestHandler do
 
   def parse_hub_response_handler(%Conn{request_bot_params: %{storage: storage} = bot_params} = conn, _opts) do
     message =
-      storage.get(bot_params, :response)
-        |> Map.get("messages", [])
-        |> parse_hub_response()
-        |> Enum.filter(& &1)
+      bot_params
+      |> storage.get(:response)
+      |> Map.get("messages", [])
+      |> parse_hub_response()
+      |> Enum.filter(& &1)
+
     storage.set(bot_params, :messages, message)
 
     conn
@@ -72,23 +74,11 @@ defmodule Adapter.Telegram.RequestHandler do
     parse_hub_response(messages, [])
   end
 
-  defp parse_hub_response([message | tail] = all, formatted_messages) do
+  defp parse_hub_response([message | tail], formatted_messages) do
     messages =
-      Enum.reduce message, %{}, fn {k, v}, acc ->
-        case k do
-          "body" -> Map.put(acc, :text, v)
-          "menu" ->
-            with %{"type" => type} <- v do
-              case type do
-                "inline"   -> Map.put(acc, :reply_markup, InlineKeyboardMarkup.make!(%{inline_keyboard: format_menu_item(v)}))
-                "keyboard" -> ""
-                "auth"     -> ""
-                _          -> ""
-              end
-            end
-          _ -> ""
-        end
-      end
+      Enum.reduce(message, %{}, fn {k, v}, acc ->
+        message_mapping().({k, v}, acc)
+      end)
 
     parse_hub_response(tail, [messages | formatted_messages])
   end
@@ -109,11 +99,32 @@ defmodule Adapter.Telegram.RequestHandler do
 
   defp format_menu_item([], state), do: state |> Enum.reverse
 
-  defp log(%{message: %{text: text, from: %{first_name: first_name, id: user_telegrma_id}}} = request) do
+  defp message_mapping do
+    fn {k, v}, acc ->
+      case k do
+        "body" -> Map.put(acc, :text, v)
+        "menu" -> type_menu(v, acc)
+        _ -> ""
+      end
+    end
+  end
+
+  defp type_menu(v, acc) do
+    with %{"type" => type} <- v do
+      case type do
+        "inline"   -> Map.put(acc, :reply_markup, InlineKeyboardMarkup.make!(%{inline_keyboard: format_menu_item(v)}))
+        "keyboard" -> ""
+        "auth"     -> ""
+        _          -> ""
+      end
+    end
+  end
+
+  defp log(%{message: %{text: text, from: %{first_name: first_name, id: user_telegrma_id}}}) do
     IO.puts "#{first_name} #{user_telegrma_id} : #{text}"
   end
 
-  defp log(%{callback_query: %{data: data, from: %{first_name: first_name, id: user_telegrma_id}}} = request) do
+  defp log(%{callback_query: %{data: data, from: %{first_name: first_name, id: user_telegrma_id}}}) do
     IO.puts "#{first_name} #{user_telegrma_id} : button - #{data}"
   end
 end

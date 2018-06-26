@@ -22,6 +22,7 @@ defmodule Adapter.Telegram.Provider do
         timeout: get_in(bot_params, [:provider_params, :poll_timeout])
       })}
   end
+
   defp set_timeout(http_opts, bot_params, module) do
     source = case module do
       :receiver -> :poll_timeout

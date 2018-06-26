@@ -7,36 +7,28 @@ defmodule Adapter.Telegram.MessageSender do
   alias Agala.Conn
   alias Agala.BotParams
 
-#  def delivery(state, %{"data" => data} = message) do
-#    IO.inspect state
-#    IO.inspect message
-#
-#    IO.inspect "11111111111111"
-#    IO.inspect data
-#  end
-
-  def delivery(%Conn{request_bot_params: bot_params, request: %{message: %{from: %{id: id}}}} = conn, messages) do
+  def delivery(%Conn{request_bot_params: bot_params, request: %{message: %{from: %{id: id}}}} = _conn, messages) do
     messages
-      |> Enum.each fn message ->
-        answer(bot_params, id, message)
-      end
+    |> Enum.each(fn message ->
+      answer(bot_params, id, message)
+    end)
   end
 
-  def delivery(%Conn{request_bot_params: bot_params, request: %{callback_query: %{from: %{id: id}}}} = conn, messages) do
+  def delivery(%Conn{request_bot_params: bot_params, request: %{callback_query: %{from: %{id: id}}}} = _conn, messages) do
     messages
-      |> Enum.each fn message ->
-        answer(bot_params, id, message)
-      end
+    |> Enum.each(fn message ->
+      answer(bot_params, id, message)
+    end)
   end
 
   def delivery(messages, id, %BotParams{} = bot_params) do
-    messages |> IO.inspect
-      |> Enum.each fn message ->
-        answer(bot_params, id, message)
-      end
+    messages
+    |> Enum.each(fn message ->
+      answer(bot_params, id, message)
+    end)
   end
 
-  def answer(%BotParams{name: bot_name, provider_params: %{token: token}} = params, telegram_user_id, %{text: text, reply_markup: reply_markup} = message) do
+  def answer(%BotParams{name: bot_name} = params, telegram_user_id, %{text: text, reply_markup: reply_markup} = _message) do
     Agala.response_with(
       %Agala.Conn{request_bot_params: params} |> Agala.Conn.send_to(bot_name)
       |> Helpers.send_message(telegram_user_id, text, [reply_markup: reply_markup])
@@ -44,7 +36,7 @@ defmodule Adapter.Telegram.MessageSender do
     )
   end
 
-  def answer(%Conn{request_bot_params: %{name: bot_name}, request: %{message: %{from: %{ id: user_telegrma_id}}}} = _conn, message) do
+  def answer(%Conn{request_bot_params: %{name: bot_name}, request: %{message: %{from: %{id: user_telegrma_id}}}} = _conn, message) do
     Agala.response_with(
       %Agala.Conn{} |> Agala.Conn.send_to(bot_name)
       |> Helpers.send_message(user_telegrma_id, message, [])

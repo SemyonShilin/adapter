@@ -6,7 +6,6 @@ defmodule Adapter.Messengers do
   use Adapter.Web, :model
 
   alias Adapter.Messengers.Messenger
-  alias Adapter.Bots.Bot
   alias Adapter.Bots
 
   def list_messengers do
@@ -19,7 +18,9 @@ defmodule Adapter.Messengers do
   end
 
   def list_messengers_with_bots do
-    Repo.all(Messenger) |> Repo.preload(:bots)
+    Messenger
+    |> Repo.all()
+    |> Repo.preload(:bots)
   end
 
   def get_messenger!(id), do: Repo.get!(Messenger, id)
@@ -58,7 +59,7 @@ defmodule Adapter.Messengers do
 
   def add_bot(messenger, params \\ %{}) do
     bot = Ecto.build_assoc(messenger, :bots, params)
-    Bots.create(bot)
+    Bots.create(bot, params)
   end
 
   def find_by_name(name \\ nil), do: Repo.get_by(Messenger, name: name)

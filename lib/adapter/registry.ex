@@ -21,7 +21,6 @@ defmodule Adapter.Registry do
 
   use GenServer
   @name Adapter.Registry
-  @bot_method Application.get_env(:adapter, Adapter.Telegram) |> Keyword.get(:method)
 
   def start_link(opts) do
     GenServer.start_link(@name, :ok, opts)
@@ -144,53 +143,55 @@ defmodule Adapter.Registry do
 
   @impl true
   def handle_call({:down, :messenger, name}, _from, {names, _} = state) do
-    if !Map.has_key?(names, name) do
-      {:reply, name, state}
-    else
+    if Map.has_key?(names, name) do
       new_state =
-        Adapter.Messengers.pluck_bots_uid_for(name)
+        name
+        |> Adapter.Messengers.pluck_bots_uid_for()
         |> down_tree(:bot, state)
       new_state = down_tree(name, :messenger, new_state)
 
       {:reply, name, new_state}
+    else
+      {:reply, name, state}
     end
   end
 
   @impl true
   def handle_call({:down, :bot, name}, _from, {names, _} = state) do
-    if !Map.has_key?(names, name) do
-      {:reply, name, state}
-    else
+    if Map.has_key?(names, name) do
       nesw_state = down_tree(name, :bot, state)
       {:reply, name, nesw_state}
+    else
+      {:reply, name, state}
     end
   end
 
   @impl true
   def handle_call({:delete, :messenger, name}, _from, {names, _} = state) do
-    if !Map.has_key?(names, name) do
-      {:reply, :ok, state}
-    else
+    if Map.has_key?(names, name) do
       new_state =
-        Adapter.Messengers.pluck_bots_uid_for(name)
+        name
+        |> Adapter.Messengers.pluck_bots_uid_for()
         |> down_tree(:bot, state)
 
       new_state = down_tree(name, :messenger, new_state)
       Adapter.Messengers.delete(name)
 
       {:reply, :ok, new_state}
+    else
+      {:reply, :ok, state}
     end
   end
 
   @impl true
   def handle_call({:delete, :bot, uid}, _from, {names, _} = state) do
-    if !Map.has_key?(names, uid) do
-      {:reply, :ok, state}
-    else
+    if Map.has_key?(names, uid) do
       new_state = down_tree(uid, :bot, state)
       Adapter.Bots.delete(uid)
 
       {:reply, :ok, new_state}
+    else
+      {:reply, :ok, state}
     end
   end
 
@@ -228,52 +229,54 @@ defmodule Adapter.Registry do
 
   @impl true
   def handle_cast({:down, :messenger, name}, {names, _} = state) do
-    if !Map.has_key?(names, name) do
-      {:noreply, state}
-    else
+    if Map.has_key?(names, name) do
       new_state =
-        Adapter.Messengers.pluck_bots_uid_for(name)
+        name
+        |> Adapter.Messengers.pluck_bots_uid_for()
         |> down_tree(:bot, state)
       new_state = down_tree(name, :messenger, new_state)
 
       {:noreply, new_state}
+    else
+      {:noreply, state}
     end
   end
 
   @impl true
   def handle_cast({:down, :bot, name}, {names, _} = state) do
-    if !Map.has_key?(names, name) do
-      {:noreply, state}
-    else
+    if Map.has_key?(names, name) do
       {:noreply, down_tree(name, :bot, state)}
+    else
+      {:noreply, state}
     end
   end
 
   @impl true
   def handle_cast({:delete, :messenger, name}, {names, _} = state) do
-    if !Map.has_key?(names, name) do
-      {:noreply, state}
-    else
+    if Map.has_key?(names, name) do
       new_state =
-        Adapter.Messengers.pluck_bots_uid_for(name)
+        name
+        |> Adapter.Messengers.pluck_bots_uid_for()
         |> down_tree(:bot, state)
 
       new_state = down_tree(name, :messenger, new_state)
       Adapter.Messengers.delete(name)
 
       {:noreply, new_state}
+    else
+      {:noreply, state}
     end
   end
 
   @impl true
   def handle_cast({:delete, :bot, uid}, {names, _} = state) do
-    if !Map.has_key?(names, uid) do
-      {:noreply, state}
-    else
+    if Map.has_key?(names, uid) do
       new_state = down_tree(uid, :bot, state)
       Adapter.Bots.delete(uid)
 
       {:noreply, new_state}
+    else
+      {:noreply, state}
     end
   end
 
@@ -328,25 +331,17 @@ defmodule Adapter.Registry do
   end
 
   @impl true
-  def handle_info({:DOWN, ref, :process, _pid, :kill}, state) do
-    IO.inspect "KILL!!!!!!!!"
-    IO.inspect state
+  def handle_info({:DOWN, _ref, :process, _pid, :kill}, state) do
     {:noreply, state}
   end
 
   @impl true
   def handle_info(_msg, state) do
-    IO.inspect "LAST4232523525235"
-    IO.inspect state
-    IO.inspect  _msg
     {:noreply, state}
   end
 
   @impl true
   def terminate(_msg, state) do
-    IO.inspect "terminate222222"
-    IO.inspect state
-    IO.inspect  _msg
     {:noreply, state}
   end
 
@@ -405,7 +400,7 @@ defmodule Adapter.Registry do
   def up_init_tree(state) do
     Adapter.Messengers.list_up_messengers()
     |> Enum.map(fn(messenger) ->
-      Adapter.Bots.where_messenger(messenger.id) |> up_bots(state)
+      messenger.id |> Adapter.Bots.where_messenger() |> up_bots(state)
     end)
     |> Enum.reduce({%{}, %{}}, fn(tuple, acc) ->
       {Map.merge(elem(tuple, 0), elem(acc, 0)),

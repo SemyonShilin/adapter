@@ -1,4 +1,8 @@
 defmodule Adapter do
+  @moduledoc """
+    App module
+  """
+
   use Application
 
   def start(_type, _args) do

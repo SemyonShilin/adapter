@@ -21,8 +21,8 @@ defmodule Adapter.MessengerSupervisor do
     )
   end
 
-  def stop(pid, name) do
-    Adapter.BotSupervisor.stop(pid, name)
+  def stop(pid, _name) do
+#    Adapter.BotSupervisor.stop(pid, name)
     Supervisor.stop(pid, :normal)
   end
 end

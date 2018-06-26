@@ -3,9 +3,8 @@ defmodule Adapter.Telegram.Receiver do
   Main worker module
   """
   use Agala.Bot.Receiver
-  alias Agala.BotParams
 
-  def get_updates(notify_with, bot_params = %BotParams{}) do
+  def get_updates(_notify_with, %Agala.BotParams{} = bot_params) do
     bot_params
   end
 end

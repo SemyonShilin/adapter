@@ -48,7 +48,7 @@ defmodule Adapter.Mixfile do
       {:ecto_mnesia, "~> 0.9.0"},
       {:ecto, "~> 2.1"},
 #      {:httpoison, "~> 1.0"},
-      {:agala_telegram, path: "../agala_telegram"},
+      {:agala_telegram, "~> 0.1.2"},
       {:credo, "~> 0.3", only: [:dev, :test]}
     ]
   end

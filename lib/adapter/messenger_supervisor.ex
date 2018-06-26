@@ -9,8 +9,8 @@ defmodule Adapter.MessengerSupervisor do
     DynamicSupervisor.start_link(@name, :ok)
   end
 
-  def start_new_bot(pid, token) do
-    spec = {Adapter.BotSupervisor, token}
+  def start_new_bot(pid, opts) do
+    spec = {Adapter.BotSupervisor, opts}
     DynamicSupervisor.start_child(pid, spec)
   end
 
@@ -21,8 +21,8 @@ defmodule Adapter.MessengerSupervisor do
     )
   end
 
-  def stop(pid, name) do
-    Adapter.BotSupervisor.stop(pid, name)
+  def stop(pid, _name) do
+#    Adapter.BotSupervisor.stop(pid, name)
     Supervisor.stop(pid, :normal)
   end
 end

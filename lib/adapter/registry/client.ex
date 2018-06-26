@@ -53,6 +53,10 @@ defmodule Adapter.Registry.Client do
         GenServer.cast(@name, {:message, bot_uid, message})
       end
 
+      def post_message(bot_uid, hub, message) do
+        GenServer.cast(@name, {:message, bot_uid, hub, message})
+      end
+
       def stop(server) do
         GenServer.stop(server)
       end

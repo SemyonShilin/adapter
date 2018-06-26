@@ -1,4 +1,8 @@
 defmodule Adapter.Messengers.Messenger do
+  @moduledoc """
+    The Messengers schema and validation
+  """
+
   use Adapter.Web, :model
 
   schema "messengers" do
@@ -17,6 +21,15 @@ defmodule Adapter.Messengers.Messenger do
     messenger
     |> cast(params, [:name, :state])
     |> validate_required([:name])
-    |> unique_constraint(:name)
+    |> validate_unique_record(:name)
+  end
+
+  def validate_unique_record(changeset, field, _opts \\ []) do
+    validate_change(changeset, field, fn f, value ->
+      case Adapter.Messengers.get_by_messenger("#{value}") do
+        %Adapter.Messengers.Messenger{} -> ["#{f}": {"#{f} not unique", []}]
+        _ -> []
+      end
+    end)
   end
 end

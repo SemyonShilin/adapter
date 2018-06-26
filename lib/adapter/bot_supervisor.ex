@@ -1,35 +1,28 @@
 defmodule Adapter.BotSupervisor do
+  @moduledoc """
+    Supervisor running for each bot and monitoring its components
+  """
+
   use Supervisor, restart: :temporary
 
-  def start_link(:ok, token) do
-    Supervisor.start_link(__MODULE__, token)
+  @telegram_bot_method Application.get_env(:adapter, Adapter.Telegram) |> Keyword.get(:method)
+
+  def start_link(:ok, args) do
+    Supervisor.start_link(__MODULE__, args)
   end
 
-  def init(token) do
-    {adapter_id, listener_id} = id_generator()
-    children = [
-      Supervisor.child_spec({Adapter.InstanceGenServer, [adapter_id, :adapter, token]}, id: adapter_id),
-      Supervisor.child_spec({Adapter.InstanceGenServer, [listener_id, :listening, token]}, id: listener_id)
-    ]
+  def init({messenger, bot, token}) do
+    children = spec(@telegram_bot_method, messenger, bot, token)
 
     Supervisor.init(children, strategy: :one_for_one)
   end
 
-  defp id_generator do
-    {String.to_atom("adapter_#{SecureRandom.base64(8)}"), String.to_atom("listener_#{SecureRandom.base64(8)}")}
-  end
+  defp spec(_method, messenger, bot, token) when messenger == "telegram",
+       do: [
+         {Adapter.Telegram, Adapter.Telegram.BotConfig.get(bot, token)},
+         {Agala.Bot, Adapter.Telegram.BotConfig.get(bot, token)}
+       ]
 
-  def stop(pid, name) do
-    bot = Adapter.Bots.get_by_bot(uid: name)
-    Supervisor.which_children(pid)
-    |> Enum.each(fn(tuple) ->
-      gen_server_pid = elem(tuple, 1)
-      if Mix.env == :prod, do: Adapter.InstanceGenServer.stop(gen_server_pid, bot.token)
-      gen_server_pid
-      |> Process.info |> Keyword.get(:links)
-      |>Enum.drop(-1) |> Enum.each(fn(e) ->
-        :ruby.stop(e)
-      end) # process with port
-    end)
-  end
+#  defp spec(:prod, messenger, bot, token) when messenger == "viber",
+#       do: {}
 end

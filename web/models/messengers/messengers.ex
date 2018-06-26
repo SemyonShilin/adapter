@@ -5,8 +5,8 @@ defmodule Adapter.Messengers do
 
   use Adapter.Web, :model
 
+  alias Adapter.Messengers
   alias Adapter.Messengers.Messenger
-  alias Adapter.Bots.Bot
   alias Adapter.Bots
 
   def list_messengers do
@@ -19,7 +19,9 @@ defmodule Adapter.Messengers do
   end
 
   def list_messengers_with_bots do
-    Repo.all(Messenger) |> Repo.preload(:bots)
+    Messenger
+    |> Repo.all()
+    |> Repo.preload(:bots)
   end
 
   def get_messenger!(id), do: Repo.get!(Messenger, id)
@@ -58,7 +60,7 @@ defmodule Adapter.Messengers do
 
   def add_bot(messenger, params \\ %{}) do
     bot = Ecto.build_assoc(messenger, :bots, params)
-    Bots.create(bot)
+    Bots.create(bot, params)
   end
 
   def find_by_name(name \\ nil), do: Repo.get_by(Messenger, name: name)
@@ -77,18 +79,18 @@ defmodule Adapter.Messengers do
   end
 
   def set_down_messenger_tree(name) do
-    case Adapter.Messengers.get_by_messenger(name) do
-      %Adapter.Messengers.Messenger{} = messenger ->
-        Adapter.Messengers.update_messenger(messenger, %{state: "down"})
-        Adapter.Bots.update_messenger_bots(messenger, [state: "down"])
+    case Messengers.get_by_messenger(name) do
+      %Messenger{} = messenger ->
+        Messengers.update_messenger(messenger, %{state: "down"})
+        Bots.update_messenger_bots(messenger, [state: "down"])
       nil -> nil
     end
   end
 
   def set_up_messenger(name) do
-    case Adapter.Messengers.get_by_messenger(name) do
-      %Adapter.Messengers.Messenger{} = mssg ->
-        Adapter.Messengers.update_messenger(mssg, %{state: "up"})
+    case Messengers.get_by_messenger(name) do
+      %Messenger{} = mssg ->
+        Messengers.update_messenger(mssg, %{state: "up"})
       nil -> nil
     end
   end

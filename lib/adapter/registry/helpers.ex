@@ -7,7 +7,6 @@ defmodule Adapter.Registry.Helpers do
 
   defmacro __using__(_opts) do
     quote do
-
       def create_messenger(messenger, {names, refs}) do
         messenger = Adapter.Messengers.create(messenger)
         up_messenger(messenger.name, {names, refs})
@@ -39,7 +38,7 @@ defmodule Adapter.Registry.Helpers do
             state
           else
             messenger_pid = Map.get(names, messenger)
-            {:ok, pid} = Adapter.MessengerSupervisor.start_new_bot(messenger_pid, token)
+            {:ok, pid} = Adapter.MessengerSupervisor.start_new_bot(messenger_pid, {messenger, name, token})
             ref = Process.monitor(pid)
             refs = Map.put(refs, ref, name)
             names = Map.put(names, name, pid)
@@ -50,7 +49,7 @@ defmodule Adapter.Registry.Helpers do
         else
           {names, refs} = up_messenger(messenger, state)
           messenger_pid = Map.get(names, messenger)
-          {:ok, pid} = Adapter.MessengerSupervisor.start_new_bot(messenger_pid, token)
+          {:ok, pid} = Adapter.MessengerSupervisor.start_new_bot(messenger_pid, {messenger, name, token})
           ref = Process.monitor(pid)
           refs = Map.put(refs, ref, name)
           names = Map.put(names, name, pid)
@@ -63,7 +62,7 @@ defmodule Adapter.Registry.Helpers do
       def up_init_tree(state) do
         Adapter.Messengers.list_up_messengers()
         |> Enum.map(fn(messenger) ->
-          Adapter.Bots.where_messenger(messenger.id) |> up_bots(state)
+          messenger.id |> Adapter.Bots.where_messenger() |> up_bots(state)
         end)
         |> Enum.reduce({%{}, %{}}, fn(tuple, acc) ->
           {Map.merge(elem(tuple, 0), elem(acc, 0)),

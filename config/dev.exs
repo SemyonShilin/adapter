@@ -50,3 +50,8 @@ config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
 
+
+config :adapter, Adapter.Telegram,
+       method: :polling
+
+import_config "dev.secret.exs"

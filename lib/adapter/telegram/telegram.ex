@@ -3,15 +3,16 @@ defmodule Adapter.Telegram do
     The module set webhook for the bots and sends custom messages
   """
 
-  alias Agala.BotParams
+  alias Agala.{BotParams, Conn}
+  alias Agala.Bot.Handler
   alias Adapter.Telegram.{MessageSender, RequestHandler}
   use Agala.Provider.Telegram, :handler
 
   use GenServer
 
-  @certificate Application.get_env(:agala_telegram, :certificate)
-  @url         Application.get_env(:agala_telegram, :url)
-  @bot_method Application.get_env(:adapter, Adapter.Telegram) |> Keyword.get(:method)
+  @certificate :agala_telegram |> Application.get_env(:certificate)
+  @url         :agala_telegram |> Application.get_env(:url)
+  @bot_method  :adapter        |> Application.get_env(Adapter.Telegram) |> Keyword.get(:method)
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, [name: :"#Adapter.Telegram::#{opts[:name]}"])
@@ -35,7 +36,7 @@ defmodule Adapter.Telegram do
   end
 
   def handle_cast({:message, message}, state) do
-    Agala.Bot.Handler.handle(message, state)
+    Handler.handle(message, state)
     {:noreply, state}
   end
 
@@ -49,7 +50,7 @@ defmodule Adapter.Telegram do
   end
 
   def set_webhook(%BotParams{name: bot_name} = params) do
-    conn = %Agala.Conn{request_bot_params: params} |> Agala.Conn.send_to(bot_name)
+    conn = %Conn{request_bot_params: params} |> Conn.send_to(bot_name)
 
     HTTPoison.post(
       set_webhook_url(conn),
@@ -76,7 +77,8 @@ defmodule Adapter.Telegram do
       map
       |> create_body(opts)
       |> Enum.map(fn
-        {key, {:file, file}} -> {:file, file, {"form-data", [{:name, key}, {:filename, Path.basename(file)}]}, []}
+        {key, {:file, file}} ->
+          {:file, file, {"form-data", [{:name, key}, {:filename, Path.basename(file)}]}, []}
         {key, value} -> {to_string(key), to_string(value)}
       end)
     {:multipart, multipart}

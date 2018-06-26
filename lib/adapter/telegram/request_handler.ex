@@ -4,8 +4,10 @@ defmodule Adapter.Telegram.RequestHandler do
   use Agala.Chain.Builder
   use Agala.Provider.Telegram, :handler
   alias Agala.Conn
+  alias Agala.BotParams
   alias Adapter.Telegram.MessageSender
   alias Adapter.Telegram.Model.{InlineKeyboardMarkup, InlineKeyboardButton}
+  alias Adapter.Bots
 
   chain(Agala.Provider.Telegram.Chain.Parser)
 
@@ -16,9 +18,9 @@ defmodule Adapter.Telegram.RequestHandler do
   chain(:handle)
 
   def find_bot_handler(%Conn{
-    request_bot_params: %Agala.BotParams{storage: storage, provider_params: %{token: token}} = bot_params} = conn,
+    request_bot_params: %BotParams{storage: storage, provider_params: %{token: token}} = bot_params} = conn,
   _opts) do
-    bot = Adapter.Bots.get_by_bot(%{token: token})
+    bot = Bots.get_by_bot(%{token: token})
     storage.set(bot_params, :bot, bot)
 
     conn
@@ -66,8 +68,14 @@ defmodule Adapter.Telegram.RequestHandler do
 
   defp call_hub(message) do
     HTTPoison.start
-    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.post System.get_env("DCH_POST"), Poison.encode!(message), [{"Content-Type", "application/json"}]
-    Poison.decode!(body)
+    with {:ok, %HTTPoison.Response{body: body}} =
+           HTTPoison.post(
+             System.get_env("DCH_POST"),
+             Poison.encode!(message),
+             [{"Content-Type", "application/json"}]
+           ) do
+      Poison.decode!(body)
+    end
   end
 
   def parse_hub_response(messages) do
@@ -88,12 +96,14 @@ defmodule Adapter.Telegram.RequestHandler do
   defp format_menu_item(%{"items" => items}), do: format_menu_item(items, [])
 
   defp format_menu_item([%{"url" => url} = menu_item | tail], state) do
-    new_state = [[InlineKeyboardButton.make!(%{text: menu_item["name"], url: url})]| state]
+    new_state =
+      [[InlineKeyboardButton.make!(%{text: menu_item["name"], url: url})]| state]
     format_menu_item(tail, new_state)
   end
 
   defp format_menu_item([%{"code" => code} = menu_item | tail], state) do
-    new_state = [[InlineKeyboardButton.make!(%{text: menu_item["name"], callback_data: code})] | state]
+    new_state =
+      [[InlineKeyboardButton.make!(%{text: menu_item["name"], callback_data: code})] | state]
     format_menu_item(tail, new_state)
   end
 
@@ -112,7 +122,8 @@ defmodule Adapter.Telegram.RequestHandler do
   defp type_menu(v, acc) do
     with %{"type" => type} <- v do
       case type do
-        "inline"   -> Map.put(acc, :reply_markup, InlineKeyboardMarkup.make!(%{inline_keyboard: format_menu_item(v)}))
+        "inline"   ->
+          Map.put(acc, :reply_markup, InlineKeyboardMarkup.make!(%{inline_keyboard: format_menu_item(v)}))
         "keyboard" -> ""
         "auth"     -> ""
         _          -> ""

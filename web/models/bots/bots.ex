@@ -5,6 +5,7 @@ defmodule Adapter.Bots do
 
   use Adapter.Web, :model
 
+  alias Adapter.Bots
   alias Adapter.Bots.Bot
 
   def list_bots do
@@ -67,22 +68,22 @@ defmodule Adapter.Bots do
   def find_by_atts(%{} = attrs), do: Repo.get_by(Bot, attrs)
 
   def set_down_bot(uid) do
-    case Adapter.Bots.get_by_with_messenger(uid: uid) do
-      %Adapter.Bots.Bot{} = bot -> Adapter.Bots.update_bot(bot, %{state: "down"})
+    case Bots.get_by_with_messenger(uid: uid) do
+      %Bot{} = bot -> Bots.update_bot(bot, %{state: "down"})
       nil -> nil
     end
   end
 
   def set_up_bot(uid) do
-    case Adapter.Bots.get_by_with_messenger(uid: uid) do
-      %Adapter.Bots.Bot{} = bot -> Adapter.Bots.update_bot(bot, %{state: "up"})
+    case Bots.get_by_with_messenger(uid: uid) do
+      %Bot{} = bot -> Bots.update_bot(bot, %{state: "up"})
       nil -> nil
     end
   end
 
   def update_messenger_bots(messenger, attr) do
     messenger.id
-    |> Adapter.Bots.where_messenger()
-    |> Adapter.Bots.update_all(attr)
+    |> Bots.where_messenger()
+    |> Bots.update_all(attr)
   end
 end

@@ -5,6 +5,7 @@ defmodule Adapter.Messengers do
 
   use Adapter.Web, :model
 
+  alias Adapter.Messengers
   alias Adapter.Messengers.Messenger
   alias Adapter.Bots
 
@@ -78,18 +79,18 @@ defmodule Adapter.Messengers do
   end
 
   def set_down_messenger_tree(name) do
-    case Adapter.Messengers.get_by_messenger(name) do
-      %Adapter.Messengers.Messenger{} = messenger ->
-        Adapter.Messengers.update_messenger(messenger, %{state: "down"})
-        Adapter.Bots.update_messenger_bots(messenger, [state: "down"])
+    case Messengers.get_by_messenger(name) do
+      %Messenger{} = messenger ->
+        Messengers.update_messenger(messenger, %{state: "down"})
+        Bots.update_messenger_bots(messenger, [state: "down"])
       nil -> nil
     end
   end
 
   def set_up_messenger(name) do
-    case Adapter.Messengers.get_by_messenger(name) do
-      %Adapter.Messengers.Messenger{} = mssg ->
-        Adapter.Messengers.update_messenger(mssg, %{state: "up"})
+    case Messengers.get_by_messenger(name) do
+      %Messenger{} = mssg ->
+        Messengers.update_messenger(mssg, %{state: "up"})
       nil -> nil
     end
   end

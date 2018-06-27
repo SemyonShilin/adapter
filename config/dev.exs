@@ -49,7 +49,8 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
-
+config :mnesia,
+       dir: 'priv/db/mnesia'
 
 config :adapter, Adapter.Telegram,
        method: :polling

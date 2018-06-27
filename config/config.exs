@@ -15,9 +15,6 @@ config :adapter, Adapter.Repo,
        host: {:system, :atom, "localhost", Kernel.node()},
        storage_type: {:system, :atom, "ordered_set", :disc_copies}
 
-config :mnesia,
-       dir: 'priv/db/mnesia'
-
 # Configures the endpoint
 config :adapter, AdapterWeb.Endpoint,
   url: [host: "localhost"],

@@ -42,8 +42,6 @@ defmodule Adapter.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:wobserver, "~> 0.1"},
-      {:export, "~> 0.1.1"},
-      {:secure_random, "~> 0.5"},
       {:envy, "~> 1.1.1"},
       {:ecto_mnesia, "~> 0.9.0"},
       {:ecto, "~> 2.1"},

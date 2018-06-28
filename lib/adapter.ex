@@ -6,9 +6,12 @@ defmodule Adapter do
   use Application
 
   def start(_type, _args) do
-    Envy.auto_load
+#    if System.get_env("MIX_ENV") == "dev"  do
+#      Envy.auto_load
+#      :observer.start
+#    end
+
     import Supervisor.Spec
-    if System.get_env("MIX_ENV") == "dev", do: :observer.start
 
     children = [
       supervisor(Adapter.Repo, []),

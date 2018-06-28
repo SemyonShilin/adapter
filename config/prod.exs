@@ -11,7 +11,8 @@ config :adapter, Adapter.Endpoint,
        url: [host: "...", port: 443],
        cache_static_manifest: "priv/static/cache_manifest.json",
        server: true,
-       code_reloader: false
+       code_reloader: false,
+       version: Application.spec(:adapter, :vsn)
 
 config :adapter, Adapter.Endpoint, server: true
 

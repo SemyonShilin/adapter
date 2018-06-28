@@ -2,11 +2,13 @@ APP="adapter"
 
 BUILD_HOST="35.227.35.171"
 BUILD_USER="sshilin"
-BUILD_AT="/home/sshilin/adapter_build"
+BUILD_AT="/home/sshilin/build"
 
 PRODUCTION_HOSTS="35.227.35.171"
 PRODUCTION_USER="sshilin"
-DELIVER_TO="/home/sshilin/adapter_release"
+DELIVER_TO="/home/sshilin/releases/"
+
+BRANCH=deploy
 
 pre_erlang_get_and_update_deps() {
   local _prod_secret_path="/home/sshilin/adapter/config/prod.secret.exs"

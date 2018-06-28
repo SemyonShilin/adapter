@@ -48,7 +48,7 @@ defmodule Adapter.Mixfile do
 #      {:httpoison, "~> 1.0"},
       {:agala_telegram, "~> 0.1.2"},
       {:credo, "~> 0.3", only: [:dev, :test]},
-      {:edeliver, "~> 1.5.0"},
+      {:edeliver, ">= 1.4.5"},
       {:distillery, "~> 1.0.0", warn_missing: false}
     ]
   end

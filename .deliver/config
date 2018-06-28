@@ -1,8 +1,13 @@
+#!/usr/bin/env bash
+
 APP="adapter"
+AUTO_VERSION=commit-count+git-revision+branch-unless-master
+TARGET_MIX_ENV=prod
 
 BUILD_HOST="35.227.35.171"
 BUILD_USER="sshilin"
 BUILD_AT="/home/sshilin/build"
+RELEASE_VERSION=0.0.1
 
 PRODUCTION_HOSTS="35.227.35.171"
 PRODUCTION_USER="sshilin"
@@ -12,8 +17,11 @@ BRANCH=deploy
 
 pre_erlang_get_and_update_deps() {
   local _prod_secret_path="/home/sshilin/adapter/config/prod.secret.exs"
+  local _dev_secret_path="/home/sshilin/adapter/config/dev.secret.exs"
+
   if [ "$TARGET_MIX_ENV" = "prod" ]; then
     __sync_remote "
+      ln -sfn '$_prod_secret_path' '$BUILD_AT/config/dev.secret.exs'
       ln -sfn '$_prod_secret_path' '$BUILD_AT/config/prod.secret.exs'
     "
   fi

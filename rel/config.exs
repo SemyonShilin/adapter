@@ -20,7 +20,6 @@ environment :dev do
 end
 
 environment :prod do
-  set output_dir: ".deliver/releases"
   set include_erts: false
   set include_src: false
   set cookie: :",t,!)eEGmN`08$J5=NYr382;L{a)PTGL5R$^)7Ta02V=%;Di}C0w`h4VA.?60.X*"

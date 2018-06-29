@@ -21,6 +21,7 @@ end
 
 environment :prod do
   set include_erts: true
+#  set include_system_libs: true
   set include_src: false
   set cookie: :",t,!)eEGmN`08$J5=NYr382;L{a)PTGL5R$^)7Ta02V=%;Di}C0w`h4VA.?60.X*"
 end
@@ -32,5 +33,11 @@ end
 
 release :adapter do
   set version: current_version(:adapter)
+  set applications: [
+        :runtime_tools
+      ]
+  set commands: [
+        "migrate": "rel/commands/migrate.sh"
+      ]
 end
 

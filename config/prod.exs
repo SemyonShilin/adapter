@@ -12,6 +12,7 @@ config :adapter, Adapter.Endpoint,
        cache_static_manifest: "priv/static/cache_manifest.json",
        server: true,
        code_reloader: false,
+       root: ".",
        version: Application.spec(:adapter, :vsn)
 
 config :adapter, Adapter.Endpoint, server: true

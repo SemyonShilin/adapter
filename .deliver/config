@@ -25,10 +25,7 @@ pre_erlang_get_and_update_deps() {
 
 post_erlang_get_and_update_deps() {
   if [ "$TARGET_MIX_ENV" = "$TARGET_MIX_ENV" ]; then
-    status "create db"
-    MIX_ENV="$TARGET_MIX_ENV" mix ecto.create
-
     status "start migration"
-    MIX_ENV="$TARGET_MIX_ENV" mix ecto.migrate
+    MIX_ENV="$TARGET_MIX_ENV" migrate
   fi
 }

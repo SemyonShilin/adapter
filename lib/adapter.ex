@@ -10,7 +10,7 @@ defmodule Adapter do
       Envy.auto_load
       :observer.start
     end
-    IO.inspect Adapter.Messengers.__schema__(:fields)
+    IO.inspect Adapter.Messengers.Messenger.__schema__(:fields)
 
     import Supervisor.Spec
 

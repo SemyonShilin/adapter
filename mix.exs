@@ -49,7 +49,7 @@ defmodule Adapter.Mixfile do
       {:agala_telegram, "~> 0.1.2"},
       {:credo, "~> 0.3", only: [:dev, :test]},
       {:edeliver, ">= 1.4.5"},
-      {:distillery, "~> 1.0.0", warn_missing: false}
+      {:distillery, github: "bitwalker/distillery", warn_missing: false, override: true}
     ]
   end
 

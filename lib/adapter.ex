@@ -6,12 +6,11 @@ defmodule Adapter do
   use Application
 
   def start(_type, _args) do
-    IO.inspect Application.get_env(:mnesia, :dir)
-
     if System.get_env("MIX_ENV") == "dev"  do
       Envy.auto_load
       :observer.start
     end
+    IO.inspect Adapter.Messengers..__schema__(:fields)
 
     import Supervisor.Spec
 

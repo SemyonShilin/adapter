@@ -12,8 +12,8 @@ config :adapter,
 
 config :adapter, Adapter.Repo,
        adapter: EctoMnesia.Adapter,
-       host: {:system, :atom, "localhost", Kernel.node()},
-       storage_type: {:system, :atom, "ordered_set", :disc_copies}
+       host: {:system, :atom, "MNESIA_HOST", Kernel.node()},
+       storage_type: {:system, :atom, "MNESIA_STORAGE_TYPE", :disc_copies}
 
 # Configures the endpoint
 config :adapter, AdapterWeb.Endpoint,

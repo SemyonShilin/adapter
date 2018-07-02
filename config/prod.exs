@@ -7,9 +7,9 @@ use Mix.Config
 #  cache_static_manifest: "priv/static/cache_manifest.json"
 
 config :adapter, Adapter.Endpoint,
+       load_from_system_env: true,
        http: [port: 4000],
        url: [host: "...", port: 443],
-       cache_static_manifest: "priv/static/cache_manifest.json",
        server: true,
        code_reloader: false,
        root: ".",

@@ -22,10 +22,3 @@ pre_erlang_get_and_update_deps() {
     scp "$_local_secret_config_file" "$BUILD_USER@$BUILD_HOST:$BUILD_AT/config/prod.secret.exs"
   fi
 }
-
-post_erlang_get_and_update_deps() {
-  if [ "$TARGET_MIX_ENV" = "$TARGET_MIX_ENV" ]; then
-    status "start migration"
-    MIX_ENV="$TARGET_MIX_ENV" bin/adapter Adapter.ReleaseTasks migrate
-  fi
-}

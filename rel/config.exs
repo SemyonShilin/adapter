@@ -33,11 +33,11 @@ end
 
 release :adapter do
   set version: current_version(:adapter)
+  set pre_start_hook: "rel/hooks/pre_start.sh"
   set applications: [
-        :runtime_tools
-      ]
-  set commands: [
-        "migrate": "rel/commands/migrate.sh"
+        :runtime_tools,
+        adapter: :permanent,
+        adapter_web: :permanent
       ]
 end
 

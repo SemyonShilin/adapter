@@ -10,12 +10,12 @@ defmodule Adapter do
       Envy.auto_load
       :observer.start
     end
-    IO.inspect Adapter.Messengers.Messenger.__schema__(:fields)
 
+    :mnesia.info |> IO.inspect
     import Supervisor.Spec
 
     children = [
-      supervisor(Adapter.Repo, []),
+      Adapter.Repo,
       {DynamicSupervisor, name: Adapter.MessengersSupervisor, strategy: :one_for_one},
       {Adapter.Registry, name: Adapter.Registry},
       supervisor(Adapter.Endpoint, [])

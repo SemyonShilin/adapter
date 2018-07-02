@@ -20,7 +20,7 @@ defmodule Adapter.Mixfile do
   def application do
     [
       mod: {Adapter, []},
-      extra_applications: [:logger, :runtime_tools, :wobserver, :ecto_mnesia, :ecto, :edeliver]
+      extra_applications: [:logger, :runtime_tools, :wobserver, :mnesia, :ecto_mnesia, :ecto, :edeliver]
     ]
   end
 

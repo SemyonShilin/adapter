@@ -10,7 +10,6 @@ config :adapter, Adapter.Endpoint,
        load_from_system_env: true,
        http: [port: 4000],
        url: [host: "...", port: 443],
-       server: true,
        code_reloader: false,
        root: ".",
        version: Application.spec(:adapter, :vsn)
@@ -20,6 +19,8 @@ config :adapter, Adapter.Endpoint, server: true
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :adapter,
+       env: :prod
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

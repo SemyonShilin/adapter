@@ -21,9 +21,9 @@ end
 
 environment :prod do
   set include_erts: true
-#  set include_system_libs: true
   set include_src: false
   set cookie: :",t,!)eEGmN`08$J5=NYr382;L{a)PTGL5R$^)7Ta02V=%;Di}C0w`h4VA.?60.X*"
+  set vm_args: "rel/vm.args"
 end
 
 # You may define one or more releases in this file.
@@ -33,11 +33,8 @@ end
 
 release :adapter do
   set version: current_version(:adapter)
-  set pre_start_hook: "rel/hooks/pre_start.sh"
   set applications: [
-        :runtime_tools,
-        adapter: :permanent,
-        adapter_web: :permanent
+        :runtime_tools
       ]
 end
 

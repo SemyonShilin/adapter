@@ -10,7 +10,7 @@ defmodule Adapter do
 
   def start(_type, _args) do
     opts = [strategy: :one_for_one, name: @sup_name]
-    IO.inspect Node.self()
+
     res = Supervisor.start_link(children(:init), opts)
     run_tools()
     Supervisor.start_child(@sup_name, children(:general))

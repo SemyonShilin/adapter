@@ -32,7 +32,7 @@ defmodule Adapter.Registry do
     {:ok, {names, refs}}
   end
 
-  def lookup() do
+  def lookup do
     GenServer.call(@name, :lookup)
   end
 

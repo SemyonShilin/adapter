@@ -1,7 +1,7 @@
 defmodule Adapter.Tasks.ReleaseTasks do
   @repo Adapter.Repo
 
-  def run() do
+  def run do
     :ok = run([Node.self()])
 
     File.touch!("ready")
@@ -10,7 +10,7 @@ defmodule Adapter.Tasks.ReleaseTasks do
   defp run([]), do: init_cluster()
   defp run([node | _]), do: join_cluster(node)
 
-  defp init_cluster() do
+  defp init_cluster do
     :ok = init_schema()
     _ = migrate()
     :ok
@@ -41,7 +41,7 @@ defmodule Adapter.Tasks.ReleaseTasks do
     end
   end
 
-  defp db_up() do
+  defp db_up do
     case @repo.__adapter__.storage_up(@repo.config) do
       :ok ->
         IO.puts "The database for Mnesia has been created"
@@ -55,7 +55,7 @@ defmodule Adapter.Tasks.ReleaseTasks do
     end
   end
 
-  defp db_down() do
+  defp db_down do
     case @repo.__adapter__.storage_down(@repo.config) do
       :ok ->
         IO.puts "Mnesia DB has been dropped"
@@ -69,7 +69,7 @@ defmodule Adapter.Tasks.ReleaseTasks do
     end
   end
 
-  defp init_schema() do
+  defp init_schema do
     case extra_nodes() do
       [] ->
         db_up()
@@ -92,24 +92,24 @@ defmodule Adapter.Tasks.ReleaseTasks do
     end
   end
 
-  defp copy_tables() do
+  defp copy_tables do
     tables()
     |> Enum.each(fn(table) ->
       :mnesia.add_table_copy(table, node(), :disc_copies)
     end)
   end
 
-  defp extra_nodes() do
+  defp extra_nodes do
     :mnesia.system_info(:extra_db_nodes)
   end
 
-  defp migrate() do
+  defp migrate do
     Ecto.Migrator.run(@repo, migrations_path(), :up, all: true)
   end
 
-  defp migrations_path(), do: Application.app_dir(:adapter, "priv/repo/migrations")
+  defp migrations_path, do: Application.app_dir(:adapter, "priv/repo/migrations")
 
-  defp tables() do
+  defp tables do
     :mnesia.system_info(:tables) -- [:schema_migrations, :schema, :id_seq]
   end
 end

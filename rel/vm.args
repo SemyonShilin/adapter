@@ -19,3 +19,6 @@
 
 # Enable SMP automatically based on availability
 -smp auto
+
+-env PORT 4000
+-env MNESIA_HOST adapter@127.0.0.1

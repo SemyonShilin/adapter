@@ -29,16 +29,7 @@ config :adapter,
 
 config :adapter, Adapter.Repo,
        adapter: EctoMnesia.Adapter,
-       prov: 'priv/db/mnesia',
-       host: :"adapter@127.0.0.1",
-       storage_type: {:system, :atom, "MNESIA_STORAGE_TYPE", :disc_copies}
-
-config :ecto_mnesia,
-       host: :"adapter@127.0.0.1",
-       storage_type: {:system, :atom, "MNESIA_STORAGE_TYPE", :disc_copies}
-
-config :mnesia,
-       host: :"adapter@127.0.0.1",
+       host: {:system, :atom, "MNESIA_HOST", Kernel.node()},
        storage_type: {:system, :atom, "MNESIA_STORAGE_TYPE", :disc_copies}
 
 # Import environment specific config. This must remain at the bottom

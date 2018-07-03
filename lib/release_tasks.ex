@@ -22,8 +22,8 @@ defmodule Adapter.Tasks.ReleaseTasks do
     :ok = connect(node)
     :ok = copy_schema(node)
     :ok = copy_tables()
-    :ok = db_up() |> IO.inspect
-    _ = migrate() |> IO.inspect
+    :ok = db_up()
+    _ = migrate()
     :ok
   end
 
@@ -108,8 +108,6 @@ defmodule Adapter.Tasks.ReleaseTasks do
   end
 
   defp migrations_path(), do: Application.app_dir(:adapter, "priv/repo/migrations")
-  defp repo_path(), do: Path.join([priv_dir(), "mnesia"])
-  defp priv_dir(), do: "#{:code.priv_dir(:adapter)}"
 
   defp tables() do
     :mnesia.system_info(:tables) -- [:schema_migrations, :schema, :id_seq]

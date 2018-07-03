@@ -20,7 +20,7 @@ defmodule Adapter.Mixfile do
   def application do
     [
       mod: {Adapter, []},
-      extra_applications: [:logger, :runtime_tools, :wobserver, :ecto_mnesia, :ecto]
+      extra_applications: [:logger, :runtime_tools, :wobserver, :mnesia, :ecto_mnesia, :ecto, :edeliver]
     ]
   end
 
@@ -47,7 +47,9 @@ defmodule Adapter.Mixfile do
       {:ecto, "~> 2.1"},
 #      {:httpoison, "~> 1.0"},
       {:agala_telegram, "~> 0.1.2"},
-      {:credo, "~> 0.3", only: [:dev, :test]}
+      {:credo, "~> 0.3", only: [:dev, :test]},
+      {:edeliver, ">= 1.4.5"},
+      {:distillery, "~> 1.5", runtime: false}
     ]
   end
 

@@ -1,0 +1,24 @@
+# rel/vm.args
+-name adapter@127.0.0.1
+
+#-setcookie ${ERL_COOKIE}
+
+## Heartbeat management; auto-restarts VM if it dies or becomes unresponsive
+## (Disabled by default..use with caution!)
+##-heart
+
+## Enable kernel poll and a few async threads
+##+K true
+##+A 5
+
+## Increase number of concurrent ports/sockets
+##-env ERL_MAX_PORTS 4096
+
+## Tweak GC to run more often
+##-env ERL_FULLSWEEP_AFTER 10
+
+# Enable SMP automatically based on availability
+-smp auto
+
+-env PORT 4000
+-env MNESIA_HOST adapter@127.0.0.1

@@ -7,14 +7,6 @@ use Mix.Config
 
 
 # General application configuration
-config :adapter,
-       ecto_repos: [Adapter.Repo]
-
-config :adapter, Adapter.Repo,
-       adapter: EctoMnesia.Adapter,
-       host: {:system, :atom, "localhost", Kernel.node()},
-       storage_type: {:system, :atom, "ordered_set", :disc_copies}
-
 # Configures the endpoint
 config :adapter, AdapterWeb.Endpoint,
   url: [host: "localhost"],
@@ -31,6 +23,14 @@ config :wobserver,
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:user_id]
+
+config :adapter,
+       ecto_repos: [Adapter.Repo]
+
+config :adapter, Adapter.Repo,
+       adapter: EctoMnesia.Adapter,
+       host: {:system, :atom, "MNESIA_HOST", Kernel.node()},
+       storage_type: {:system, :atom, "MNESIA_STORAGE_TYPE", :disc_copies}
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

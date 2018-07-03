@@ -34,3 +34,4 @@ priv/bots
 development.telegram.log
 production.telegram.log
 tbot.log
+.deliver/releases/

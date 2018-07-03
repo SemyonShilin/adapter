@@ -5,7 +5,7 @@ defmodule Adapter.Registry.Client do
     quote do
       @name Adapter.Registry
 
-      def lookup() do
+      def lookup do
         GenServer.call(@name, :lookup)
       end
 

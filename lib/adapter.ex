@@ -9,17 +9,31 @@ defmodule Adapter do
   @sup_name Adapter.Supervisor
 
   def start(_type, _args) do
-    opts = [strategy: :one_for_one, name: @sup_name]
+    [strategy: :one_for_one, name: @sup_name]
+    |> run_supervisor_tree()
+  end
 
+  def config_change(changed, _new, removed) do
+    Adapter.Endpoint.config_change(changed, removed)
+    :ok
+  end
+
+  defp run_supervisor_tree(opts) do
+    :adapter
+    |> Application.get_env(:env)
+    |> run_supervisor_tree(opts)
+  end
+
+  defp run_supervisor_tree(:prod, opts) do
     res = Supervisor.start_link(children(:init), opts)
     run_tools()
     Supervisor.start_child(@sup_name, children(:general))
     res
   end
 
-  def config_change(changed, _new, removed) do
-    Adapter.Endpoint.config_change(changed, removed)
-    :ok
+  defp run_supervisor_tree(:dev, opts) do
+    run_tools()
+    Supervisor.start_link(children(:all), opts)
   end
 
   defp run_tools do
@@ -35,6 +49,15 @@ defmodule Adapter do
 
   defp run_tools(:prod) do
     Adapter.Tasks.ReleaseTasks.run
+  end
+
+  defp children(:all) do
+    [
+      Adapter.Repo,
+      {DynamicSupervisor, name: Adapter.MessengersSupervisor, strategy: :one_for_one},
+      {Adapter.Registry, name: Adapter.Registry},
+      supervisor(Adapter.Endpoint, [])
+    ]
   end
 
   defp children(:init) do

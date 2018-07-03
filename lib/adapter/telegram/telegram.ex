@@ -54,7 +54,7 @@ defmodule Adapter.Telegram do
 
     HTTPoison.post(
       set_webhook_url(conn),
-      webhook_upload_body(conn) ,
+      webhook_upload_body(conn),
       [{"Content-Type", "application/json"}]
     )
     |> parse_body

@@ -30,6 +30,12 @@ defmodule Adapter.Viber do
     GenServer.cast(:"#Adapter.Viber::#{bot_name}", {:message, message})
   end
 
+  def handle_cast({:message, %{"event" => event} = _}, state) when event == "webhook" do
+    IO.puts "Webhook for #{state.provider_params.token} was set."
+    #    Handler.handle(message, state)
+    {:noreply, state}
+  end
+
   def handle_cast({:message, message}, state) do
     IO.inspect message
 #    Handler.handle(message, state)

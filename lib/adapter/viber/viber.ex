@@ -29,13 +29,13 @@ defmodule Adapter.Viber do
     GenServer.cast(:"#Adapter.Viber::#{bot_name}", {:message, message})
   end
 
-  def handle_cast({:message, %{"event" => event} = _}, state) when event == "webhook" do
+  def handle_cast({:message, %{"event" => event} = message}, state) when event == "webhook" do
     IO.puts "Webhook for #{state.provider_params.token} was set."
     {:noreply, state}
   end
 
-  def handle_cast({:message, %{"event" => event, "message_token" => message_token, "user_id" => user_id} = _}, state) when event == "delivered" do
-    IO.puts "Message #{message_token} was delivered for #{user_id}"
+  def handle_cast({:message, %{"event" => event, "message_token" => message_token, "user_id" => user_id} = _}, state) when event in ["delivered", "seen"] do
+    IO.puts "Message #{message_token} was #{event} for #{user_id}"
     {:noreply, state}
   end
 

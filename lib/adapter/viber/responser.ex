@@ -1,4 +1,4 @@
-defmodule Agala.Viber.Responser do
+defmodule Adapter.Viber.Responser do
   use Agala.Bot.Responser
 
   defp create_body(%Agala.Conn{response: %{payload: %{body: body}}}) when is_bitstring(body) or is_tuple(body), do: body

@@ -5,8 +5,7 @@ defmodule Adapter.Viber do
 
   alias Agala.{BotParams, Conn}
   alias Agala.Bot.Handler
-  alias Adapter.Telegram.{MessageSender, RequestHandler}
-  use Agala.Provider.Telegram, :handler
+  alias Adapter.Viber.{MessageSender, RequestHandler}
 
   use GenServer
 

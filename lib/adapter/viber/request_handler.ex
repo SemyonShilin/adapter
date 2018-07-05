@@ -8,7 +8,7 @@ defmodule Adapter.Viber.RequestHandler do
 #  alias Adapter.Telegram.Model.{InlineKeyboardMarkup, InlineKeyboardButton}
   alias Adapter.Bots
 
-#  chain(Agala.Provider.Telegram.Chain.Parser)
+  chain(Adapter.Viber.Chain.Parser)
 
   chain(:find_bot_handler)
 #  chain(:send_messege_to_hub_handler)

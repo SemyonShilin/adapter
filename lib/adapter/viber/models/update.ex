@@ -11,7 +11,7 @@ defmodule Adapter.Viber.Model.Update do
     field :message_token, :integer, default: nil
     field :sender, User, default: nil
     field :sig, :string, default: nil
-    field :silent, :boolean
+    field :silent, :boolean, default: nil
     field :timestamp, :integer
   end
 end

@@ -55,8 +55,6 @@ defmodule Adapter.Viber do
       webhook_header(conn)
     )
     |> IO.inspect
-    |> Poison.decode!()
-    |> IO.inspect
   end
 
   def base_url() do

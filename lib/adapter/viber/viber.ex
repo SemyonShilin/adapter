@@ -32,13 +32,12 @@ defmodule Adapter.Viber do
 
   def handle_cast({:message, %{"event" => event} = _}, state) when event == "webhook" do
     IO.puts "Webhook for #{state.provider_params.token} was set."
-    #    Handler.handle(message, state)
     {:noreply, state}
   end
 
   def handle_cast({:message, message}, state) do
     IO.inspect message
-#    Handler.handle(message, state)
+    Handler.handle(message, state)
     {:noreply, state}
   end
 
@@ -53,8 +52,7 @@ defmodule Adapter.Viber do
 
   def set_webhook(%BotParams{name: bot_name} = params) do
     conn = %Conn{request_bot_params: params} |> Conn.send_to(bot_name)
-    webhook_upload_body(conn)   |> IO.inspect
-    webhook_header(conn) |> IO.inspect
+
     HTTPoison.post(
       set_webhook_url(conn),
       webhook_upload_body(conn),

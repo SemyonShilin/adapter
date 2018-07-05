@@ -2,20 +2,29 @@ defmodule Adapter.Viber.RequestHandler do
   @moduledoc false
 
   use Agala.Chain.Builder
-  use Agala.Provider.Telegram, :handler
   alias Agala.Conn
   alias Agala.BotParams
-  alias Adapter.Telegram.MessageSender
-  alias Adapter.Telegram.Model.{InlineKeyboardMarkup, InlineKeyboardButton}
+  alias Adapter.Viber.MessageSender
+#  alias Adapter.Telegram.Model.{InlineKeyboardMarkup, InlineKeyboardButton}
   alias Adapter.Bots
 
-  chain(Agala.Provider.Telegram.Chain.Parser)
+#  chain(Agala.Provider.Telegram.Chain.Parser)
 
   chain(:find_bot_handler)
-  chain(:send_messege_to_hub_handler)
-  chain(:parse_hub_response_handler)
-  chain(:delivery_hub_response_handler)
-  chain(:handle)
+#  chain(:send_messege_to_hub_handler)
+#  chain(:parse_hub_response_handler)
+#  chain(:delivery_hub_response_handler)
+#  chain(:handle)
+
+  def find_bot_handler(conn, _opts) do
+    IO.inspect conn
+    IO.inspect _opts
+
+#    bot = Bots.get_by_bot(%{token: token})
+#    storage.set(bot_params, :bot, bot)
+
+    conn
+  end
 
   def find_bot_handler(%Conn{
     request_bot_params: %BotParams{storage: storage, provider_params: %{token: token}} = bot_params} = conn,

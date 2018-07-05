@@ -23,15 +23,16 @@ defmodule Adapter.Viber do
   end
 
   def message_pass(bot_name, hub, message) do
-    GenServer.cast(:"#Adapter.Telegram::#{bot_name}", {:message, hub, message})
+    GenServer.cast(:"#Adapter.Viber::#{bot_name}", {:message, hub, message})
   end
 
   def message_pass(bot_name, message) do
-    GenServer.cast(:"#Adapter.Telegram::#{bot_name}", {:message, message})
+    GenServer.cast(:"#Adapter.Viber::#{bot_name}", {:message, message})
   end
 
   def handle_cast({:message, message}, state) do
-    Handler.handle(message, state)
+    IO.inspect message
+#    Handler.handle(message, state)
     {:noreply, state}
   end
 

@@ -11,6 +11,7 @@ defmodule Adapter.WebhookController do
     {_, params} = Map.pop(params, "platform")
 
     if bot do
+      IO.inspect params
       Adapter.Registry.post_message(bot.uid, params)
       conn |> put_status(200) |> send_resp(200, "")
     else

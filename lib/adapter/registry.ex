@@ -287,6 +287,7 @@ defmodule Adapter.Registry do
 
       case bot.messenger.name do
         "telegram" -> Adapter.Telegram.message_pass(bot.uid, hub, message)
+        "viber"    -> Adapter.Viber.message_pass(bot.uid, hub, message)
       end
       {:noreply, state}
     else
@@ -301,6 +302,7 @@ defmodule Adapter.Registry do
 
       case bot.messenger.name do
         "telegram" -> Adapter.Telegram.message_pass(bot.uid, message)
+        "viber"    -> Adapter.Viber.message_pass(bot.uid, message)
       end
       {:noreply, state}
     else

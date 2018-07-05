@@ -34,6 +34,11 @@ defmodule Adapter.Viber do
     {:noreply, state}
   end
 
+  def handle_cast({:message, %{"event" => event, "message_token" => message_token, "user_id" => user_id} = _}, state) when event == "delivered" do
+    IO.puts "Message #{message_token} was delivered for #{user_id}"
+    {:noreply, state}
+  end
+
   def handle_cast({:message, message}, state) do
     IO.inspect message
     Handler.handle(message, state)

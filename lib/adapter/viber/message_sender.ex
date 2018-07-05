@@ -62,14 +62,4 @@ defmodule Adapter.Viber.MessageSender do
     IO.puts("\n#{first_name} #{bot_postfix} #{id} : #{text}")
     IO.puts("----> You have just sent message <----")
   end
-
-  defp message_fallback(%Conn{fallback: {:error, error}} = _conn) do
-    IO.inspect error
-    IO.puts("----> You have just get error HTTPoison <----")
-  end
-
-  defp message_fallback(%Conn{fallback: %{"description" => error}} = _conn) do
-    IO.inspect error
-    IO.puts("----> You have just get error response <----")
-  end
 end

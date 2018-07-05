@@ -3,7 +3,7 @@ defmodule Adapter.Viber.Helpers do
   @base_url "https://chatapi.viber.com/pa"
 
   defp base_url(route) do
-    @base_url <> route
+    fn (_token)-> @base_url <> route end
   end
 
   defp create_body(map, opts) when is_map(map) do

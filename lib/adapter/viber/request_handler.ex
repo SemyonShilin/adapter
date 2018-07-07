@@ -20,7 +20,7 @@ defmodule Adapter.Viber.RequestHandler do
     request_bot_params: %BotParams{storage: storage, provider_params: %{token: token}} = bot_params, request: request} = conn,
     _opts) do
     IO.inspect conn
-    conn |> MessageSender.delivery(%{"receiver" => "W/dg9dCEI5lCn5irYe8dUw==","text" => "loser", "type" => "text", "sender" => %{"name" => "fuflo"}})
+    conn |> MessageSender.delivery(%{"receiver" => "", "text" => "loser", "type" => "text", "sender" => %{"name" => "fuflo"}})
 #    bot = Bots.get_by_bot(%{token: token})
 #    storage.set(bot_params, :bot, bot)
 

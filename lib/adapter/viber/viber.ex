@@ -1,6 +1,6 @@
 defmodule Adapter.Viber do
   @moduledoc """
-
+    The module set webhook for the viber bots and sends custom messages
   """
 
   alias Agala.{BotParams, Conn}
@@ -65,7 +65,7 @@ defmodule Adapter.Viber do
     |> IO.inspect
   end
 
-  def base_url() do
+  def base_url do
     "https://chatapi.viber.com/pa"
   end
 

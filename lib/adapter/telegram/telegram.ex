@@ -1,6 +1,6 @@
 defmodule Adapter.Telegram do
   @moduledoc """
-    The module set webhook for the bots and sends custom messages
+    The module set webhook for the telegram bots and sends custom messages
   """
 
   alias Agala.{BotParams, Conn}

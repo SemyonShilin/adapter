@@ -1,12 +1,12 @@
 defmodule Adapter.Viber.Conn.Response do
   defstruct [
-    event: nil,
+    method: nil,
     payload: %{},
     opts: []
   ]
 
   @type t :: %Adapter.Viber.Conn.Response{
-               event: String.t(),
+               method: :post | :get | :put | :delete,
                payload: map(),
                opts: Keyword.t
              }

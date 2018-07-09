@@ -1,4 +1,4 @@
-efmodule Adapter.Viber.Conn.Response do
+defmodule Adapter.Viber.Conn.Response do
   defstruct [
     event: nil,
     payload: %{},

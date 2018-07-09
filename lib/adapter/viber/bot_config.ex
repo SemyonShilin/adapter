@@ -3,7 +3,7 @@ defmodule Adapter.Viber.BotConfig do
     A module that collects the parameters of bots
   """
 
-  alias Agala.Provider.Telegram.Conn.ProviderParams
+  alias Adapter.Viber.Conn.ProviderParams
 
   def get(name, token) do
     config(name, token)
@@ -15,8 +15,7 @@ defmodule Adapter.Viber.BotConfig do
       provider: Adapter.Viber.Provider,
       handler: Adapter.Viber.RequestHandler,
       provider_params: %ProviderParams{
-        token: token,
-        poll_timeout: :infinity
+        token: token
       }
     }
   end

@@ -40,7 +40,6 @@ defmodule Adapter.Viber do
   end
 
   def handle_cast({:message, message}, state) do
-    IO.inspect message
     Handler.handle(message, state)
     {:noreply, state}
   end

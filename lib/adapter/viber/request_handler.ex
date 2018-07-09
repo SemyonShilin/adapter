@@ -5,7 +5,6 @@ defmodule Adapter.Viber.RequestHandler do
   alias Agala.Conn
   alias Agala.BotParams
   alias Adapter.Viber.MessageSender
-#  alias Adapter.Telegram.Model.{InlineKeyboardMarkup, InlineKeyboardButton}
   alias Adapter.Bots
 
   chain(Adapter.Viber.Chain.Parser)
@@ -20,18 +19,14 @@ defmodule Adapter.Viber.RequestHandler do
     request_bot_params: %BotParams{storage: storage, provider_params: %{token: token}} = bot_params, request: request} = conn,
     _opts) do
     IO.inspect conn
-    conn |> MessageSender.delivery(%{"receiver" => "", "text" => "loser", "type" => "text", "sender" => %{"name" => "fuflo"}})
+    conn |> MessageSender.delivery(%{
+      "receiver" => request.sender.id,
+      "text" => request.message.text <> "from adapter",
+      "type" => request.message.type,
+      "sender" => %{"name" => bot_params.request_bot_params.name}
+    })
 #    bot = Bots.get_by_bot(%{token: token})
 #    storage.set(bot_params, :bot, bot)
-
-    conn
-  end
-
-  def find_bot_handler(%Conn{
-    request_bot_params: %BotParams{storage: storage, provider_params: %{token: token}} = bot_params} = conn,
-  _opts) do
-    bot = Bots.get_by_bot(%{token: token})
-    storage.set(bot_params, :bot, bot)
 
     conn
   end
@@ -44,7 +39,7 @@ defmodule Adapter.Viber.RequestHandler do
     bot = storage.get(bot_params, :bot)
     %{"data" => response} =
       %{data: request}
-      |> Map.merge(%{platform: "telegram", uid: bot.uid})
+      |> Map.merge(%{platform: "viber", uid: bot.uid})
       |> call_hub()
 
     storage.set(bot_params, :response, response)

@@ -23,7 +23,7 @@ defmodule Adapter.Viber.RequestHandler do
       "receiver" => request.sender.id,
       "text" => request.message.text <> "from adapter",
       "type" => request.message.type,
-      "sender" => %{"name" => bot_params.request_bot_params.provider_params.name}
+      "sender" => %{"name" => bot_params.provider_params.name}
     })
 #    bot = Bots.get_by_bot(%{token: token})
 #    storage.set(bot_params, :bot, bot)

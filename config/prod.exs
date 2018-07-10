@@ -62,7 +62,7 @@ config :adapter,
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
 
-config :adapter, Adapter.Telegram,
+config :telegram_engine, Engine.Telegram,
        method: :webhook
 
 import_config "prod.secret.exs"

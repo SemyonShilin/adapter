@@ -16,14 +16,8 @@ defmodule Adapter.BotSupervisor do
   end
 
   defp spec(messenger, bot, token) when messenger == "telegram",
-       do: [
-         {Adapter.Telegram, Adapter.Telegram.BotConfig.get(bot, token)},
-         {Agala.Bot, Adapter.Telegram.BotConfig.get(bot, token)}
-       ]
+       do: Engine.Telegram.Spec.engine_spec(bot, token)
 
   defp spec(messenger, bot, token) when messenger == "viber",
-       do: [
-         {Adapter.Viber, Adapter.Viber.BotConfig.get(bot, token)},
-         {Agala.Bot, Adapter.Viber.BotConfig.get(bot, token)}
-       ]
+       do: Engine.Viber.Spec.engine_spec(bot, token)
 end

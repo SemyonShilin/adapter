@@ -45,9 +45,8 @@ defmodule Adapter.Mixfile do
       {:envy, "~> 1.1.1"},
       {:ecto_mnesia, "~> 0.9.0"},
       {:ecto, "~> 2.1"},
-#      {:httpoison, "~> 1.0"},
-      {:agala_telegram, "~> 0.1.2"},
-#      {:agala_whatsapp, "~> 0.1.0"},
+      {:telegram_engine, github: "ShilinSemyon/telegram_engine", branch: "develop"},
+      {:viber_engine,    github: "ShilinSemyon/viber_engine",    branch: "develop"},
       {:credo, "~> 0.3", only: [:dev, :test]},
       {:edeliver, ">= 1.4.5"},
       {:distillery, "~> 1.5", runtime: false}

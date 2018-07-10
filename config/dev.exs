@@ -52,7 +52,7 @@ config :phoenix, :stacktrace_depth, 20
 config :mnesia,
        dir: 'priv/db/mnesia'
 
-config :adapter, Adapter.Telegram,
+config :telegram_engine, Engine.Telegram,
        method: :polling
 
 config :adapter,

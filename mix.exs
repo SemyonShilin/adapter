@@ -46,8 +46,7 @@ defmodule Adapter.Mixfile do
       {:ecto_mnesia, "~> 0.9.0"},
       {:ecto, "~> 2.1"},
 #      {:httpoison, "~> 1.0"},
-      {:agala_telegram, "~> 0.1.2"},
-#      {:agala_whatsapp, "~> 0.1.0"},
+      {:telegram_engine, path: "../telegram_engine"},
       {:credo, "~> 0.3", only: [:dev, :test]},
       {:edeliver, ">= 1.4.5"},
       {:distillery, "~> 1.5", runtime: false}

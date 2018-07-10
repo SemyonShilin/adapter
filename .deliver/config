@@ -12,7 +12,7 @@ PRODUCTION_HOSTS="35.227.35.171"
 PRODUCTION_USER="sshilin"
 DELIVER_TO="/home/sshilin/releases/"
 
-BRANCH=deploy
+BRANCH=develop
 
 pre_erlang_get_and_update_deps() {
   # copy it from the local machine to the build host when building

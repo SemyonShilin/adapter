@@ -1,6 +1,6 @@
 defmodule Adapter.Telegram do
   @moduledoc """
-    The module set webhook for the bots and sends custom messages
+    The module set webhook for the telegram bots and sends custom messages
   """
 
   alias Agala.{BotParams, Conn}
@@ -54,7 +54,7 @@ defmodule Adapter.Telegram do
 
     HTTPoison.post(
       set_webhook_url(conn),
-      webhook_upload_body(conn) ,
+      webhook_upload_body(conn),
       [{"Content-Type", "application/json"}]
     )
     |> parse_body

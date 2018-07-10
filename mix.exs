@@ -33,7 +33,7 @@ defmodule Adapter.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3.2"},
+      {:phoenix, "~> 1.3.3"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},
       {:postgrex, ">= 0.0.0"},
@@ -47,6 +47,7 @@ defmodule Adapter.Mixfile do
       {:ecto, "~> 2.1"},
 #      {:httpoison, "~> 1.0"},
       {:agala_telegram, "~> 0.1.2"},
+#      {:agala_whatsapp, "~> 0.1.0"},
       {:credo, "~> 0.3", only: [:dev, :test]},
       {:edeliver, ">= 1.4.5"},
       {:distillery, "~> 1.5", runtime: false}

@@ -55,4 +55,7 @@ config :mnesia,
 config :adapter, Adapter.Telegram,
        method: :polling
 
+config :adapter,
+       env: :dev
+
 import_config "dev.secret.exs"

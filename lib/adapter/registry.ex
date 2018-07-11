@@ -285,10 +285,8 @@ defmodule Adapter.Registry do
     if Map.has_key?(names, bot) do
       bot = Adapter.Bots.get_by_with_messenger(uid: bot)
 
-      case bot.messenger.name do
-        "telegram" -> Engine.Telegram.message_pass(bot.uid, hub, message)
-        "viber"    -> Engine.Viber.message_pass(bot.uid, hub, message)
-      end
+      Module.concat(Engine, String.capitalize(bot.messenger.name)).message_pass(bot.uid, message)
+
       {:noreply, state}
     else
       {:noreply, state}
@@ -300,10 +298,8 @@ defmodule Adapter.Registry do
     if Map.has_key?(names, bot) do
       bot = Adapter.Bots.get_by_with_messenger(uid: bot)
 
-      case bot.messenger.name do
-        "telegram" -> Engine.Telegram.message_pass(bot.uid, message)
-        "viber"    -> Engine.Viber.message_pass(bot.uid, message)
-      end
+      Module.concat(Engine, String.capitalize(bot.messenger.name)).message_pass(bot.uid, message)
+
       {:noreply, state}
     else
       {:noreply, state}

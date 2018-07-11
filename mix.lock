@@ -38,7 +38,7 @@
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.1", "28a4d65b7f59893bc2c7de786dec1e1555bd742d336043fe644ae956c3497fbe", [:make, :rebar], [], "hexpm"},
   "telegram_engine": {:git, "https://github.com/ShilinSemyon/telegram_engine.git", "c576db69f86a057a39437cac262030152353b2d0", [branch: "develop"]},
   "unicode_util_compat": {:hex, :unicode_util_compat, "0.3.1", "a1f612a7b512638634a603c8f401892afbf99b8ce93a45041f8aaca99cadb85e", [:rebar3], [], "hexpm"},
-  "viber_engine": {:git, "https://github.com/ShilinSemyon/viber_engine.git", "b5ad8922fdb7fdbe817a876b6bea2ae0608c587c", [branch: "develop"]},
+  "viber_engine": {:git, "https://github.com/ShilinSemyon/viber_engine.git", "80639f3c89d7d79365caf0a98c35643bec1514b6", [branch: "develop"]},
   "websocket_client": {:hex, :websocket_client, "1.3.0", "2275d7daaa1cdacebf2068891c9844b15f4fdc3de3ec2602420c2fb486db59b6", [:rebar3], [], "hexpm"},
   "wobserver": {:hex, :wobserver, "0.1.8", "3ed5ea55478627f0593800ab83919b71f41fd426ec344e71cf1d975e6d2065b8", [:mix], [{:cowboy, "~> 1.1", [hex: :cowboy, repo: "hexpm", optional: false]}, {:httpoison, "~> 0.11 or ~> 0.12", [hex: :httpoison, repo: "hexpm", optional: false]}, {:plug, "~> 1.3 or ~> 1.4", [hex: :plug, repo: "hexpm", optional: false]}, {:poison, "~> 2.0 or ~> 3.1", [hex: :poison, repo: "hexpm", optional: false]}, {:websocket_client, "~> 1.2", [hex: :websocket_client, repo: "hexpm", optional: false]}], "hexpm"},
 }

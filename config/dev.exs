@@ -59,4 +59,7 @@ config :telegram_engine, Engine.Telegram,
 config :viber_engine, Engine.Viber,
        logger: :console
 
+config :adapter,
+       env: :dev
+
 import_config "dev.secret.exs"

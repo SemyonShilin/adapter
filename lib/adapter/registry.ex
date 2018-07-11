@@ -286,8 +286,8 @@ defmodule Adapter.Registry do
       bot = Adapter.Bots.get_by_with_messenger(uid: bot)
 
       case bot.messenger.name do
-        "telegram" -> Adapter.Telegram.message_pass(bot.uid, hub, message)
-        "viber"    -> Adapter.Viber.message_pass(bot.uid, hub, message)
+        "telegram" -> Engine.Telegram.message_pass(bot.uid, hub, message)
+        "viber"    -> Engine.Viber.message_pass(bot.uid, hub, message)
       end
       {:noreply, state}
     else
@@ -442,10 +442,20 @@ defmodule Adapter.Registry do
     Adapter.Messengers.set_down_messenger_tree(name)
     Adapter.Bots.set_down_bot(name)
 
+    pre_down(name)
+
     {pid, {names, refs}}
   end
 
   def stop_process(:bot, pid, name), do: Adapter.MessengerSupervisor.stop(pid, name)
 
   def stop_process(:messenger, pid, _name), do: Adapter.MessengersSupervisor.stop(pid)
+
+  defp pre_down(bot_name) do
+    case Adapter.Bots.get_by_with_messenger(%{uid: bot_name}) do
+      %Adapter.Bots.Bot{} = bot ->
+        Module.concat(Engine, String.capitalize(bot.messenger.name)).pre_down(bot.uid)
+      _ -> nil
+    end
+  end
 end

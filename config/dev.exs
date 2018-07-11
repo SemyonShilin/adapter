@@ -53,6 +53,7 @@ config :mnesia,
        dir: 'priv/db/mnesia'
 
 config :telegram_engine, Engine.Telegram,
+       logger: :console,
        method: :polling
 
 config :adapter,

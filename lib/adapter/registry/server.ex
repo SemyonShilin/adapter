@@ -209,7 +209,7 @@ defmodule Adapter.Registry.Server do
           bot = Adapter.Bots.get_by_with_messenger(uid: bot)
 
           case bot.messenger.name do
-            "telegram" -> Adapter.Telegram.message_pass(bot.uid, hub, message)
+            "telegram" -> Engine.Telegram.message_pass(bot.uid, hub, message)
           end
           {:noreply, state}
         else
@@ -223,7 +223,7 @@ defmodule Adapter.Registry.Server do
           bot = Adapter.Bots.get_by_with_messenger(uid: bot)
 
           case bot.messenger.name do
-            "telegram" -> Adapter.Telegram.message_pass(bot.uid, message)
+            "telegram" -> Engine.Telegram.message_pass(bot.uid, message)
           end
           {:noreply, state}
         else

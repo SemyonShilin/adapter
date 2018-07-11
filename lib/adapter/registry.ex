@@ -301,8 +301,8 @@ defmodule Adapter.Registry do
       bot = Adapter.Bots.get_by_with_messenger(uid: bot)
 
       case bot.messenger.name do
-        "telegram" -> Adapter.Telegram.message_pass(bot.uid, message)
-        "viber"    -> Adapter.Viber.message_pass(bot.uid, message)
+        "telegram" -> Engine.Telegram.message_pass(bot.uid, message)
+        "viber"    -> Engine.Viber.message_pass(bot.uid, message)
       end
       {:noreply, state}
     else

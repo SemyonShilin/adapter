@@ -52,12 +52,15 @@ config :phoenix, :stacktrace_depth, 20
 config :mnesia,
        dir: 'priv/db/mnesia'
 
+config :adapter, Adapter.BotLogger,
+       type: :console
+
 config :telegram_engine, Engine.Telegram,
-       logger: :console,
+       logger: Adapter.BotLogger,
        method: :polling
 
 config :viber_engine, Engine.Viber,
-       logger: :console
+       logger: Adapter.BotLogger
 
 config :adapter,
        env: :dev

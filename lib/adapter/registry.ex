@@ -285,7 +285,7 @@ defmodule Adapter.Registry do
     if Map.has_key?(names, bot) do
       bot = Adapter.Bots.get_by_with_messenger(uid: bot)
 
-      Module.concat(Engine, String.capitalize(bot.messenger.name)).message_pass(bot.uid, message)
+      Module.concat(Engine, String.capitalize(bot.messenger.name)).message_pass(bot.uid, hub, message)
 
       {:noreply, state}
     else

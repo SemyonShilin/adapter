@@ -1,7 +1,7 @@
 # rel/vm.args
 -name adapter@127.0.0.1
 
-#-setcookie ${ERL_COOKIE}
+-setcookie ,t,!)eEGmN`08$J5=NYr382;L{a)PTGL5R$^)7Ta02V=%;Di}C0w`h4VA.?60.X*
 
 ## Heartbeat management; auto-restarts VM if it dies or becomes unresponsive
 ## (Disabled by default..use with caution!)
@@ -20,5 +20,9 @@
 # Enable SMP automatically based on availability
 -smp auto
 
+-env REPLACE_OS_VARS true
 -env PORT 4000
 -env MNESIA_HOST adapter@127.0.0.1
+-env PROXY_HOST ${PROXY_HOST}
+-env PROXY_PORT ${PROXY_PORT}
+-env DCH_POST ${DCH_POST}

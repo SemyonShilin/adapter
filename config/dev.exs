@@ -62,6 +62,9 @@ config :telegram_engine, Engine.Telegram,
 config :viber_engine, Engine.Viber,
        logger: Adapter.BotLogger
 
+config :slack_engine, Engine.Slack,
+       logger: Adapter.BotLogger
+
 config :adapter,
        env: :dev
 

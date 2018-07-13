@@ -13,12 +13,17 @@ defmodule Adapter.Api.V0.MessengerController do
   end
 
   def create(conn, %{"messenger" => messenger_params}) do
-    with {mssg_name, _} <- Registry.create(Map.get(messenger_params, "name")),
-         messenger <- Messengers.find_by_name(mssg_name)
-      do
-      conn
-      |> put_status(:created)
-      |> render("show.json", messenger: messenger)
+    case Registry.create(Map.get(messenger_params, "name")) do
+      {mssg_name, _}->
+        messenger = Messengers.find_by_name(mssg_name)
+
+        conn
+        |> put_status(:created)
+        |> render("show.json", messenger: messenger)
+      changeset ->
+        conn
+        |> put_status(:bad_request)
+        |> render(Adapter.ChangesetView, "error.json", changeset: changeset)
     end
   end
 

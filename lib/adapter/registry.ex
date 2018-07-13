@@ -107,8 +107,10 @@ defmodule Adapter.Registry do
     if Map.has_key?(names, messenger) do
       {:reply, {messenger, Map.get(names, messenger)}, state}
     else
-      new_state = create_messenger(messenger, state)
-      {:reply, {messenger, Map.get(elem(new_state, 0), messenger)}, new_state}
+      case create_messenger(messenger, state) do
+        {_, _} = new_state -> {:reply, {messenger, Map.get(elem(new_state, 0), messenger)}, new_state}
+        other -> {:reply, other, state}
+      end
     end
   end
 
@@ -118,13 +120,25 @@ defmodule Adapter.Registry do
       if Map.has_key?(names, name) do
         {:reply, {name, Map.get(names, name)}, state}
       else
-        new_state = create_bot({messenger, name, token}, state)
-        {:reply, {name, Map.get(elem(new_state, 0), name)}, new_state}
+        case create_bot({messenger, name, token}, state) do
+          {_, _} = new_state -> {:reply, {name, Map.get(elem(new_state, 0), name)}, new_state}
+          other -> {:reply, other, state}
+        end
       end
     else
-      {names, refs} = create_messenger(messenger, state)
-      new_state = create_bot({messenger, name, token}, {names, refs})
-      {:reply, {name, Map.get(elem(new_state, 0), name)}, new_state}
+      case create_messenger(messenger, state) do
+        {names, refs} = _ ->
+          case create_bot({messenger, name, token}, state) do
+            {_, _} = new_state -> {:reply, {name, Map.get(elem(new_state, 0), name)}, new_state}
+            other -> {:reply, other, state}
+          end
+        other ->
+          up_messenger(messenger, {names, refs})
+          case create_bot({messenger, name, token}, state) do
+            {_, _} = new_state -> {:reply, {name, Map.get(elem(new_state, 0), name)}, new_state}
+            other -> {:reply, other, state}
+          end
+      end
     end
   end
 
@@ -344,14 +358,19 @@ defmodule Adapter.Registry do
   end
 
   def create_messenger(messenger, {names, refs}) do
-    messenger = Adapter.Messengers.create(messenger)
-    up_messenger(messenger.name, {names, refs})
+    case Adapter.Messengers.create(messenger) do
+      %Adapter.Messengers.Messenger{} = messenger -> up_messenger(messenger.name, {names, refs})
+      errors -> errors
+    end
   end
 
   def create_bot({messenger_name, bot_uid, token}, state) do
     messenger = Adapter.Messengers.get_by_messenger(messenger_name)
-    bot = Adapter.Messengers.add_bot(messenger, %{uid: bot_uid, token: token})
-    up_bot({messenger_name, bot.uid, bot.token}, state)
+
+    case Adapter.Messengers.add_bot(messenger, %{uid: bot_uid, token: token}) do
+      %Adapter.Bots.Bot{} = bot -> up_bot({messenger_name, bot.uid, bot.token}, state)
+      errors -> errors
+    end
   end
 
   def up_messenger(messenger, {names, refs} = state) do

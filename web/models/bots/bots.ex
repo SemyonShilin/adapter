@@ -21,13 +21,13 @@ defmodule Adapter.Bots do
   end
 
   def create(bot, params) do
-    changeset = Bot.changeset(%Bot{}, params)
-    new_bot =
-      case changeset.valid? do
-        true  -> Repo.insert(bot)
-        false -> changeset.errors
-      end
-    find_by_atts(%{token: bot.token})
+    bot
+    |> Bot.changeset(params)
+    |> Repo.insert()
+    |> case do
+         {:ok, bot} -> bot
+         {:error, changeset} -> changeset
+       end
   end
 
   def update_bot(%Bot{} = bot, attrs) do

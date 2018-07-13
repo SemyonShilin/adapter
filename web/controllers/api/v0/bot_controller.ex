@@ -13,12 +13,17 @@ defmodule Adapter.Api.V0.BotController do
   end
 
   def create(conn, %{"bot" => bot_params}) do
-    with {bot_name, _} <- bot_params["platform"]
-                     |> Registry.create({bot_params["uid"], bot_params["creds"]["token"]}),
-         bot <- Bots.get_by_bot(uid: bot_name) do
-      conn
-      |> put_status(:created)
-      |> render("show.json", bot: bot)
+    case Registry.create(bot_params["platform"], {bot_params["uid"], bot_params["creds"]["token"]}) do
+      {bot_name, _} ->
+        bot = Bots.get_by_bot(uid: bot_name)
+
+        conn
+        |> put_status(:created)
+        |> render("show.json", bot: bot)
+      changeset ->
+        conn
+        |> put_status(:bad_request)
+        |> render(Adapter.ChangesetView, "error.json", changeset: changeset)
     end
   end
 

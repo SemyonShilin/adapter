@@ -40,7 +40,7 @@ defmodule Adapter.Messengers do
     |> Repo.insert()
     |> case do
       {:ok, messenger} -> messenger
-      {:error, errors} -> errors.errors
+      {:error, changeset} -> changeset
     end
   end
 

@@ -47,6 +47,7 @@ defmodule Adapter.Mixfile do
       {:ecto, "~> 2.1"},
       {:telegram_engine, github: "ShilinSemyon/telegram_engine", branch: "develop"},
       {:viber_engine,    github: "ShilinSemyon/viber_engine",    branch: "develop"},
+#      {:slack_engine,    github: "ShilinSemyon/slack_engine",    branch: "develop"},
       {:credo, "~> 0.3", only: [:dev, :test]},
       {:edeliver, ">= 1.4.5"},
       {:distillery, "~> 1.5", runtime: false}

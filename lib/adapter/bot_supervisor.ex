@@ -15,9 +15,11 @@ defmodule Adapter.BotSupervisor do
     Supervisor.init(children, strategy: :one_for_one)
   end
 
-  defp spec(messenger, bot, token) when messenger == "telegram",
-       do: Engine.Telegram.Spec.engine_spec(bot, token)
+  defp spec(messenger, bot, token) do
+    module =
+      Engine
+      |> Module.concat(String.capitalize(messenger))
 
-  defp spec(messenger, bot, token) when messenger == "viber",
-       do: Engine.Viber.Spec.engine_spec(bot, token)
+    Module.concat(module, Spec).engine_spec(bot, token)
+  end
 end

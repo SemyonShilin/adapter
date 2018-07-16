@@ -1,17 +1,18 @@
-def Hub.Client do
+defmodule Hub.Client do
   @moduledoc false
 
-  use GenServer
+  use Supervisor
+  alias Hub.Client.HTTP
 
-  def start_link(opts) do
-    GenServer.start_link(__MODULE__, opts.args, name: __MODULE__)
+  def start_link(_args \\ []) do
+    Supervisor.start_link(__MODULE__, :ok)
   end
 
-  def init(args) do
-    {:ok, args}
-  end
+  def init(:ok) do
+    children = [
+      {HTTP, %{}}
+    ]
 
-  def call() do
-    GenServer.call(__MODULE__, {})
+    Supervisor.init(children, strategy: :one_for_one)
   end
 end

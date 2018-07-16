@@ -54,6 +54,7 @@ defmodule Adapter do
   defp children(:all) do
     [
       Adapter.Repo,
+      Hub.Client,
       {DynamicSupervisor, name: Adapter.MessengersSupervisor, strategy: :one_for_one},
       {Adapter.Registry, name: Adapter.Registry},
       supervisor(Adapter.Endpoint, [])

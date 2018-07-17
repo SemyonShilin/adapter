@@ -18,7 +18,11 @@ defmodule Hub.Client.Base do
         {:ok, args}
       end
 
-      defoverridable [init: 1]
+      defp decode(body) do
+        Poison.decode!(body)
+      end
+
+      defoverridable [init: 1, decode: 1]
     end
   end
 end

@@ -29,10 +29,6 @@ defmodule Hub.Client.HTTP do
     end
   end
 
-  defp decode(body) do
-    Poison.decode!(body)
-  end
-
   defp hub_post_url do
     case Keyword.get(@http_client, :hub_post) do
       url when is_bitstring(url) -> url

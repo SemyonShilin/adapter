@@ -2,7 +2,7 @@ defmodule Hub.Client do
   @moduledoc false
 
   use Supervisor
-  alias Hub.Client.HTTP
+  alias Hub.Client.{HTTP, TCP}
 
   def start_link(_args \\ []) do
     Supervisor.start_link(__MODULE__, :ok)
@@ -10,7 +10,8 @@ defmodule Hub.Client do
 
   def init(:ok) do
     children = [
-      {HTTP, %{}}
+      {HTTP, %{}},
+      {TCP, %{}}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

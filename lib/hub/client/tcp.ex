@@ -48,10 +48,26 @@ defmodule Hub.Client.TCP do
 
   defp decode(socket) do
     case :gen_tcp.recv(socket, 0) do
-      {:ok, message} -> Poison.decode!(message)
+      {:ok, message} -> Poison.decode!(message) |> key_to_downcase()
       {:error, _}    -> :error
     end
   end
 
   defp decode(:error), do: :error
+
+  defp key_to_downcase(message) do
+    message
+    |> Enum.reduce(%{}, fn {k, v}, acc ->
+      case v do
+        %{} -> Map.put(acc, String.downcase(k), key_to_downcase(v))
+        _ when is_list(v) ->
+          value =
+            Enum.map(v, fn map ->
+              key_to_downcase(map)
+            end)
+          Map.put(acc, String.downcase(k), value)
+        _  -> Map.put(acc, String.downcase(k), v)
+      end
+    end)
+  end
 end

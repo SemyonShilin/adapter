@@ -51,6 +51,8 @@ defmodule Adapter.Mixfile do
       {:credo, "~> 0.3", only: [:dev, :test]},
       {:edeliver, ">= 1.4.5"},
       {:distillery, "~> 1.5", runtime: false}
+#      {:phoenix_swagger, "~> 0.8"},
+#      {:ex_json_schema, "~> 0.5"}
     ]
   end
 

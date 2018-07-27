@@ -38,7 +38,7 @@ defmodule Adapter.Api.V0.BotController do
         Registry.delete({:bot, bot.uid})
         send_resp(conn, :no_content, "")
       nil ->
-        send_resp(conn, :no_content, "")
+        send_resp(conn, :not_found, "")
     end
   end
 

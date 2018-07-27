@@ -38,7 +38,7 @@ defmodule Adapter.Api.V0.MessengerController do
         Registry.delete({:messenger, messenger.name})
         send_resp(conn, :no_content, "")
       nil ->
-        send_resp(conn, :no_content, "")
+        send_resp(conn, :not_found, "")
     end
   end
 

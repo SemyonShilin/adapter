@@ -3,30 +3,24 @@ defmodule Adapter.BotLogger do
   require Logger
 
   @adapter Application.get_env(:adapter, Adapter.BotLogger)
+  @on_load :load_config
 
   def debug(message) do
-    @adapter
-    |> Keyword.get(:type)
-    |> debug(message)
-  end
-
-  def info(message) do
-    @adapter
-    |> Keyword.get(:type)
-    |> info(message)
-  end
-
-  defp debug(:console, message) do
     Logger.debug fn -> "----> #{message} <----" end
   end
 
-  defp info(:console, message) do
+  def info(message) do
     Logger.info fn -> "----> #{message} <----" end
   end
 
-  defp debug(:file, _message) do
-  end
-
-  defp info(:file, _message) do
+  def load_config() do
+    case Keyword.get(@adapter, :type) do
+      :file ->
+        Logger.add_backend {LoggerFileBackend, :info}
+        Logger.configure_backend {LoggerFileBackend, :info},
+                                 path: "priv/logs/adapter.log"
+      :console -> :ok
+      _ -> :abort
+    end
   end
 end

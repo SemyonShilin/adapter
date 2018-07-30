@@ -35,3 +35,4 @@ development.telegram.log
 production.telegram.log
 tbot.log
 .deliver/releases/
+priv/logs/*.log

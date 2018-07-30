@@ -50,7 +50,8 @@ defmodule Adapter.Mixfile do
       {:slack_engine,    github: "ShilinSemyon/slack_engine",    branch: "develop"},
       {:credo, "~> 0.3", only: [:dev, :test]},
       {:edeliver, ">= 1.4.5"},
-      {:distillery, "~> 1.5", runtime: false}
+      {:distillery, "~> 1.5", runtime: false},
+      {:logger_file_backend, "~> 0.0.10"}
 #      {:phoenix_swagger, "~> 0.8"},
 #      {:ex_json_schema, "~> 0.5"}
     ]

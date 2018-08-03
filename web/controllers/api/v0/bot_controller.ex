@@ -54,8 +54,8 @@ defmodule Adapter.Api.V0.BotController do
     render(conn, "down.json", bot: bot)
   end
 
-  def send(conn, %{"bot" => bot_params}) do
-    Registry.post_message(bot_params["uid"], true, bot_params)
+  def send(conn, %{"bot" => bot_params, "uid" => uid}) do
+    Registry.post_message(uid, true, bot_params)
     render(conn, "send.json", [])
   end
 end

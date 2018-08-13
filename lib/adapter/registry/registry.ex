@@ -19,15 +19,10 @@ defmodule Adapter.Registry do
   """
 
   use GenServer
-
-  @name Adapter.Registry
   use Adapter.Registry.{Server, Client, Helpers}
 
-
-  require Adapter.Registry.{Client, Server}
-
   def start_link(opts) do
-    GenServer.start_link(@name, :ok, opts)
+    GenServer.start_link(__MODULE__, :ok, opts)
   end
 
   @impl true

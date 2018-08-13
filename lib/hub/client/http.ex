@@ -10,11 +10,11 @@ defmodule Hub.Client.HTTP do
     HTTPoison.start
   end
 
-  def call(message = %{}) do
+  def call(%{} = message) do
     GenServer.call(__MODULE__, message)
   end
 
-  def handle_call(message = %{}, _from, state) do
+  def handle_call(%{} = message, _from, state) do
     {:reply, call_hub(message), state}
   end
 

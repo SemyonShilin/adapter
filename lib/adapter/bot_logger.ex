@@ -13,7 +13,7 @@ defmodule Adapter.BotLogger do
     Logger.info fn -> "----> #{message} <----" end
   end
 
-  def load_config() do
+  def load_config do
     case Keyword.get(@adapter, :type) do
       :file ->
         Logger.add_backend {LoggerFileBackend, :info}

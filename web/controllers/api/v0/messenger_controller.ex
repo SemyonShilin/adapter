@@ -14,7 +14,7 @@ defmodule Adapter.Api.V0.MessengerController do
 
   def create(conn, %{"messenger" => messenger_params}) do
     case Registry.create(Map.get(messenger_params, "name")) do
-      {mssg_name, _}->
+      {mssg_name, _} ->
         messenger = Messengers.find_by_name(mssg_name)
 
         conn

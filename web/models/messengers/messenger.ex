@@ -4,6 +4,8 @@ defmodule Adapter.Messengers.Messenger do
   """
 
   use Adapter.Web, :model
+  alias Adapter.Messengers
+  alias Adapter.Messengers.Messenger
 
   schema "messengers" do
     field :name, :string
@@ -26,8 +28,8 @@ defmodule Adapter.Messengers.Messenger do
 
   def validate_unique_record(changeset, field, _opts \\ []) do
     validate_change(changeset, field, fn f, value ->
-      case Adapter.Messengers.get_by_messenger("#{value}") do
-        %Adapter.Messengers.Messenger{} -> ["#{f}": {"#{f} not unique", []}]
+      case Messengers.get_by_messenger("#{value}") do
+        %Messenger{} -> ["#{f}": {"#{f} not unique", []}]
         _ -> []
       end
     end)

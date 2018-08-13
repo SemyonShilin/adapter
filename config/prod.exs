@@ -19,6 +19,18 @@ config :adapter, Adapter.Endpoint, server: true
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :adapter, Adapter.BotLogger,
+       type: :console
+
+config :telegram_engine, Engine.Telegram,
+       logger: Adapter.BotLogger
+
+config :viber_engine, Engine.Viber,
+       logger: Adapter.BotLogger
+
+config :slack_engine, Engine.Slack,
+       logger: Adapter.BotLogger
+
 config :adapter,
        env: :prod
 # ## SSL Support

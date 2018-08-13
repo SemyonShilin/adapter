@@ -5,6 +5,7 @@ defmodule Adapter do
 
   use Application
   import Supervisor.Spec
+  alias Adapter.Endpoint
 
   @sup_name Adapter.Supervisor
 
@@ -14,7 +15,7 @@ defmodule Adapter do
   end
 
   def config_change(changed, _new, removed) do
-    Adapter.Endpoint.config_change(changed, removed)
+    Endpoint.config_change(changed, removed)
     :ok
   end
 

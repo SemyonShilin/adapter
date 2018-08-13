@@ -9,11 +9,11 @@ defmodule Hub.Client.TCP do
     {:ok, %{}}
   end
 
-  def call(message = %{}) do
+  def call(%{} = message) do
     GenServer.call(__MODULE__, message)
   end
 
-  def handle_call(message = %{}, _from, state) do
+  def handle_call(%{} = message, _from, state) do
     {:ok, socket} = conn()
     result = call_hub(socket, message)
     :gen_tcp.close(socket)
@@ -48,7 +48,8 @@ defmodule Hub.Client.TCP do
 
   defp decode(socket) do
     case :gen_tcp.recv(socket, 0) do
-      {:ok, message} -> Poison.decode!(message) |> key_to_downcase()
+      {:ok, message} ->
+        message |> Poison.decode!() #|> key_to_downcase()
       {:error, _}    -> :error
     end
   end
@@ -61,11 +62,7 @@ defmodule Hub.Client.TCP do
       case v do
         %{} -> Map.put(acc, String.downcase(k), key_to_downcase(v))
         _ when is_list(v) ->
-          value =
-            Enum.map(v, fn map ->
-              key_to_downcase(map)
-            end)
-          Map.put(acc, String.downcase(k), value)
+          Map.put(acc, String.downcase(k), Enum.map(v, &key_to_downcase(&1)))
         _  -> Map.put(acc, String.downcase(k), v)
       end
     end)

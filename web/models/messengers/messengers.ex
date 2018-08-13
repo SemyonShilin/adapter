@@ -5,9 +5,9 @@ defmodule Adapter.Messengers do
 
   use Adapter.Web, :model
 
+  alias Adapter.Bots
   alias Adapter.Messengers
   alias Adapter.Messengers.Messenger
-  alias Adapter.Bots
 
   def list_messengers do
     Repo.all(Messenger)

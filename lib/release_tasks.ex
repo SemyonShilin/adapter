@@ -1,4 +1,8 @@
 defmodule Adapter.Tasks.ReleaseTasks do
+  @moduledoc """
+    Module for initialization, start of migrations and other things for mnesia
+  """
+
   @repo Adapter.Repo
 
   def run do

@@ -9,6 +9,7 @@ defmodule Hub.Client.Base do
     quote location: :keep do
       @behaviour Hub.Client.Base
       use GenServer
+      require Logger
 
       def start_link(args \\ :ok, opts \\ []) do
         GenServer.start_link(__MODULE__, args, Keyword.merge(opts, [name: __MODULE__]))
@@ -20,6 +21,11 @@ defmodule Hub.Client.Base do
 
       defp decode(body) do
         Poison.decode!(body)
+      end
+
+      def terminate(_msg, state) do
+        Logger.info("Hub client terminate")
+        {:noreply, state}
       end
 
       defoverridable [init: 1, decode: 1]

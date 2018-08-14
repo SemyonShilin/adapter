@@ -32,7 +32,7 @@ defmodule Hub.Client.HTTP do
   defp hub_post_url do
     case Keyword.get(@http_client, :hub_post) do
       url when is_bitstring(url) -> url
-      :env -> System.get_env("HUB_POST")
+      :env -> System.get_env("DCH_POST")
       _ -> ""
     end
   end

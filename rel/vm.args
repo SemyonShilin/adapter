@@ -23,6 +23,9 @@
 -env REPLACE_OS_VARS true
 -env PORT 4000
 -env MNESIA_HOST adapter@127.0.0.1
+#-env PROXY_HOST 144.76.62.29
+#-env PROXY_PORT 3128
+#-env DCH_POST http://localhost:4001/api/v0/process_message/
 -env PROXY_HOST ${PROXY_HOST}
 -env PROXY_PORT ${PROXY_PORT}
 -env DCH_POST ${DCH_POST}

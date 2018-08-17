@@ -6,6 +6,7 @@ defmodule Adapter.Messengers do
   use Adapter.Web, :model
 
   alias Adapter.Bots
+  alias Adapter.Bots.Bot
   alias Adapter.Messengers
   alias Adapter.Messengers.Messenger
 
@@ -59,8 +60,12 @@ defmodule Adapter.Messengers do
   end
 
   def add_bot(messenger, params \\ %{}) do
-    bot = Ecto.build_assoc(messenger, :bots, params)
-    Bots.create(bot, params)
+    case Bots.get_by_bot(params) do
+      %Bot{} = found_bot -> found_bot
+      nil ->
+        Ecto.build_assoc(messenger, :bots, params)
+        |> Bots.create(params)
+    end
   end
 
   def find_by_name(name \\ nil), do: Repo.get_by(Messenger, name: name)

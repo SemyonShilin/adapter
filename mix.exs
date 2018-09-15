@@ -20,7 +20,7 @@ defmodule Adapter.Mixfile do
   def application do
     [
       mod: {Adapter, []},
-      extra_applications: [:logger, :runtime_tools, :wobserver, :mnesia, :ecto_mnesia, :ecto, :edeliver]
+      extra_applications: [:logger, :runtime_tools, :wobserver, :mnesia, :ecto_mnesia, :ecto, :edeliver, :amqp]
     ]
   end
 
@@ -45,13 +45,14 @@ defmodule Adapter.Mixfile do
       {:envy, "~> 1.1.1"},
       {:ecto_mnesia, "~> 0.9.0"},
       {:ecto, "~> 2.1"},
-      {:telegram_engine, github: "ShilinSemyon/telegram_engine", branch: "develop"},
+      {:telegram_engine, path: "../telegram_engine"},
       {:viber_engine,    github: "ShilinSemyon/viber_engine",    branch: "develop"},
       {:slack_engine,    github: "ShilinSemyon/slack_engine",    branch: "develop"},
       {:credo, "~> 0.3", only: [:dev, :test]},
       {:edeliver, ">= 1.4.5"},
       {:distillery, "~> 1.5", runtime: false},
-      {:logger_file_backend, "~> 0.0.10"}
+      {:logger_file_backend, "~> 0.0.10"},
+      {:amqp, "~> 0.2.3"},
 #      {:phoenix_swagger, "~> 0.8"},
 #      {:ex_json_schema, "~> 0.5"}
     ]

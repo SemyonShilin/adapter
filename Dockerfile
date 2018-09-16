@@ -7,8 +7,8 @@ RUN mix archive.install --force  https://github.com/phoenixframework/archives/ra
 
 RUN mkdir -p /usr/src/app
 COPY . /usr/src/app
-RUN mkdir -p /usr/src/app/adapter/mnesia
-RUN chmod 777 /usr/src/app/adapter/mnesia
+RUN mkdir -p /usr/src/app/priv/db/mnesia
+RUN chmod 777 /usr/src/app/priv/db/mnesia
 
 WORKDIR /usr/src/app
 

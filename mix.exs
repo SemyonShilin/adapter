@@ -45,7 +45,7 @@ defmodule Adapter.Mixfile do
       {:envy, "~> 1.1.1"},
       {:ecto_mnesia, "~> 0.9.0"},
       {:ecto, "~> 2.1"},
-      {:telegram_engine, path: "../telegram_engine"},
+      {:telegram_engine, github: "ShilinSemyon/telegram_engine", branch: "develop"},
       {:viber_engine,    github: "ShilinSemyon/viber_engine",    branch: "develop"},
       {:slack_engine,    github: "ShilinSemyon/slack_engine",    branch: "develop"},
       {:credo, "~> 0.3", only: [:dev, :test]},

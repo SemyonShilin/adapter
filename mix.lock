@@ -44,7 +44,7 @@
   "slack": {:hex, :slack, "0.14.0", "15ef6fc57706380075e241f97a24adfc0f01512fc8d5ee32c43d76c43dbeaa2f", [:mix], [{:httpoison, "~> 0.11", [hex: :httpoison, repo: "hexpm", optional: false]}, {:poison, "~> 3.0", [hex: :poison, repo: "hexpm", optional: false]}, {:websocket_client, "~> 1.2.4", [hex: :websocket_client, repo: "hexpm", optional: false]}], "hexpm"},
   "slack_engine": {:git, "https://github.com/ShilinSemyon/slack_engine.git", "7f54678c361d9ff79415df186159917411456b75", [branch: "develop"]},
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.4", "f0eafff810d2041e93f915ef59899c923f4568f4585904d010387ed74988e77b", [:make, :mix, :rebar3], [], "hexpm"},
-  "telegram_engine": {:git, "https://github.com/ShilinSemyon/telegram_engine.git", "024f0887a405758cc7d7c0b99ea0a58f8906fd5f", [branch: "develop"]},
+  "telegram_engine": {:git, "https://github.com/ShilinSemyon/telegram_engine.git", "1e1b792fa66963cb67d6f817e32986f58661d0f0", [branch: "develop"]},
   "unicode_util_compat": {:hex, :unicode_util_compat, "0.4.1", "d869e4c68901dd9531385bb0c8c40444ebf624e60b6962d95952775cac5e90cd", [:rebar3], [], "hexpm"},
   "viber_engine": {:git, "https://github.com/ShilinSemyon/viber_engine.git", "103f5bd5b8c812e858beaa82b481331a964be38d", [branch: "develop"]},
   "websocket_client": {:hex, :websocket_client, "1.2.4", "14ec1ca4b6d247b44ccd9a80af8f6ca98328070f6c1d52a5cb00bc9d939d63b8", [:rebar3], [], "hexpm"},

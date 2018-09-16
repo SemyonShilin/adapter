@@ -35,7 +35,7 @@ defmodule Hub.Client.Consumer do
   end
 
   def rabbitmq_connect do
-    case AMQP.Connection.open(port: 5672) do
+    case AMQP.Connection.open(Application.get_env(:adapter, :rabbitmq)) do
       {:ok, connection} ->
         Process.monitor(connection.pid)
         {:ok, channel} = AMQP.Channel.open(connection)
@@ -43,7 +43,7 @@ defmodule Hub.Client.Consumer do
         AMQP.Basic.consume(channel, "hub_queue", nil, no_ack: true)
         %{channel: channel, connection: connection}
       {:error, _} ->
-        :timer.sleep(10000)
+        :timer.sleep(100)
         rabbitmq_connect()
     end
   end

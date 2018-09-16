@@ -2,6 +2,7 @@ defmodule Hub.Client.Queue do
   @moduledoc false
 
   use Hub.Client.Base
+  alias AMQP.{Connection, Basic, Channel, Queue}
 
   def init(_args) do
     {:ok, rabbitmq_connect()}
@@ -28,26 +29,26 @@ defmodule Hub.Client.Queue do
   end
 
   def terminate(_msg, state) do
-    AMQP.Connection.close(state.connection)
+    Connection.close(state.connection)
 
     {:noreply, state}
   end
 
   def call_hub(%{message: message, state: state}) do
-    AMQP.Basic.publish state.channel, "", "adapter_queue", Poison.encode!(message)
+    Basic.publish state.channel, "", "adapter_queue", Poison.encode!(message)
 
     %{"data" => []}
   end
 
   def rabbitmq_connect do
-    case AMQP.Connection.open(port: 5672) do
+    case Connection.open(Application.get_env(:adapter, :rabbitmq)) do
       {:ok, connection} ->
         Process.monitor(connection.pid)
-        {:ok, channel} = AMQP.Channel.open(connection)
-        AMQP.Queue.declare(channel, "adapter_queue")
+        {:ok, channel} = Channel.open(connection)
+        Queue.declare(channel, "adapter_queue")
         %{channel: channel, connection: connection}
       {:error, _} ->
-        :timer.sleep(10000)
+        :timer.sleep(100)
         rabbitmq_connect()
     end
   end

@@ -91,7 +91,5 @@ config :slack_engine, Engine.Slack,
        hub_client: Hub.Client.HTTP
 
 config :adapter, :rabbitmq,
-       host: "localhost",
-       port: 5672,
-       username: "${RABBITMQ_UID}",
-       password: "${RABBITMQ_PWD}"
+       host: "rabbitmq",
+       port: 5672

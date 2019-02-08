@@ -5,7 +5,7 @@ defmodule Adapter.Mixfile do
     [
       app: :adapter,
       version: "0.1.0",
-      elixir: "~> 1.6",
+      elixir: "~> 1.8",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
@@ -20,7 +20,7 @@ defmodule Adapter.Mixfile do
   def application do
     [
       mod: {Adapter, []},
-      extra_applications: [:logger, :runtime_tools, :wobserver, :mnesia, :ecto_mnesia, :ecto, :edeliver, :amqp]
+      extra_applications: [:logger, :runtime_tools, :ecto, :edeliver, :amqp]
     ]
   end
 
@@ -33,24 +33,28 @@ defmodule Adapter.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3.3"},
-      {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_ecto, "~> 3.2"},
+      {:phoenix, "~> 1.4.0"},
+      {:phoenix_pubsub, "~> 1.1"},
+      {:phoenix_ecto, "~> 4.0"},
+      {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 2.10"},
-      {:phoenix_live_reload, "~> 1.0", only: :dev},
+      {:phoenix_html, "~> 2.11"},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"},
-      {:wobserver, "~> 0.1"},
+      {:jason, "~> 1.0"},
+      {:plug_cowboy, "~> 2.0"},
+
+      {:cowboy, "~> 2.6"},
+#      {:wobserver, "~> 0.1"},
       {:envy, "~> 1.1.1"},
-      {:ecto_mnesia, "~> 0.9.0"},
-      {:ecto, "~> 2.1"},
+#      {:ecto_mnesia, "~> 0.9.0"},
+#      {:ecto, "~> 2.1"},
       {:telegram_engine, github: "ShilinSemyon/telegram_engine", branch: "develop"},
       {:viber_engine,    github: "ShilinSemyon/viber_engine",    branch: "develop"},
       {:slack_engine,    github: "ShilinSemyon/slack_engine",    branch: "develop"},
       {:credo, "~> 0.3", only: [:dev, :test]},
-      {:edeliver, ">= 1.4.5"},
-      {:distillery, "~> 1.5", runtime: false},
+      {:edeliver, "~> 1.6"},
+      {:distillery, "~> 2.0", runtime: false},
       {:logger_file_backend, "~> 0.0.10"},
       {:amqp, "~> 0.2.3"},
 #      {:phoenix_swagger, "~> 0.8"},

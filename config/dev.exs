@@ -48,9 +48,8 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
-# Configure your database
-config :mnesia,
-       dir: 'priv/db/mnesia'
+# Initialize plugs at runtime for faster development compilation
+config :phoenix, :plug_init_mode, :runtime
 
 config :adapter, Adapter.BotLogger,
        type: :console
@@ -68,28 +67,4 @@ config :slack_engine, Engine.Slack,
 config :adapter,
        env: :dev
 
-#import_config "dev.secret.exs"
-
-config :telegram_engine, Engine.Telegram,
-       proxy: :env,
-       get_bot_fn: "fn (token) -> Adapter.Bots.get_by_bot(%{token: token}) end",
-       hub_client: Hub.Client.Queue
-
-config :adapter, Hub.Client.HTTP,
-       #       hub_post: "http://messenger.dev.shr.phoenixit.ru/api/v0/process_message/"
-       hub_post: "http://localhost:3000/api/v0/process_message/"
-config :adapter, Hub.Client.TCP,
-       hub_tcp: {'localhost', 9999}
-
-config :viber_engine, Engine.Viber,
-       url: "https://dch-shr.tk/webhooks/viber/",
-       hub_client: Hub.Client.HTTP,
-       get_bot_fn: "fn (token) -> Adapter.Bots.get_by_bot(%{token: token}) end"
-
-config :slack_engine, Engine.Slack,
-       get_bot_fn: "fn (token) -> Adapter.Bots.get_by_bot(%{token: token}) end",
-       hub_client: Hub.Client.HTTP
-
-config :adapter, :rabbitmq,
-       host: "rabbitmq",
-       port: 5672
+import_config "dev.secret.exs"

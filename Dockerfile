@@ -1,4 +1,4 @@
-FROM elixir:1.6.4
+FROM elixir:1.8.0
 
 RUN apt-get update && apt-get install -y inotify-tools build-essential --no-install-recommends && rm -rf /var/lib/apt/lists/*
 

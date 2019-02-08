@@ -77,4 +77,4 @@ config :adapter,
 #config :telegram_engine, Engine.Telegram,
 #       method: :polling
 
-#import_config "prod.secret.exs"
+import_config "prod.secret.exs"

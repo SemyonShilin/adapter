@@ -1,5 +1,8 @@
 defmodule Adapter.Repo do
-  use Ecto.Repo, otp_app: :adapter
+  use Ecto.Repo,
+      otp_app: :adapter,
+      adapter: Ecto.Adapters.Postgres
+
 
   def init(_, opts) do
     {:ok, opts}

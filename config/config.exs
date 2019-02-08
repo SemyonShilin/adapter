@@ -15,22 +15,15 @@ config :adapter, AdapterWeb.Endpoint,
   pubsub: [name: Adapter.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
-config :wobserver,
-       mode: :plug,
-       remote_url_prefix: "/wobserver"
-
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:user_id]
 
+config :phoenix, :json_library, Jason
+
 config :adapter,
        ecto_repos: [Adapter.Repo]
-
-config :adapter, Adapter.Repo,
-       adapter: EctoMnesia.Adapter,
-       host: {:system, :atom, "MNESIA_HOST", Kernel.node()},
-       storage_type: {:system, :atom, "MNESIA_STORAGE_TYPE", :disc_copies}
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

@@ -34,13 +34,15 @@ defmodule Adapter.Tasks.ReleaseTasks do
   defp connect(node) do
     case :mnesia.change_config(:extra_db_nodes, [node]) do
       {:ok, [_node]} ->
-        IO.puts "App connect to db"
+        IO.puts("App connect to db")
         :ok
+
       {:ok, []} ->
-        IO.puts "App noy connect to db"
+        IO.puts("App noy connect to db")
         {:error, :connection_failure}
+
       error ->
-        IO.puts "App noy connect to db with reason: #{inspect error}"
+        IO.puts("App noy connect to db with reason: #{inspect(error)}")
         {:error, error}
     end
   end
@@ -48,13 +50,15 @@ defmodule Adapter.Tasks.ReleaseTasks do
   defp db_up do
     case @repo.__adapter__.storage_up(@repo.config) do
       :ok ->
-        IO.puts "The database for Mnesia has been created"
+        IO.puts("The database for Mnesia has been created")
         :ok
+
       {:error, :already_up} ->
-        IO.puts "The database for Mnesia has already been created"
+        IO.puts("The database for Mnesia has already been created")
         :ok
+
       {:error, error} ->
-        IO.puts "The database for Mnesia couldn't be created: #{inspect error}"
+        IO.puts("The database for Mnesia couldn't be created: #{inspect(error)}")
         :error
     end
   end
@@ -62,13 +66,15 @@ defmodule Adapter.Tasks.ReleaseTasks do
   defp db_down do
     case @repo.__adapter__.storage_down(@repo.config) do
       :ok ->
-        IO.puts "Mnesia DB has been dropped"
+        IO.puts("Mnesia DB has been dropped")
         :ok
+
       {:error, :already_down} ->
-        IO.puts "Mnesia DB has already been dropped"
+        IO.puts("Mnesia DB has already been dropped")
         :ok
+
       {:error, reason} ->
-        IO.puts "Mnesia DB couldn't be dropped: #{inspect reason}"
+        IO.puts("Mnesia DB couldn't be dropped: #{inspect(reason)}")
         :error
     end
   end
@@ -77,6 +83,7 @@ defmodule Adapter.Tasks.ReleaseTasks do
     case extra_nodes() do
       [] ->
         db_up()
+
       [_ | _] ->
         :ok
     end
@@ -85,20 +92,22 @@ defmodule Adapter.Tasks.ReleaseTasks do
   defp copy_schema(node) do
     case :mnesia.change_table_copy_type(:schema, node, :disc_copies) do
       {:atomic, :ok} ->
-        IO.puts "Schema Mnesia DB has been coppied"
+        IO.puts("Schema Mnesia DB has been coppied")
         :ok
+
       {:aborted, {:already_exists, :schema, _, :disc_copies}} ->
-        IO.puts "Schema Mnesia DB already exists"
+        IO.puts("Schema Mnesia DB already exists")
         :ok
+
       {:aborted, error} ->
-        IO.puts "Schema Mnesia DB couldn't be coppied: #{inspect error}"
+        IO.puts("Schema Mnesia DB couldn't be coppied: #{inspect(error)}")
         {:error, error}
     end
   end
 
   defp copy_tables do
     tables()
-    |> Enum.each(fn(table) ->
+    |> Enum.each(fn table ->
       :mnesia.add_table_copy(table, node(), :disc_copies)
     end)
   end

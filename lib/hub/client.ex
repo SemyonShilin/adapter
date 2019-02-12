@@ -11,9 +11,9 @@ defmodule Hub.Client do
   def init(:ok) do
     children = [
       {HTTP, %{}},
-      {TCP, %{}},
-#      {Queue, %{}},
-#      {Consumer, %{}},
+      {TCP, %{}}
+      #      {Queue, %{}},
+      #      {Consumer, %{}},
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

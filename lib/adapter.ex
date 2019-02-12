@@ -44,12 +44,12 @@ defmodule Adapter do
   end
 
   defp run_tools(:dev) do
-    Envy.auto_load
-    :observer.start
+    Envy.auto_load()
+    :observer.start()
   end
 
   defp run_tools(:prod) do
-    Adapter.Tasks.ReleaseTasks.run
+    Adapter.Tasks.ReleaseTasks.run()
   end
 
   defp children(:all) do

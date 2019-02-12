@@ -41,7 +41,10 @@ defmodule Adapter.Registry.Helpers do
         state
       else
         messenger_pid = Map.get(names, messenger)
-        {:ok, pid} = Adapter.MessengerSupervisor.start_new_bot(messenger_pid, {messenger, name, token})
+
+        {:ok, pid} =
+          Adapter.MessengerSupervisor.start_new_bot(messenger_pid, {messenger, name, token})
+
         ref = Process.monitor(pid)
         refs = Map.put(refs, ref, name)
         names = Map.put(names, name, pid)
@@ -52,7 +55,10 @@ defmodule Adapter.Registry.Helpers do
     else
       {names, refs} = up_messenger(messenger, state)
       messenger_pid = Map.get(names, messenger)
-      {:ok, pid} = Adapter.MessengerSupervisor.start_new_bot(messenger_pid, {messenger, name, token})
+
+      {:ok, pid} =
+        Adapter.MessengerSupervisor.start_new_bot(messenger_pid, {messenger, name, token})
+
       ref = Process.monitor(pid)
       refs = Map.put(refs, ref, name)
       names = Map.put(names, name, pid)
@@ -64,12 +70,11 @@ defmodule Adapter.Registry.Helpers do
 
   def up_init_tree(state) do
     Adapter.Messengers.list_up_messengers()
-    |> Enum.map(fn(messenger) ->
+    |> Enum.map(fn messenger ->
       messenger.id |> Adapter.Bots.where_messenger() |> up_bots(state)
     end)
-    |> Enum.reduce({%{}, %{}}, fn(tuple, acc) ->
-      {Map.merge(elem(tuple, 0), elem(acc, 0)),
-        Map.merge(elem(tuple, 1), elem(acc, 1))}
+    |> Enum.reduce({%{}, %{}}, fn tuple, acc ->
+      {Map.merge(elem(tuple, 0), elem(acc, 0)), Map.merge(elem(tuple, 1), elem(acc, 1))}
     end)
   end
 
@@ -94,10 +99,12 @@ defmodule Adapter.Registry.Helpers do
 
   def down_tree([], _, state), do: state
 
-  def delete_from_state(name, {names, refs})  do
-    ref = Enum.find_value(refs, fn(elem) ->
-      if elem(elem, 1) == name, do: elem(elem, 0)
-    end)
+  def delete_from_state(name, {names, refs}) do
+    ref =
+      Enum.find_value(refs, fn elem ->
+        if elem(elem, 1) == name, do: elem(elem, 0)
+      end)
+
     Process.demonitor(ref)
     {name, refs} = Map.pop(refs, ref)
     pid = Map.get(names, name)
@@ -118,7 +125,9 @@ defmodule Adapter.Registry.Helpers do
     case Adapter.Bots.get_by_with_messenger(%{uid: bot_name}) do
       %Adapter.Bots.Bot{} = bot ->
         Module.concat(Engine, String.capitalize(bot.messenger.name)).pre_down(bot.uid)
-      _ -> nil
+
+      _ ->
+        nil
     end
   end
 end

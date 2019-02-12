@@ -26,13 +26,13 @@ defmodule AdapterWeb.ConnCase do
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Adapter.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Adapter.Repo, {:shared, self()})
     end
+
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
-
 end

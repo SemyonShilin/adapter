@@ -11,8 +11,14 @@ config :adapter, Adapter.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: [node: ["node_modules/brunch/bin/brunch", "watch", "--stdin",
-                    cd: Path.expand("../assets", __DIR__)]]
+  watchers: [
+    node: [
+      "node_modules/brunch/bin/brunch",
+      "watch",
+      "--stdin",
+      cd: Path.expand("../assets", __DIR__)
+    ]
+  ]
 
 # ## SSL Support
 #
@@ -51,20 +57,17 @@ config :phoenix, :stacktrace_depth, 20
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
 
-config :adapter, Adapter.BotLogger,
-       type: :console
+config :adapter, Adapter.BotLogger, type: :console
 
 config :telegram_engine, Engine.Telegram,
-       logger: Adapter.BotLogger,
-       method: :polling
+  logger: Adapter.BotLogger,
+  method: :polling
 
-config :viber_engine, Engine.Viber,
-       logger: Adapter.BotLogger
+config :viber_engine, Engine.Viber, logger: Adapter.BotLogger
 
-config :slack_engine, Engine.Slack,
-       logger: Adapter.BotLogger
+config :slack_engine, Engine.Slack, logger: Adapter.BotLogger
 
 config :adapter,
-       env: :dev
+  env: :dev
 
 import_config "dev.secret.exs"

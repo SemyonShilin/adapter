@@ -5,7 +5,7 @@ defmodule Hub.Client.TCP do
 
   use Hub.Client.Base
 
-  def init (_args)do
+  def init(_args) do
     {:ok, %{}}
   end
 
@@ -49,8 +49,11 @@ defmodule Hub.Client.TCP do
   defp decode(socket) do
     case :gen_tcp.recv(socket, 0) do
       {:ok, message} ->
-        message |> Poison.decode!() #|> key_to_downcase()
-      {:error, _}    -> :error
+        # |> key_to_downcase()
+        message |> Poison.decode!()
+
+      {:error, _} ->
+        :error
     end
   end
 
@@ -60,10 +63,14 @@ defmodule Hub.Client.TCP do
     message
     |> Enum.reduce(%{}, fn {k, v}, acc ->
       case v do
-        %{} -> Map.put(acc, String.downcase(k), key_to_downcase(v))
+        %{} ->
+          Map.put(acc, String.downcase(k), key_to_downcase(v))
+
         _ when is_list(v) ->
           Map.put(acc, String.downcase(k), Enum.map(v, &key_to_downcase(&1)))
-        _  -> Map.put(acc, String.downcase(k), v)
+
+        _ ->
+          Map.put(acc, String.downcase(k), v)
       end
     end)
   end

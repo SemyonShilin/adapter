@@ -10,13 +10,13 @@ defmodule Hub.Client.Consumer do
     {:ok, rabbitmq_connect()}
   end
 
-  def handle_info({:basic_deliver, payload, meta} , state) do
+  def handle_info({:basic_deliver, payload, meta}, state) do
     Logger.info(fn -> "Received message" end)
 
-    #TODO: change last bot to bot find by uid
+    # TODO: change last bot to bot find by uid
     bot =
       Adapter.Bots.Bot
-      |> Adapter.Repo.all
+      |> Adapter.Repo.all()
       |> List.last()
 
     Adapter.Registry.post_message(bot.uid, true, Poison.decode!(payload))
@@ -42,6 +42,7 @@ defmodule Hub.Client.Consumer do
         AMQP.Queue.declare(channel, "hub_queue")
         AMQP.Basic.consume(channel, "hub_queue", nil, no_ack: true)
         %{channel: channel, connection: connection}
+
       {:error, _} ->
         :timer.sleep(100)
         rabbitmq_connect()

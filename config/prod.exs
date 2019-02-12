@@ -1,38 +1,35 @@
 use Mix.Config
 
-#config :adapter, Adapter.Endpoint,
+# config :adapter, Adapter.Endpoint,
 #  load_from_system_env: true,
 #  url: [host: "...", port: 443],
 #  root: ".",
 #  cache_static_manifest: "priv/static/cache_manifest.json"
 
 config :adapter, Adapter.Endpoint,
-       load_from_system_env: true,
-       http: [port: 4000],
-       url: [host: "...", port: 443],
-       code_reloader: false,
-       root: ".",
-       version: Application.spec(:adapter, :vsn)
+  load_from_system_env: true,
+  http: [port: 4000],
+  url: [host: "...", port: 443],
+  code_reloader: false,
+  root: ".",
+  version: Application.spec(:adapter, :vsn)
 
 config :adapter, Adapter.Endpoint, server: true
 
 # Do not print debug messages in production
 config :logger, level: :info
 
-config :adapter, Adapter.BotLogger,
-       type: :console
+config :adapter, Adapter.BotLogger, type: :console
 
-config :telegram_engine, Engine.Telegram,
-       logger: Adapter.BotLogger
+config :telegram_engine, Engine.Telegram, logger: Adapter.BotLogger
 
-config :viber_engine, Engine.Viber,
-       logger: Adapter.BotLogger
+config :viber_engine, Engine.Viber, logger: Adapter.BotLogger
 
-config :slack_engine, Engine.Slack,
-       logger: Adapter.BotLogger
+config :slack_engine, Engine.Slack, logger: Adapter.BotLogger
 
 config :adapter,
-       env: :prod
+  env: :prod
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
@@ -74,7 +71,7 @@ config :adapter,
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
 
-#config :telegram_engine, Engine.Telegram,
+# config :telegram_engine, Engine.Telegram,
 #       method: :polling
 
 import_config "prod.secret.exs"

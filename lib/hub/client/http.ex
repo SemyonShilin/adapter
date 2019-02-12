@@ -2,12 +2,12 @@ defmodule Hub.Client.HTTP do
   @moduledoc false
 
   @http_client Application.get_env(:adapter, Hub.Client.HTTP)
-  @headers     [{"Content-Type", "application/json"}]
+  @headers [{"Content-Type", "application/json"}]
 
   use Hub.Client.Base
 
   def init(_args) do
-    HTTPoison.start
+    HTTPoison.start()
   end
 
   def call(%{} = message) do
@@ -19,7 +19,7 @@ defmodule Hub.Client.HTTP do
   end
 
   def call_hub(message) do
-    with {:ok, %HTTPoison.Response{body: body}} =
+    with {:ok, %HTTPoison.Response{body: body}} <-
            HTTPoison.post(
              hub_post_url(),
              Poison.encode!(message),

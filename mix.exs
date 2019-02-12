@@ -6,9 +6,9 @@ defmodule Adapter.Mixfile do
       app: :adapter,
       version: "0.1.0",
       elixir: "~> 1.8",
-      elixirc_paths: elixirc_paths(Mix.env),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers,
-      start_permanent: Mix.env == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
     ]
@@ -26,7 +26,7 @@ defmodule Adapter.Mixfile do
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
-  defp elixirc_paths(_),     do: ["lib", "web"]
+  defp elixirc_paths(_), do: ["lib", "web"]
 
   # Specifies your project dependencies.
   #
@@ -43,22 +43,21 @@ defmodule Adapter.Mixfile do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-
       {:cowboy, "~> 2.6"},
-#      {:wobserver, "~> 0.1"},
+      #      {:wobserver, "~> 0.1"},
       {:envy, "~> 1.1.1"},
-#      {:ecto_mnesia, "~> 0.9.0"},
-#      {:ecto, "~> 2.1"},
+      #      {:ecto_mnesia, "~> 0.9.0"},
+      #      {:ecto, "~> 2.1"},
       {:telegram_engine, github: "ShilinSemyon/telegram_engine", branch: "develop"},
-      {:viber_engine,    github: "ShilinSemyon/viber_engine",    branch: "develop"},
-      {:slack_engine,    github: "ShilinSemyon/slack_engine",    branch: "develop"},
+      {:viber_engine, github: "ShilinSemyon/viber_engine", branch: "develop"},
+      {:slack_engine, github: "ShilinSemyon/slack_engine", branch: "develop"},
       {:credo, "~> 0.3", only: [:dev, :test]},
       {:edeliver, "~> 1.6"},
       {:distillery, "~> 2.0", runtime: false},
       {:logger_file_backend, "~> 0.0.10"},
-      {:amqp, "~> 0.2.3"},
-#      {:phoenix_swagger, "~> 0.8"},
-#      {:ex_json_schema, "~> 0.5"}
+      {:amqp, "~> 0.2.3"}
+      #      {:phoenix_swagger, "~> 0.8"},
+      #      {:ex_json_schema, "~> 0.5"}
     ]
   end
 
@@ -72,7 +71,7 @@ defmodule Adapter.Mixfile do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

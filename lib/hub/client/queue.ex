@@ -12,7 +12,7 @@ defmodule Hub.Client.Queue do
     GenServer.call(__MODULE__, message)
   end
 
-  def handle_info({:basic_deliver, payload, meta} , state) do
+  def handle_info({:basic_deliver, payload, meta}, state) do
     Logger.info(fn -> "Received message" end)
 
     Hub.MessageHandler.Producer.publish(payload)
@@ -35,7 +35,7 @@ defmodule Hub.Client.Queue do
   end
 
   def call_hub(%{message: message, state: state}) do
-    Basic.publish state.channel, "", "adapter_queue", Poison.encode!(message)
+    Basic.publish(state.channel, "", "adapter_queue", Poison.encode!(message))
 
     %{"data" => []}
   end
@@ -47,6 +47,7 @@ defmodule Hub.Client.Queue do
         {:ok, channel} = Channel.open(connection)
         Queue.declare(channel, "adapter_queue")
         %{channel: channel, connection: connection}
+
       {:error, _} ->
         :timer.sleep(100)
         rabbitmq_connect()
